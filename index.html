@@ -45,6 +45,8 @@ nav ul a:hover{color:var(--tx)}
 .hero h1.f0{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
 .hero h1.f1{font-family:"Pinyon Script"}.hero h1.f3{font-family:"Monsieur La Doulaise"}.hero h1.f4{font-family:"Alex Brush"}.hero h1.f5{font-family:"Parisienne"}.hero h1.f6{font-family:"Italianno";font-size:clamp(90px,17vw,250px)}
 .hero h1 b{color:var(--acc);font-weight:inherit}
+.hlogo{width:min(880px,88vw);height:auto;filter:drop-shadow(0 4px 24px #0009)}
+.hero h1 .htxt{display:none}.hero h1.txt .htxt{display:inline}.hero h1.txt .hlogo{display:none}
 .hero p{font-size:clamp(18px,2.2vw,26px);max-width:760px;color:#d9d5ce;margin-top:18px}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
 .tags span{border:1px solid #ffffff2a;border-radius:99px;padding:6px 14px;font-size:13px;background:#0b0b0e66}
@@ -131,7 +133,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 <body>
 
 <nav><div class="wrap">
-  <a class="logo" href="#top">dream<b>tools</b></a>
+  <a class="logo" href="#top"><img src="media/img/logo.svg" alt="DreamTools" style="height:34px;width:auto"></a>
   <ul>
     <li><a href="#work"><span class="pt">Motion</span><span class="en">Motion</span></a></li>
     <li><a href="#tools"><span class="pt">Ferramentas</span><span class="en">Tools</span></a></li>
@@ -145,7 +147,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 
 <header class="hero" id="top">
   <div class="wrap">
-    <h1 id="ttl">Dream<b>Tools</b></h1>
+    <h1 id="ttl"><img class="hlogo" src="media/img/logo.svg" alt="DreamTools"><span class="htxt">Dream<b>Tools</b></span></h1>
     <!-- capa: postal Ghibli, Cape Schanck (Melbourne) -->
     <p class="pt">Estúdio de <strong>Rafael Valle</strong> — motion designer e artista 3D há mais de 30 anos. De Curitiba para agências e marcas nos EUA, Europa, Oriente Médio e América Latina.</p>
     <p class="en">The studio of <strong>Rafael Valle</strong> — motion designer and 3D artist for 30+ years. From Curitiba, Brazil, to agencies and brands across the US, Europe, the Middle East and Latin America.</p>
@@ -422,8 +424,8 @@ function setL(l){document.documentElement.dataset.l=l;document.documentElement.l
 let saved=null;try{saved=localStorage.getItem('dt-l')}catch(e){}
 setL(saved||((navigator.language||'').toLowerCase().startsWith('pt')?'pt':'en'));
 lb.onclick=()=>setL(L()=='pt'?'en':'pt');
-// fonte da capa: ?f=0 (pesada original) … ?f=6
-{const f=new URLSearchParams(location.search).get('f');if(f&&/^[0-6]$/.test(f)&&f!=='2')document.getElementById('ttl').classList.add('f'+f)}
+// capa = logo SVG oficial. ?f=0 (pesada original) … ?f=6 mostra as fontes de texto
+{const f=new URLSearchParams(location.search).get('f');if(f&&/^[0-6]$/.test(f)){const t=document.getElementById('ttl');t.classList.add('txt');if(f!=='2')t.classList.add('f'+f)}}
 // loops automáticos: tocam só quando visíveis
 {const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting)v.play().catch(()=>{});else v.pause()}),{threshold:.25});
 document.querySelectorAll('video[autoplay]').forEach(v=>io.observe(v))}
