@@ -19,7 +19,8 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--tx);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
 img,video{display:block;max-width:100%}
-h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.05;letter-spacing:-.02em}
+/* títulos: Economica Bold Italic (a mesma do track73.com.br) */
+h1,h2,h3{font-family:"Economica","Arial Narrow",sans-serif;font-weight:700;font-style:italic;line-height:1.02;letter-spacing:0}
 html[data-l=pt] .en,html[data-l=en] .pt{display:none!important}
 .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
 /* nav */
@@ -59,7 +60,7 @@ nav ul a:hover{color:var(--tx)}
 /* sections */
 section{padding:110px 0 40px}
 .kick{font:600 12px Inter;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
-h2{font-size:clamp(38px,6vw,72px);margin-bottom:18px}
+h2{font-size:clamp(46px,7.2vw,88px);margin-bottom:18px}
 .lead{color:var(--mut);max-width:720px;font-size:18px;margin-bottom:44px}
 /* work grid */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
@@ -69,7 +70,7 @@ h2{font-size:clamp(38px,6vw,72px);margin-bottom:18px}
 .card.play video{opacity:1}
 .card:hover img{transform:scale(1.04)}
 .card .cap{position:absolute;inset:auto 0 0;padding:40px 16px 14px;background:linear-gradient(#0000,#000c);z-index:2}
-.card h3{font-size:17px;font-weight:500;letter-spacing:0}
+.card h3{font-size:22px;letter-spacing:0}
 .card small{color:var(--acc);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
 .card.big{grid-column:span 2;aspect-ratio:auto}
 @media(max-width:700px){.card.big{grid-column:auto;aspect-ratio:16/10}}
@@ -83,7 +84,7 @@ h2{font-size:clamp(38px,6vw,72px);margin-bottom:18px}
 .feat:nth-of-type(even){grid-template-columns:1fr 1.25fr}
 .feat:nth-of-type(even) .media{order:2}
 @media(max-width:860px){.feat,.feat:nth-of-type(even){grid-template-columns:1fr}.feat:nth-of-type(even) .media{order:0}}
-.feat h3{font-size:32px;margin-bottom:10px}
+.feat h3{font-size:40px;margin-bottom:10px}
 .feat p{color:#c9c5bd;margin-bottom:14px}
 .feat .meta{color:var(--mut);font-size:14px;margin-bottom:18px}
 .media{border-radius:var(--r);overflow:hidden;background:var(--bg2);border:1px solid var(--line);position:relative;aspect-ratio:16/9}
@@ -98,7 +99,7 @@ h2{font-size:clamp(38px,6vw,72px);margin-bottom:18px}
 .tool{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:10px;transition:.2s}
 .tool:hover{border-color:#3a3a45}
 .tool .ic{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;font:700 15px "Space Grotesk";color:#111;background:var(--acc)}
-.tool h3{font-size:22px}
+.tool h3{font-size:28px}
 .tool p{color:var(--mut);font-size:15px;flex:1}
 .tool a{font-size:14px;color:var(--acc);text-decoration:none;font-weight:600}
 .tool .st{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7fd1a8;font-weight:600}
@@ -131,7 +132,7 @@ h2{font-size:clamp(38px,6vw,72px);margin-bottom:18px}
 .skills span{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:5px 11px;font-size:13px}
 /* contact */
 .contact{text-align:center;padding:130px 0 90px}
-.contact h2{font-size:clamp(44px,8vw,110px)}
+.contact h2{font-size:clamp(56px,10vw,140px)}
 .contact .mail{font:500 clamp(20px,3vw,32px) "Space Grotesk";color:var(--acc);text-decoration:none;display:inline-block;margin:10px 0 30px}
 .social{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
 footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);font-size:13px}
