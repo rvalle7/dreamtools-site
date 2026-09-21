@@ -349,7 +349,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 
 <footer><div class="wrap">
   <span>© <span id="yr"></span> Dreamtools · Rafael Valle · Curitiba, PR</span>
-  <span id="cnpj"></span>
+  <span><span id="cnpj"></span> <span id="visits" style="opacity:.55;font-variant-numeric:tabular-nums"></span></span>
 </div></footer>
 
 <div class="modal" id="modal"><button class="x" aria-label="Fechar">×</button><video muted loop playsinline controls></video><div class="t"></div></div>
@@ -434,6 +434,14 @@ const m=document.getElementById('mail');
 if(CFG.email.includes('@')){m.textContent=CFG.email;m.href='mailto:'+CFG.email}else m.style.display='none';
 document.getElementById('cnpj').textContent=CFG.cnpj.startsWith('__')?'':'CNPJ '+CFG.cnpj;
 document.getElementById('yr').textContent=new Date().getFullYear();
+// contador discreto de visitas (abacus.jasoncameron.dev). Conta 1x por navegador por dia; não conta em teste local
+(async()=>{const el=document.getElementById('visits'),B='https://abacus.jasoncameron.dev/',K='dreamtools-com-br/visits';
+ const local=!/github\.io|dreamtools\.com\.br/.test(location.hostname)||location.search.includes('nocount');
+ let day='';try{day=localStorage.getItem('dt-v')||''}catch(e){}
+ const today=new Date().toISOString().slice(0,10),hit=!local&&day!==today;
+ try{const r=await fetch(B+(hit?'hit/':'get/')+K);if(!r.ok)return;const n=(await r.json()).value;
+  if(hit){try{localStorage.setItem('dt-v',today)}catch(e){}}
+  const f=()=>el.textContent=n.toLocaleString(L()=='pt'?'pt-BR':'en-US')+(L()=='pt'?' visitas':' visits');f();lb.addEventListener('click',f)}catch(e){}})();
 </script>
 </body>
 </html>
