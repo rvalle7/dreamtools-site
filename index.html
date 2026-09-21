@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://dreamtools.com.br/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b0e'/%3E%3Ctext x='32' y='44' font-family='Arial Black,Arial' font-weight='900' font-size='34' text-anchor='middle' fill='%23ffb23f'%3EDT%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=Great+Vibes&family=Pinyon+Script&family=Monsieur+La+Doulaise&family=Alex+Brush&family=Parisienne&family=Italianno&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0b0b0e;--bg2:#131318;--line:#24242c;--tx:#f1eee8;--mut:#9a97a3;--acc:#ffb23f;--acc2:#ff5b3a;--r:14px}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -40,8 +40,11 @@ nav ul a:hover{color:var(--tx)}
 .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0b0b0e55 0%,#0b0b0e00 40%,#0b0b0e 100%)}
 .hero video{z-index:1}.hero:after{z-index:1}
 .hero .wrap{position:relative;z-index:2;padding-bottom:9vh;width:100%}
-.hero h1{font-size:clamp(56px,12vw,176px);font-weight:700}
-.hero h1 b{color:var(--acc);font-weight:700}
+/* capa: fonte manuscrita. A pesada original (Space Grotesk 700) fica guardada em ?f=0 */
+.hero h1{font-family:"Great Vibes",cursive;font-weight:400;font-size:clamp(76px,14vw,210px);letter-spacing:0;line-height:1.1;text-shadow:0 4px 30px #0008}
+.hero h1.f0{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
+.hero h1.f1{font-family:"Pinyon Script"}.hero h1.f3{font-family:"Monsieur La Doulaise"}.hero h1.f4{font-family:"Alex Brush"}.hero h1.f5{font-family:"Parisienne"}.hero h1.f6{font-family:"Italianno";font-size:clamp(90px,17vw,250px)}
+.hero h1 b{color:var(--acc);font-weight:inherit}
 .hero p{font-size:clamp(18px,2.2vw,26px);max-width:760px;color:#d9d5ce;margin-top:18px}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
 .tags span{border:1px solid #ffffff2a;border-radius:99px;padding:6px 14px;font-size:13px;background:#0b0b0e66}
@@ -142,7 +145,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 
 <header class="hero" id="top">
   <div class="wrap">
-    <h1>dream<b>tools</b></h1>
+    <h1 id="ttl">Dream<b>Tools</b></h1>
     <!-- capa: postal Ghibli, Cape Schanck (Melbourne) -->
     <p class="pt">Estúdio de <strong>Rafael Valle</strong> — motion designer e artista 3D há mais de 30 anos. De Curitiba para agências e marcas nos EUA, Europa, Oriente Médio e América Latina.</p>
     <p class="en">The studio of <strong>Rafael Valle</strong> — motion designer and 3D artist for 30+ years. From Curitiba, Brazil, to agencies and brands across the US, Europe, the Middle East and Latin America.</p>
@@ -169,13 +172,14 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   <p class="lead en">Born from daily production: when something repeats, it becomes a tool. Some are products, some are the lab.</p>
 
   <div class="feat">
-    <div class="media"><div class="yt" data-id="a28Rld7qbjg"></div></div>
+    <div class="media"><video src="media/img/labelcolors.mp4" poster="media/img/labelcolors.jpg" muted loop playsinline autoplay></video></div>
     <div>
       <div class="kick">Premiere Pro · CEP</div>
       <h3>Easy Label Colors</h3>
       <p class="pt">Selecione itens no painel Project, um clique, e todos ganham a cor de label. Pequeno, óbvio, e economiza horas em projetos grandes.</p>
       <p class="en">Select items in the Project panel, one click, and they all get that label color. Small, obvious, and it saves hours on big projects.</p>
       <div class="meta">Premiere Pro 2022+ · <span class="pt">a partir de US$ 5</span><span class="en">from US$ 5</span></div>
+      <a class="btn" href="https://www.youtube.com/watch?v=a28Rld7qbjg" target="_blank" rel="noopener"><span class="pt">Ver com áudio</span><span class="en">Watch with sound</span> ↗</a>
     </div>
   </div>
 
@@ -221,13 +225,13 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   </div>
 
   <div class="feat">
-    <div class="media"><div class="yt" data-id="hZfNzev9bkc"></div></div>
+    <div class="media"><video src="media/img/caustics.mp4" poster="media/img/caustics.jpg" muted loop playsinline autoplay></video></div>
     <div>
       <div class="kick">Unreal Engine 5 · RTX</div>
       <h3 class="pt">Cáusticas em tempo real</h3><h3 class="en">Real-time caustics</h3>
       <p class="pt">Estudos com o branch RTX Caustics do Unreal 5.2 — luz através de vidro, água e prismas em tempo real.</p>
       <p class="en">Studies with Unreal 5.2's RTX Caustics branch — light through glass, water and prisms in real time.</p>
-      <a class="btn" href="https://www.youtube.com/watch?v=XTP93zh3LjU" target="_blank" rel="noopener">Prismatic demo ↗</a>
+      <div class="more" style="margin-top:0"><a class="btn" href="https://www.youtube.com/watch?v=hZfNzev9bkc" target="_blank" rel="noopener">RTX Caustics ↗</a><a class="btn" href="https://www.youtube.com/watch?v=XTP93zh3LjU" target="_blank" rel="noopener">Prismatic demo ↗</a></div>
     </div>
   </div>
 
@@ -236,10 +240,10 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
       <p class="pt">Projeto 3D feito no Maya, renderizado com camera track sobre imagens de drone 4K e depois transformado em experiência VR no Unity.</p>
       <p class="en">A Maya 3D project, rendered with camera tracking over 4K drone footage, then turned into a Unity VR experience.</p>
       <a href="https://www.youtube.com/watch?v=lTo5tNP_ddI" target="_blank" rel="noopener">Video ↗</a> <a href="https://github.com/rvalle7/Parque-Irai-A-VR-Experience" target="_blank" rel="noopener">GitHub ↗</a></div>
-    <div class="tool"><div class="ic">ND</div><div class="st">3D</div><h3>Notre Dame</h3>
+    <div class="tool" style="padding:0;overflow:hidden"><video src="media/img/notredame.mp4" poster="media/img/notredame.jpg" muted loop playsinline autoplay style="aspect-ratio:16/10;object-fit:cover;width:100%"></video><div style="padding:0 22px 22px;display:flex;flex-direction:column;gap:10px"><div class="st">3D</div><h3>Notre Dame</h3>
       <p class="pt">Reconstrução 3D da catedral após o incêndio — estudo de recuperação.</p>
       <p class="en">3D reconstruction of the cathedral after the fire — a recovery study.</p>
-      <a href="https://www.youtube.com/watch?v=KMdoI7r0OTU" target="_blank" rel="noopener">Rebuild ↗</a></div>
+      <a href="https://www.youtube.com/watch?v=cSUgJ6Ucaa8" target="_blank" rel="noopener">Recover ↗</a> <a href="https://www.youtube.com/watch?v=KMdoI7r0OTU" target="_blank" rel="noopener">Rebuild ↗</a></div></div>
     <div class="tool"><div class="ic">FC</div><div class="st">Maya · MSFS 2024</div><h3 class="pt">Carro voador</h3><h3 class="en">Flying car</h3>
       <p class="pt">Um eVTOL de 4 dutos e 8 motores coaxiais, pensado para pairar como drone e voar para frente — em desenvolvimento para o Flight Simulator.</p>
       <p class="en">A 4-duct, 8-coaxial-motor eVTOL that hovers like a drone and cruises forward — in development for Flight Simulator.</p></div>
@@ -253,14 +257,14 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   <p class="lead en">What I do for passion — and that ends up becoming a tool, a product or a film.</p>
 
   <div class="feat">
-    <div class="media"><div class="yt" data-id="yl_bDBWHKWQ"></div></div>
+    <div class="media"><video src="media/img/vrflights.mp4" poster="media/img/vrflights.jpg" muted loop playsinline autoplay></video></div>
     <div>
       <div class="kick">YouTube · MSFS 2024 · Quest 3</div>
       <h3>VR Flights 73</h3>
       <p class="pt">Voos em realidade virtual no Flight Simulator, quase sem cortes, pela perspectiva do piloto — muitas vezes de helicóptero sobre cidades em fotogrametria. A série <em>Track On Air</em> mostra o Track73 em ação.</p>
       <p class="en">Virtual reality flights in Flight Simulator, nearly uncut, from the pilot's seat — often by helicopter over photogrammetry cities. The <em>Track On Air</em> series shows Track73 in action.</p>
       <div class="stats"><div><b>1.3k</b><span class="pt">inscritos</span><span class="en">subscribers</span></div><div><b>1.9k</b><span class="pt">vídeos</span><span class="en">videos</span></div></div>
-      <a class="btn pri" href="https://www.youtube.com/@VRFlights73" target="_blank" rel="noopener">@VRFlights73 ↗</a>
+      <div class="more" style="margin-top:0"><a class="btn pri" href="https://www.youtube.com/@VRFlights73" target="_blank" rel="noopener">@VRFlights73 ↗</a><a class="btn" href="https://www.youtube.com/watch?v=yl_bDBWHKWQ" target="_blank" rel="noopener">Track On Air · Boston ↗</a></div>
     </div>
   </div>
 
@@ -418,6 +422,11 @@ function setL(l){document.documentElement.dataset.l=l;document.documentElement.l
 let saved=null;try{saved=localStorage.getItem('dt-l')}catch(e){}
 setL(saved||((navigator.language||'').toLowerCase().startsWith('pt')?'pt':'en'));
 lb.onclick=()=>setL(L()=='pt'?'en':'pt');
+// fonte da capa: ?f=0 (pesada original) … ?f=6
+{const f=new URLSearchParams(location.search).get('f');if(f&&/^[0-6]$/.test(f)&&f!=='2')document.getElementById('ttl').classList.add('f'+f)}
+// loops automáticos: tocam só quando visíveis
+{const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting)v.play().catch(()=>{});else v.pause()}),{threshold:.25});
+document.querySelectorAll('video[autoplay]').forEach(v=>io.observe(v))}
 // contact
 const m=document.getElementById('mail');
 if(CFG.email.includes('@')){m.textContent=CFG.email;m.href='mailto:'+CFG.email}else m.style.display='none';
