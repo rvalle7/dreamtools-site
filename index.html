@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="pt-BR" data-l="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dreamtools — Rafael Valle · Motion Design, 3D & Tools</title>
+<meta name="description" content="Dreamtools — estúdio de Rafael Valle, motion designer e artista 3D em Curitiba há mais de 25 anos. Motion design, 3D, ferramentas para After Effects, Premiere e DaVinci.">
+<meta property="og:title" content="Dreamtools — Rafael Valle">
+<meta property="og:description" content="Motion design, 3D & tools. Curitiba, Brasil — trabalhando para o mundo.">
+<meta property="og:image" content="https://dreamtools.com.br/media/work/w09.jpg">
+<meta property="og:url" content="https://dreamtools.com.br/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b0e'/%3E%3Ctext x='32' y='44' font-family='Arial Black,Arial' font-weight='900' font-size='34' text-anchor='middle' fill='%23ffb23f'%3EDT%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0e;--bg2:#131318;--line:#24242c;--tx:#f1eee8;--mut:#9a97a3;--acc:#ffb23f;--acc2:#ff5b3a;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img,video{display:block;max-width:100%}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;line-height:1.05;letter-spacing:-.02em}
+html[data-l=pt] .en,html[data-l=en] .pt{display:none!important}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+/* nav */
+nav{position:fixed;inset:0 0 auto;z-index:50;background:linear-gradient(#0b0b0ee6,#0b0b0e00);backdrop-filter:blur(6px)}
+nav .wrap{display:flex;align-items:center;gap:28px;height:68px}
+.logo{font:700 20px "Space Grotesk";text-decoration:none;letter-spacing:-.03em}
+.logo b{color:var(--acc)}
+nav ul{display:flex;gap:22px;list-style:none;margin-left:auto;font-size:14px}
+nav ul a{text-decoration:none;color:var(--mut);transition:.2s}
+nav ul a:hover{color:var(--tx)}
+.lang{border:1px solid var(--line);background:none;color:var(--tx);border-radius:99px;padding:5px 12px;font:600 12px Inter;cursor:pointer}
+.lang:hover{border-color:var(--acc)}
+/* hero */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s}
+.hero video.on{opacity:.55}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0b0b0e55 0%,#0b0b0e00 40%,#0b0b0e 100%)}
+.hero .wrap{position:relative;z-index:2;padding-bottom:9vh;width:100%}
+.hero h1{font-size:clamp(56px,12vw,176px);font-weight:700}
+.hero h1 b{color:var(--acc);font-weight:700}
+.hero p{font-size:clamp(18px,2.2vw,26px);max-width:760px;color:#d9d5ce;margin-top:18px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.tags span{border:1px solid #ffffff2a;border-radius:99px;padding:6px 14px;font-size:13px;background:#0b0b0e66}
+/* sections */
+section{padding:110px 0 40px}
+.kick{font:600 12px Inter;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+h2{font-size:clamp(38px,6vw,72px);margin-bottom:18px}
+.lead{color:var(--mut);max-width:720px;font-size:18px;margin-bottom:44px}
+/* work grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{position:relative;border-radius:var(--r);overflow:hidden;background:var(--bg2);cursor:pointer;aspect-ratio:16/10;border:1px solid var(--line)}
+.card img,.card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s,opacity .4s}
+.card video{opacity:0}
+.card.play video{opacity:1}
+.card:hover img{transform:scale(1.04)}
+.card .cap{position:absolute;inset:auto 0 0;padding:40px 16px 14px;background:linear-gradient(#0000,#000c);z-index:2}
+.card h3{font-size:17px;font-weight:500;letter-spacing:0}
+.card small{color:var(--acc);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.card.big{grid-column:span 2;aspect-ratio:auto}
+@media(max-width:700px){.card.big{grid-column:auto;aspect-ratio:16/10}}
+.more{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:99px;padding:11px 20px;text-decoration:none;font-weight:500;font-size:15px;transition:.2s;background:var(--bg2)}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.pri{background:var(--acc);color:#111;border-color:var(--acc)}
+.btn.pri:hover{background:#ffc566;color:#111}
+/* feature rows */
+.feat{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center;padding:34px 0;border-top:1px solid var(--line)}
+.feat:nth-of-type(even){grid-template-columns:1fr 1.25fr}
+.feat:nth-of-type(even) .media{order:2}
+@media(max-width:860px){.feat,.feat:nth-of-type(even){grid-template-columns:1fr}.feat:nth-of-type(even) .media{order:0}}
+.feat h3{font-size:32px;margin-bottom:10px}
+.feat p{color:#c9c5bd;margin-bottom:14px}
+.feat .meta{color:var(--mut);font-size:14px;margin-bottom:18px}
+.media{border-radius:var(--r);overflow:hidden;background:var(--bg2);border:1px solid var(--line);position:relative;aspect-ratio:16/9}
+.media>img,.media>video{width:100%;height:100%;object-fit:cover}
+.yt{position:relative;width:100%;height:100%;cursor:pointer;background:#000}
+.yt img{width:100%;height:100%;object-fit:cover;opacity:.85;transition:.3s}
+.yt:hover img{opacity:1}
+.yt:after{content:"";position:absolute;left:50%;top:50%;width:68px;height:48px;margin:-24px 0 0 -34px;border-radius:12px;background:#ff0033 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center/28px no-repeat}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* tools */
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.tool{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:10px;transition:.2s}
+.tool:hover{border-color:#3a3a45}
+.tool .ic{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;font:700 15px "Space Grotesk";color:#111;background:var(--acc)}
+.tool h3{font-size:22px}
+.tool p{color:var(--mut);font-size:15px;flex:1}
+.tool a{font-size:14px;color:var(--acc);text-decoration:none;font-weight:600}
+.tool .st{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7fd1a8;font-weight:600}
+/* personal */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pgrid img{border-radius:10px;aspect-ratio:16/9;object-fit:cover;width:100%}
+@media(max-width:700px){.pgrid{grid-template-columns:repeat(2,1fr)}}
+.stats{display:flex;gap:30px;margin:6px 0 18px;flex-wrap:wrap}
+.stats b{display:block;font:700 30px "Space Grotesk";color:var(--acc)}
+.stats span{color:var(--mut);font-size:13px}
+/* about */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:60px}
+@media(max-width:860px){.about{grid-template-columns:1fr}}
+.about p{color:#cfcbc3;margin-bottom:16px;font-size:17px}
+.tl{list-style:none;border-left:1px solid var(--line);padding-left:22px}
+.tl li{position:relative;padding-bottom:18px;color:#cfcbc3}
+.tl li:before{content:"";position:absolute;left:-27px;top:9px;width:9px;height:9px;border-radius:50%;background:var(--acc)}
+.tl b{display:block;font:500 13px Inter;color:var(--mut)}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.skills span{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:5px 11px;font-size:13px}
+/* contact */
+.contact{text-align:center;padding:130px 0 90px}
+.contact h2{font-size:clamp(44px,8vw,110px)}
+.contact .mail{font:500 clamp(20px,3vw,32px) "Space Grotesk";color:var(--acc);text-decoration:none;display:inline-block;margin:10px 0 30px}
+.social{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;background:#000e;display:none;align-items:center;justify-content:center;padding:24px}
+.modal.on{display:flex}
+.modal video{max-width:min(1400px,100%);max-height:80vh;border-radius:10px}
+.modal .x{position:absolute;top:18px;right:22px;font-size:34px;background:none;border:0;color:#fff;cursor:pointer}
+.modal .t{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#ddd}
+@media(max-width:760px){nav ul{display:none}section{padding:80px 0 30px}}
+@media(prefers-reduced-motion:reduce){.hero video{display:none}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="#top">dream<b>tools</b></a>
+  <ul>
+    <li><a href="#work"><span class="pt">Motion</span><span class="en">Motion</span></a></li>
+    <li><a href="#tools"><span class="pt">Ferramentas</span><span class="en">Tools</span></a></li>
+    <li><a href="#3d">3D & VR</a></li>
+    <li><a href="#lab"><span class="pt">Pessoal</span><span class="en">Personal</span></a></li>
+    <li><a href="#about"><span class="pt">Sobre</span><span class="en">About</span></a></li>
+    <li><a href="#contact"><span class="pt">Contato</span><span class="en">Contact</span></a></li>
+  </ul>
+  <button class="lang" id="lang" aria-label="Language">EN</button>
+</div></nav>
+
+<header class="hero" id="top">
+  <video muted playsinline preload="none"></video><video muted playsinline preload="none"></video>
+  <div class="wrap">
+    <h1>dream<b>tools</b></h1>
+    <p class="pt">Estúdio de <strong>Rafael Valle</strong> — motion designer e artista 3D há mais de 25 anos. De Curitiba para agências e marcas nos EUA, Europa, Oriente Médio e América Latina.</p>
+    <p class="en">The studio of <strong>Rafael Valle</strong> — motion designer and 3D artist for 25+ years. From Curitiba, Brazil, to agencies and brands across the US, Europe, the Middle East and Latin America.</p>
+    <div class="tags"><span>Motion Design</span><span>3D / CGI</span><span class="pt">Ferramentas p/ Adobe & DaVinci</span><span class="en">Adobe & DaVinci tools</span><span>VR</span><span class="pt">IA aplicada</span><span class="en">Applied AI</span></div>
+  </div>
+</header>
+
+<section id="work"><div class="wrap">
+  <div class="kick">Motion Design</div>
+  <h2 class="pt">Trabalho selecionado</h2><h2 class="en">Selected work</h2>
+  <p class="lead pt">Filmes de marca, explainers, 3D, ilustração animada e tipografia cinética. Passe o mouse para ver em movimento, clique para ampliar.</p>
+  <p class="lead en">Brand films, explainers, 3D, animated illustration and kinetic type. Hover to see it move, click to enlarge.</p>
+  <div class="grid" id="grid"></div>
+  <div class="more">
+    <a class="btn" href="https://www.youtube.com/@Climberfx/videos" target="_blank" rel="noopener"><span class="pt">+200 vídeos no YouTube</span><span class="en">200+ videos on YouTube</span> ↗</a>
+    <a class="btn" href="https://vimeo.com/climberfx" target="_blank" rel="noopener">Vimeo ↗</a>
+  </div>
+</div></section>
+
+<section id="tools"><div class="wrap">
+  <div class="kick">Dreamtools</div>
+  <h2 class="pt">Ferramentas</h2><h2 class="en">Tools</h2>
+  <p class="lead pt">Nasceram da rotina de produção: quando algo se repete, vira ferramenta. Algumas são produtos, outras são o laboratório.</p>
+  <p class="lead en">Born from daily production: when something repeats, it becomes a tool. Some are products, some are the lab.</p>
+
+  <div class="feat">
+    <div class="media"><div class="yt" data-id="a28Rld7qbjg"></div></div>
+    <div>
+      <div class="kick">Premiere Pro · CEP</div>
+      <h3>Easy Label Colors</h3>
+      <p class="pt">Selecione itens no painel Project, um clique, e todos ganham a cor de label. Pequeno, óbvio, e economiza horas em projetos grandes.</p>
+      <p class="en">Select items in the Project panel, one click, and they all get that label color. Small, obvious, and it saves hours on big projects.</p>
+      <div class="meta">Premiere Pro 2022+ · <span class="pt">a partir de US$ 5</span><span class="en">from US$ 5</span></div>
+    </div>
+  </div>
+
+  <div class="tools">
+    <div class="tool"><div class="ic">AE</div><div class="st">After Effects</div><h3>Shape Spring Deformer</h3>
+      <p class="pt">Painel que deforma um path como mola com dois nulls — esticar, comprimir, arquear. A versão Dynamic adiciona física: overshoot, falloff, massa e bake de keyframes.</p>
+      <p class="en">Panel that deforms a shape path like a spring with two nulls — stretch, compress, bend. The Dynamic version adds physics: overshoot, falloff, mass and keyframe baking.</p></div>
+    <div class="tool"><div class="ic" style="background:#e10435;color:#fff">73</div><div class="st">MSFS 2024 · VR</div><h3>Track73</h3>
+      <p class="pt">Copiloto de voz com IA que vê o que você vê no cockpit e conta sobre o mundo real lá embaixo — mapa no EFB, destinos, turismo. Lista de espera aberta.</p>
+      <p class="en">AI voice companion that sees what you see in the cockpit and talks about the real world below — EFB map, destinations, sightseeing. Waitlist open.</p>
+      <a href="https://track73.com.br" target="_blank" rel="noopener">track73.com.br ↗</a></div>
+    <div class="tool"><div class="ic">PG</div><div class="st">MSFS · <span class="pt">grátis</span><span class="en">free</span></div><h3 class="pt">Mapa de Fotogrametria</h3><h3 class="en">Photogrammetry Map</h3>
+      <p class="pt">Mapa interativo com checklist de todas as cidades em fotogrametria do Flight Simulator (até WU22 + CU16), que se marca sozinho a partir dos voos.</p>
+      <p class="en">Interactive map + checklist of every photogrammetry city in Flight Simulator (through WU22 + CU16), auto-ticked from your flights.</p></div>
+    <div class="tool"><div class="ic">DR</div><div class="st">DaVinci Resolve</div><h3 class="pt">Automação de edição</h3><h3 class="en">Editing automation</h3>
+      <p class="pt">Scripts que montam shorts 9:16 com template, aplicam a cor e detectam tosses e ruídos no áudio do microfone para limpeza rápida.</p>
+      <p class="en">Scripts that build 9:16 shorts from a template, apply the grade and detect coughs and noises in the mic track for quick cleanup.</p></div>
+    <div class="tool"><div class="ic">Ma</div><div class="st">Maya · MCP · AI</div><h3>Maya + MCP + Grok</h3>
+      <p class="pt">Integração que deixa uma IA conversar direto com o Maya — criar, modificar e consultar a cena por linguagem natural.</p>
+      <p class="en">Integration that lets an AI talk directly to Maya — create, edit and query the scene in plain language.</p>
+      <a href="https://www.youtube.com/watch?v=RdSPH5aZPxk" target="_blank" rel="noopener"><span class="pt">Ver demo</span><span class="en">Watch demo</span> ↗</a></div>
+    <div class="tool"><div class="ic">Ai</div><div class="st">Illustrator · ExtendScript</div><h3 class="pt">Scripts Adobe</h3><h3 class="en">Adobe scripts</h3>
+      <p class="pt">Uma coleção de scripts para After Effects e Illustrator que tiram o trabalho repetitivo do caminho.</p>
+      <p class="en">A collection of After Effects and Illustrator scripts that take repetitive work out of the way.</p></div>
+  </div>
+</div></section>
+
+<section id="3d"><div class="wrap">
+  <div class="kick">3D · <span class="pt">Arquitetura</span><span class="en">Architecture</span> · VR</div>
+  <h2>3D & VR</h2>
+  <p class="lead pt">Maya desde a primeira versão, Unreal, Twinmotion e Unity. Arquitetura, visualização e mundos para explorar em VR.</p>
+  <p class="lead en">Maya since version one, Unreal, Twinmotion and Unity. Architecture, visualization and worlds to explore in VR.</p>
+
+  <div class="feat">
+    <div class="media"><video src="media/img/casatorre.mp4" poster="media/img/casatorre.jpg" muted loop playsinline autoplay></video></div>
+    <div>
+      <div class="kick">Maya · Twinmotion · Unreal 5</div>
+      <h3 class="pt">Casa Torre</h3><h3 class="en">Tower House</h3>
+      <p class="pt">Projeto autoral de uma casa-torre em meio à mata de araucárias — modelada no Maya, com renders em Twinmotion e Unreal, e agora também como cenário no Flight Simulator, com garagem para o carro voador.</p>
+      <p class="en">A personal project: a tower house among araucaria trees — modeled in Maya, rendered in Twinmotion and Unreal, and now a Flight Simulator scenery too, with a garage for the flying car.</p>
+      <a class="btn" href="https://www.youtube.com/watch?v=8Lw2N3q4uzg" target="_blank" rel="noopener">Tower House — Redesign The World ↗</a>
+    </div>
+  </div>
+
+  <div class="feat">
+    <div class="media"><div class="yt" data-id="hZfNzev9bkc"></div></div>
+    <div>
+      <div class="kick">Unreal Engine 5 · RTX</div>
+      <h3 class="pt">Cáusticas em tempo real</h3><h3 class="en">Real-time caustics</h3>
+      <p class="pt">Estudos com o branch RTX Caustics do Unreal 5.2 — luz através de vidro, água e prismas em tempo real.</p>
+      <p class="en">Studies with Unreal 5.2's RTX Caustics branch — light through glass, water and prisms in real time.</p>
+      <a class="btn" href="https://www.youtube.com/watch?v=XTP93zh3LjU" target="_blank" rel="noopener">Prismatic demo ↗</a>
+    </div>
+  </div>
+
+  <div class="tools">
+    <div class="tool"><div class="ic">VR</div><div class="st">Unity · VR</div><h3 class="pt">Parque do Iraí VR</h3><h3 class="en">Iraí Park VR</h3>
+      <p class="pt">Projeto 3D feito no Maya, renderizado com camera track sobre imagens de drone 4K e depois transformado em experiência VR no Unity.</p>
+      <p class="en">A Maya 3D project, rendered with camera tracking over 4K drone footage, then turned into a Unity VR experience.</p>
+      <a href="https://www.youtube.com/watch?v=lTo5tNP_ddI" target="_blank" rel="noopener">Video ↗</a> <a href="https://github.com/rvalle7/Parque-Irai-A-VR-Experience" target="_blank" rel="noopener">GitHub ↗</a></div>
+    <div class="tool"><div class="ic">ND</div><div class="st">3D</div><h3>Notre Dame</h3>
+      <p class="pt">Reconstrução 3D da catedral após o incêndio — estudo de recuperação.</p>
+      <p class="en">3D reconstruction of the cathedral after the fire — a recovery study.</p>
+      <a href="https://www.youtube.com/watch?v=KMdoI7r0OTU" target="_blank" rel="noopener">Rebuild ↗</a></div>
+    <div class="tool"><div class="ic">FC</div><div class="st">Maya · MSFS 2024</div><h3 class="pt">Carro voador</h3><h3 class="en">Flying car</h3>
+      <p class="pt">Um eVTOL de 4 dutos e 8 motores coaxiais, pensado para pairar como drone e voar para frente — em desenvolvimento para o Flight Simulator.</p>
+      <p class="en">A 4-duct, 8-coaxial-motor eVTOL that hovers like a drone and cruises forward — in development for Flight Simulator.</p></div>
+  </div>
+</div></section>
+
+<section id="lab"><div class="wrap">
+  <div class="kick pt">Pessoal · Hobbies</div><div class="kick en">Personal · Hobbies</div>
+  <h2 class="pt">Fora do expediente</h2><h2 class="en">After hours</h2>
+  <p class="lead pt">O que eu faço por paixão — e que acaba virando ferramenta, produto ou filme.</p>
+  <p class="lead en">What I do for passion — and that ends up becoming a tool, a product or a film.</p>
+
+  <div class="feat">
+    <div class="media"><div class="yt" data-id="yl_bDBWHKWQ"></div></div>
+    <div>
+      <div class="kick">YouTube · MSFS 2024 · Quest 3</div>
+      <h3>VR Flights 73</h3>
+      <p class="pt">Voos em realidade virtual no Flight Simulator, quase sem cortes, pela perspectiva do piloto — muitas vezes de helicóptero sobre cidades em fotogrametria. A série <em>Track On Air</em> mostra o Track73 em ação.</p>
+      <p class="en">Virtual reality flights in Flight Simulator, nearly uncut, from the pilot's seat — often by helicopter over photogrammetry cities. The <em>Track On Air</em> series shows Track73 in action.</p>
+      <div class="stats"><div><b>1.3k</b><span class="pt">inscritos</span><span class="en">subscribers</span></div><div><b>1.9k</b><span class="pt">vídeos</span><span class="en">videos</span></div></div>
+      <a class="btn pri" href="https://www.youtube.com/@VRFlights73" target="_blank" rel="noopener">@VRFlights73 ↗</a>
+    </div>
+  </div>
+
+  <div class="feat">
+    <div class="media" style="aspect-ratio:auto;background:none;border:0"><div class="pgrid">
+      <img src="media/img/postal1.jpg" alt="" loading="lazy"><img src="media/img/postal2.jpg" alt="" loading="lazy"><img src="media/img/postal3.jpg" alt="" loading="lazy">
+      <img src="media/img/postal4.jpg" alt="" loading="lazy"><img src="media/img/postal5.jpg" alt="" loading="lazy"><img src="media/img/postal6.jpg" alt="" loading="lazy">
+    </div></div>
+    <div>
+      <div class="kick pt">Voos → pinturas</div><div class="kick en">Flights → paintings</div>
+      <h3 class="pt">Postais dos voos</h3><h3 class="en">Flight postcards</h3>
+      <p class="pt">Cada voo vira uma série de postais pintados à mão por IA a partir do que eu estava vendo, com o nome do lugar e as coordenadas. Mais de mil até agora — Kyoto, Helsinque, Yokohama, Brisbane…</p>
+      <p class="en">Every flight becomes a set of AI-painted postcards from what I was looking at, with the place name and coordinates. Over a thousand so far — Kyoto, Helsinki, Yokohama, Brisbane…</p>
+    </div>
+  </div>
+
+  <div class="feat">
+    <div class="media"><div class="yt" data-id="urMLeXZ0H-A"></div></div>
+    <div>
+      <div class="kick">Kerbal Space Program · C# · Unity</div>
+      <h3>Omicron — Flying Space Car</h3>
+      <p class="pt">Um carro voador espacial para o KSP, em desenvolvimento há mais de dez anos: modelagem, cockpit funcional com instrumentos, modo hover e piloto automático que segue o terreno.</p>
+      <p class="en">A space flying car for KSP, in development for over ten years: modeling, a working cockpit with instruments, hover mode and a terrain-following autopilot.</p>
+      <div class="more" style="margin-top:0">
+        <a class="btn" href="https://spacedock.info/mod/2413/Omicron%20Flying%20Space%20Car" target="_blank" rel="noopener">SpaceDock ↗</a>
+        <a class="btn" href="https://www.curseforge.com/kerbal/ksp-mods/omicron-space-flying-car" target="_blank" rel="noopener">CurseForge ↗</a>
+        <a class="btn" href="https://github.com/rvalle7/Omicron" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn" href="https://www.youtube.com/@OmicronKSP" target="_blank" rel="noopener">@OmicronKSP ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="tools">
+    <div class="tool" style="padding:0;overflow:hidden"><img src="media/img/salto2.jpg" alt="" loading="lazy" style="aspect-ratio:16/10;object-fit:cover">
+      <div style="padding:0 22px 22px"><div class="st pt">Céu</div><div class="st en">Sky</div><h3 class="pt">Paraquedismo</h3><h3 class="en">Skydiving</h3>
+      <p class="pt">Porque voar de verdade também conta.</p><p class="en">Because real flying counts too.</p></div></div>
+    <div class="tool"><div class="ic">AI</div><div class="st pt">Ferramentas do dia a dia</div><div class="st en">Daily tools</div><h3 class="pt">IA no estúdio</h3><h3 class="en">AI in the studio</h3>
+      <p class="pt">Claude, Grok, modelos locais (Gemma, ComfyUI) e Firefly trabalhando junto: de agentes que editam no DaVinci a assistentes de voz em voo. IA como ferramenta de produção, não como enfeite.</p>
+      <p class="en">Claude, Grok, local models (Gemma, ComfyUI) and Firefly working together: from agents editing in DaVinci to in-flight voice assistants. AI as a production tool, not decoration.</p></div>
+    <div class="tool" style="padding:0;overflow:hidden"><img src="media/img/omicron.jpg" alt="" loading="lazy" style="aspect-ratio:16/10;object-fit:cover">
+      <div style="padding:0 22px 22px"><div class="st">KSP</div><h3 class="pt">Desde 2012 no espaço</h3><h3 class="en">In space since 2012</h3>
+      <p class="pt">SSTOs, ônibus espaciais e missões a Laythe muito antes do Omicron existir.</p><p class="en">SSTOs, shuttles and missions to Laythe long before Omicron existed.</p></div></div>
+  </div>
+</div></section>
+
+<section id="about"><div class="wrap">
+  <div class="kick pt">Sobre</div><div class="kick en">About</div>
+  <div class="about">
+    <div>
+      <h2>Rafael Valle</h2>
+      <p class="pt">Motion designer e artista 3D, autodidata em tudo o que faço, trabalhando no mercado há mais de 25 anos. Formado em Processamento de Dados — o que explica por que tanto do meu trabalho acaba virando código.</p>
+      <p class="en">Motion designer and 3D artist, self-taught in everything I do, working professionally for over 25 years. Trained in Data Processing — which explains why so much of my work ends up becoming code.</p>
+      <p class="pt">A Dreamtools é a minha empresa: produção de motion e 3D para agências no Brasil e no exterior, e o lugar onde as ferramentas que eu crio viram produto. Trabalho remoto, de Curitiba, com estrutura própria.</p>
+      <p class="en">Dreamtools is my company: motion and 3D production for agencies in Brazil and abroad, and the place where the tools I build become products. Remote, from Curitiba, Brazil, fully self-equipped.</p>
+      <div class="skills"><span>After Effects</span><span>Illustrator</span><span>Premiere</span><span>Photoshop</span><span>DaVinci Resolve</span><span>Maya</span><span>Unreal 5</span><span>Twinmotion</span><span>Unity</span><span>C#</span><span>Python</span><span>ExtendScript</span></div>
+      <div class="skills"><span>Português</span><span>English</span><span>Español</span></div>
+    </div>
+    <ul class="tl">
+      <li><b>2009 — <span class="pt">hoje</span><span class="en">today</span></b><span class="pt">Freelancer e Dreamtools, Curitiba — clientes no Brasil e agências nos EUA, Europa e Oriente Médio</span><span class="en">Freelance & Dreamtools, Curitiba — clients in Brazil and agencies in the US, Europe and the Middle East</span></li>
+      <li><b>2008 — 2009</b><span class="pt">Motion design e 3D em produtora</span><span class="en">Motion design & 3D at a production house</span></li>
+      <li><b>2005 — 2008</b><span class="pt">Motion design e 3D em São Paulo</span><span class="en">Motion design & 3D in São Paulo</span></li>
+      <li><b><span class="pt">Arquitetura</span><span class="en">Architecture</span></b><span class="pt">Perspectivas 3D e vídeos animados para escritórios de arquitetura</span><span class="en">3D perspectives and animated films for architecture firms</span></li>
+      <li><b><span class="pt">Campanhas</span><span class="en">Campaigns</span></b><span class="pt">Motion, 3D e edição em campanhas no Brasil, Argentina, Venezuela e Portugal — incluindo presidenciais</span><span class="en">Motion, 3D and editing for campaigns in Brazil, Argentina, Venezuela and Portugal — including presidential races</span></li>
+    </ul>
+  </div>
+</div></section>
+
+<section class="contact" id="contact"><div class="wrap">
+  <div class="kick pt">Vamos conversar</div><div class="kick en">Let's talk</div>
+  <h2 class="pt">Tem um projeto?</h2><h2 class="en">Got a project?</h2>
+  <a class="mail" id="mail" href="#"></a>
+  <div class="social">
+    <a class="btn" href="https://vimeo.com/climberfx" target="_blank" rel="noopener">Vimeo</a>
+    <a class="btn" href="https://www.youtube.com/@Climberfx" target="_blank" rel="noopener">YouTube · ClimberFX</a>
+    <a class="btn" href="https://www.youtube.com/@VRFlights73" target="_blank" rel="noopener">YouTube · VR Flights 73</a>
+    <a class="btn" href="https://www.youtube.com/@OmicronKSP" target="_blank" rel="noopener">YouTube · Omicron</a>
+    <a class="btn" href="https://github.com/rvalle7" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>© <span id="yr"></span> Dreamtools · Rafael Valle · Curitiba, PR</span>
+  <span id="cnpj"></span>
+</div></footer>
+
+<div class="modal" id="modal"><button class="x" aria-label="Fechar">×</button><video muted loop playsinline controls></video><div class="t"></div></div>
+
+<script>
+const CFG={email:"__EMAIL__",cnpj:"__CNPJ__"};
+// id, pt, en, category(pt|en), big?
+const W=[
+["w09","Metáfora em 3D","3D metaphor","3D · Streaming|3D · Streaming",1],
+["w28","Legado","Legacy","3D · Destilados|3D · Spirits"],
+["w19","Colab de marcas","Brand collab","3D · Produto|3D · Product"],
+["w27","Filme de marca","Brand film","Editorial|Editorial"],
+["w07","Energia & mobilidade","Energy & mobility","Explainer|Explainer",1],
+["w10","Revoada","Flock","2D · Loop|2D · Loop"],
+["w12","Arranha-céu","Skyscraper","Projeção vertical|Vertical projection"],
+["w08","Jornada","Journey","Ilustração 2D|2D illustration"],
+["w14","Aeroporto","Airport","Line art · Brand story|Line art · Brand story"],
+["w01","Descobertas","Discoveries","Saúde · Tipografia cinética|Health · Kinetic type"],
+["w16","Doador é você","The donor is you","Saúde · 30s|Health · 30s"],
+["w11","Plataforma de anúncios","Ads platform","Delivery · Motion|Delivery · Motion",1],
+["w26","Keynote","Keynote","Telecom · Edição|Telecom · Edit"],
+["w02","Gastronomia","Dining","Vertical 9:16|Vertical 9:16"],
+["w15","Escorregador","Slide","Personagens · Loop|Characters · Loop"],
+["w21","Gato","Cat","Glyph · Loop|Glyph · Loop"],
+["w22","Gatos conectados","Linked cats","Glyph · Loop|Glyph · Loop"],
+["w23","Picolé","Popsicle","Glyph · Loop|Glyph · Loop"],
+["w04","Classificados","Classifieds","3D · Personagens|3D · Characters"],
+["w05","Typo motion","Typo motion","Tipografia|Typography"],
+["w06","Vinheta 3D","3D ident","3D · Varejo|3D · Retail"],
+["w17","Linha infantil","Kids line","Ilustração 2D|2D illustration"],
+["w18","Livro animado","Animated book","Editora · 2D|Publishing · 2D"],
+["w13","Do espaço à cidade","Space to city","Google Earth · Institucional|Google Earth · Corporate"],
+["w03","Voo sobre a cidade","City flyover","Aéreo · Institucional|Aerial · Corporate"],
+["w24","Usina solar","Solar farm","Drone · Energia|Drone · Energy"],
+["w20","Quem é você?","Who are you?","Ilustração sobre vídeo|Drawn over live action"],
+["w25","Mutirão","Community drive","Serviço público|Public service"],
+["w29","Abertura de evento","Event opener","Tipografia|Typography"]
+];
+const L=()=>document.documentElement.dataset.l;
+const g=document.getElementById('grid');
+W.forEach(([id,pt,en,cat,big])=>{
+  const [cp,ce]=cat.split('|');
+  const d=document.createElement('div');d.className='card'+(big?' big':'');d.dataset.id=id;d.dataset.pt=pt;d.dataset.en=en;
+  d.innerHTML=`<img src="media/work/${id}.jpg" alt="${pt}" loading="lazy"><video muted loop playsinline preload="none" data-src="media/work/${id}.mp4"></video>
+  <div class="cap"><small class="pt">${cp}</small><small class="en">${ce}</small><h3 class="pt">${pt}</h3><h3 class="en">${en}</h3></div>`;
+  const v=d.querySelector('video');
+  const on=()=>{if(!v.src)v.src=v.dataset.src;v.play().then(()=>d.classList.add('play')).catch(()=>{})};
+  const off=()=>{v.pause();d.classList.remove('play')};
+  d.addEventListener('mouseenter',on);d.addEventListener('mouseleave',off);
+  d.addEventListener('click',()=>openM(id,L()=='pt'?pt:en));
+  g.appendChild(d);
+});
+// autoplay on touch devices when visible
+if(matchMedia('(hover:none)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{const d=e.target,v=d.querySelector('video');
+    if(e.isIntersecting){if(!v.src)v.src=v.dataset.src;v.play().then(()=>d.classList.add('play')).catch(()=>{})}else{v.pause();d.classList.remove('play')}}),{threshold:.6});
+  document.querySelectorAll('.card').forEach(c=>io.observe(c));
+}
+// modal
+const M=document.getElementById('modal'),MV=M.querySelector('video');
+function openM(id,t){MV.src=`media/work/${id}.mp4`;M.querySelector('.t').textContent=t;M.classList.add('on');MV.play()}
+function closeM(){M.classList.remove('on');MV.pause();MV.removeAttribute('src');MV.load()}
+M.addEventListener('click',e=>{if(e.target!==MV)closeM()});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+// hero reel
+const HV=[...document.querySelectorAll('.hero video')],reel=['w09','w28','w10','w19','w12','w07','w27','w08'];let hi=0,cur=0;
+function nextHero(){const v=HV[cur];v.src=`media/work/${reel[hi%reel.length]}.mp4`;v.play().catch(()=>{});
+  v.onplaying=()=>{HV.forEach(x=>x.classList.toggle('on',x===v))};hi++;cur=1-cur}
+if(!matchMedia('(prefers-reduced-motion:reduce)').matches){nextHero();setInterval(nextHero,5500)}
+// youtube lite
+document.querySelectorAll('.yt').forEach(y=>{const id=y.dataset.id;
+  y.innerHTML=`<img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy">`;
+  y.addEventListener('click',()=>{y.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`},{once:true})});
+// language
+const lb=document.getElementById('lang');
+function setL(l){document.documentElement.dataset.l=l;document.documentElement.lang=l=='pt'?'pt-BR':'en';lb.textContent=l=='pt'?'EN':'PT';try{localStorage.setItem('dt-l',l)}catch(e){}}
+let saved=null;try{saved=localStorage.getItem('dt-l')}catch(e){}
+setL(saved||((navigator.language||'').toLowerCase().startsWith('pt')?'pt':'en'));
+lb.onclick=()=>setL(L()=='pt'?'en':'pt');
+// contact
+const m=document.getElementById('mail');
+if(CFG.email.includes('@')){m.textContent=CFG.email;m.href='mailto:'+CFG.email}else m.style.display='none';
+document.getElementById('cnpj').textContent=CFG.cnpj.startsWith('__')?'':'CNPJ '+CFG.cnpj;
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
