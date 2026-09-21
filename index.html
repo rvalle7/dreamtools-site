@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://dreamtools.com.br/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b0e'/%3E%3Ctext x='32' y='44' font-family='Arial Black,Arial' font-weight='900' font-size='34' text-anchor='middle' fill='%23ffb23f'%3EDT%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=Great+Vibes&family=Pinyon+Script&family=Monsieur+La+Doulaise&family=Alex+Brush&family=Parisienne&family=Italianno&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=Great+Vibes&family=Pinyon+Script&family=Monsieur+La+Doulaise&family=Alex+Brush&family=Parisienne&family=Italianno&family=Economica:ital,wght@1,700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0b0b0e;--bg2:#131318;--line:#24242c;--tx:#f1eee8;--mut:#9a97a3;--acc:#ffb23f;--acc2:#ff5b3a;--r:14px}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -46,7 +46,6 @@ nav ul a:hover{color:var(--tx)}
 .kb i.on{opacity:1}
 .kb i.go{animation:kb 7.5s linear forwards}
 @keyframes kb{from{transform:scale(var(--s0,1.02)) translate(var(--x0,0),var(--y0,0))}to{transform:scale(var(--s1,1.12)) translate(var(--x1,0),var(--y1,0))}}
-@media(prefers-reduced-motion:reduce){.kb i.go{animation:none}}
 /* capa: fonte manuscrita. A pesada original (Space Grotesk 700) fica guardada em ?f=0 */
 .hero h1{font-family:"Great Vibes",cursive;font-weight:400;font-size:clamp(76px,14vw,210px);letter-spacing:0;line-height:1.1;text-shadow:0 4px 30px #0008}
 .hero h1.f0{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
@@ -104,9 +103,19 @@ h2{font-size:clamp(38px,6vw,72px);margin-bottom:18px}
 .tool a{font-size:14px;color:var(--acc);text-decoration:none;font-weight:600}
 .tool .st{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7fd1a8;font-weight:600}
 /* personal */
-.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.pgrid img{border-radius:10px;aspect-ratio:16/9;object-fit:cover;width:100%}
-@media(max-width:700px){.pgrid{grid-template-columns:repeat(2,1fr)}}
+/* postais: fita rolando (igual ao track73.com.br) */
+.pcfeat{display:block}
+.pchead{max-width:720px}
+.reel{width:100vw;margin:34px 0 0 calc(50% - 50vw);overflow:hidden;padding:18px 0 26px;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.reel ul{list-style:none;margin:0;padding:0;display:flex;gap:22px;width:max-content;animation:reel 160s linear infinite}
+.reel:hover ul{animation-play-state:paused}
+@keyframes reel{to{transform:translateX(-50%)}}
+.pc{width:clamp(260px,30vw,380px);background:#f4efe4;color:#2b2a27;padding:10px 10px 12px;border-radius:4px;box-shadow:0 18px 40px -18px rgba(0,0,0,.9);transform:rotate(var(--r,0deg));margin:0;transition:transform .4s}
+.pc:hover{transform:rotate(0) scale(1.03)}
+.pc img{aspect-ratio:16/9;width:100%;object-fit:cover;border-radius:2px}
+.pc figcaption{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 4px 0}
+.pc b{font:700 italic 22px/1 "Economica","Arial Narrow",sans-serif}
+.pc span{font:500 10.5px/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.08em;color:#8a8375;white-space:nowrap}
 .stats{display:flex;gap:30px;margin:6px 0 18px;flex-wrap:wrap}
 .stats b{display:block;font:700 30px "Space Grotesk";color:var(--acc)}
 .stats span{color:var(--mut);font-size:13px}
@@ -278,17 +287,14 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
     </div>
   </div>
 
-  <div class="feat">
-    <div class="media" style="aspect-ratio:auto;background:none;border:0"><div class="pgrid">
-      <img src="media/img/postal1.jpg" alt=""><img src="media/img/postal2.jpg" alt=""><img src="media/img/postal3.jpg" alt="" loading="lazy">
-      <img src="media/img/postal4.jpg" alt=""><img src="media/img/postal5.jpg" alt=""><img src="media/img/postal6.jpg" alt="" loading="lazy">
-    </div></div>
-    <div>
+  <div class="feat pcfeat">
+    <div class="pchead">
       <div class="kick pt">Voos → pinturas</div><div class="kick en">Flights → paintings</div>
       <h3 class="pt">Postais dos voos</h3><h3 class="en">Flight postcards</h3>
-      <p class="pt">Cada voo vira uma série de postais pintados à mão por IA a partir do que eu estava vendo, com o nome do lugar e as coordenadas. Mais de mil até agora — Kyoto, Helsinque, Yokohama, Brisbane…</p>
-      <p class="en">Every flight becomes a set of AI-painted postcards from what I was looking at, with the place name and coordinates. Over a thousand so far — Kyoto, Helsinki, Yokohama, Brisbane…</p>
+      <p class="pt">Cada voo vira uma série de postais pintados por IA a partir do que eu estava vendo, com o lugar e a data. Mais de mil até agora.</p>
+      <p class="en">Every flight becomes a set of AI-painted postcards of what I was looking at, with the place and the date. Over a thousand so far.</p>
     </div>
+    <div class="reel" aria-label="Postcards"><ul id="reel"></ul></div>
   </div>
 
   <div class="feat">
@@ -438,13 +444,16 @@ lb.onclick=()=>setL(L()=='pt'?'en':'pt');
 // loops automáticos: tocam só quando visíveis
 {const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting)v.play().catch(()=>{});else v.pause()}),{threshold:.25});
 document.querySelectorAll('video[autoplay]').forEach(v=>io.observe(v))}
+// fita de postais (mesmos do track73.com.br)
+{const C=[["hero-rio","Itanhangá, Rio de Janeiro","28 AUG 2026","-1.2deg"],["brisbane","Newstead, Brisbane","22 AUG 2026","1deg"],["albany-capitol","Center Square, Albany","23 AUG 2026","-.8deg"],["helsinki","Kallio, Helsinki","12 SEP 2026","-.8deg"],["rosebud","Rosebud, Victoria","30 AUG 2026","1.4deg"],["chester","Chester, California","30 AUG 2026",".9deg"],["shibuya","Nishihara, Tokyo","8 SEP 2026","-1deg"],["cattolica","San Giuliano Mare, Rimini","27 AUG 2026",".9deg"],["sendai-stadium","Miyagino-ku, Sendai","28 AUG 2026","-.8deg"],["klamath","Camp Klamath, California","23 AUG 2026","-1.3deg"],["sandspit","Sandspit, New Zealand","16 SEP 2026","1.1deg"],["griffin","Griffin, Queensland","26 AUG 2026",".9deg"],["mount-martha","Mount Martha, Victoria","25 AUG 2026","-.7deg"],["yokohama","Nishi-ku, Yokohama","6 SEP 2026","1.2deg"],["auckland-bridge","Saint Marys Bay, Auckland","16 SEP 2026","-.8deg"],["dusk-dargaville","Dargaville, New Zealand","16 SEP 2026","-1deg"],["montpellier","Montpellier, France","21 AUG 2026","1.1deg"],["scituate","Scituate, Rhode Island","22 AUG 2026",".9deg"],["kyoto","Nakagyo, Kyoto","11 SEP 2026","-.9deg"],["portsea","Portsea, Victoria","30 AUG 2026","1.3deg"],["smiths-beach","Smiths Beach, Victoria","30 AUG 2026","-.8deg"],["providence","Providence River, Rhode Island","21 AUG 2026","-1.2deg"],["sapporo","Higashi-ku, Sapporo","6 SEP 2026",".8deg"],["sendai-rainbow","Aoba-ku, Sendai","28 AUG 2026",".9deg"],["misano","Misano Adriatico, Rimini","27 AUG 2026","-1deg"],["osaka","Minato-ku, Osaka","14 SEP 2026","1.2deg"],["paynes-creek","Paynes Creek, California","30 AUG 2026","-.8deg"],["old-station","Old Station, California","30 AUG 2026","-.7deg"],["paestum","Capaccio Paestum, Salerno","28 AUG 2026","1deg"],["sandgate","Sandgate, Brisbane","26 AUG 2026",".9deg"],["sendai","Izumi-ku, Sendai","28 AUG 2026","-1.3deg"],["toowoomba","Mount Kynoch, Toowoomba","24 AUG 2026",".9deg"],["albany-plaza","Liberty Park, Albany","23 AUG 2026","-.8deg"],["night-whangarei","Greenhithe, Auckland","16 SEP 2026","1.3deg"]];const card=([img,place,date,r],dup)=>`<li><figure class="pc" style="--r:${r}"${dup?' aria-hidden="true"':''}><img src="media/pc/${img}.webp" alt="${dup?'':place}" loading="lazy"><figcaption><b>${place}</b><span>${date}</span></figcaption></figure></li>`;
+ document.getElementById('reel').innerHTML=C.map(c=>card(c,0)).join('')+C.map(c=>card(c,1)).join('')}
 // Ken Burns da capa
 {const kb=document.querySelector('.kb'),N=6,moves=[['1.02','1.12','0','-2%','0','1%'],['1.12','1.02','2%','0','-1%','0'],['1.03','1.13','-2%','1%','1%','-1%'],['1.12','1.03','0','0','-2%','1%'],['1.02','1.12','2%','-1%','-1%','0'],['1.13','1.03','-1%','1%','1%','-1%']];
  const els=[...Array(N)].map((_,i)=>{const e=document.createElement('i');e.style.backgroundImage=`url(media/img/hero${i+1}.jpg)`;const m=moves[i%moves.length];
   e.style.cssText+=`;--s0:${m[0]};--s1:${m[1]};--x0:${m[2]};--x1:${m[3]};--y0:${m[4]};--y1:${m[5]}`;kb.appendChild(e);return e});
  let k=0;const show=()=>{const e=els[k%N];e.classList.remove('go');void e.offsetWidth;e.classList.add('go','on');const prev=els[(k+N-1)%N];if(prev!==e)prev.classList.remove('on');
   new Image().src=`media/img/hero${(k+1)%N+1}.jpg`;k++};
- show();if(!matchMedia('(prefers-reduced-motion:reduce)').matches)setInterval(show,5500)}
+ show();setInterval(show,5500)}
 // contact
 const m=document.getElementById('mail');
 if(CFG.email.includes('@')){m.textContent=CFG.email;m.href='mailto:'+CFG.email}else m.style.display='none';
