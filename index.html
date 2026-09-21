@@ -41,7 +41,7 @@ nav ul a:hover{color:var(--tx)}
 .hero video{z-index:1}.hero:after{z-index:1}
 .hero .wrap{position:relative;z-index:2;padding-bottom:9vh;width:100%}
 /* capa: postais em Ken Burns com crossfade (~5 s cada) */
-.kb{position:absolute;inset:0;z-index:0;overflow:hidden}
+.kb{position:absolute;inset:0;z-index:0;overflow:hidden;will-change:transform}
 .kb i{position:absolute;inset:-4%;background:center/cover no-repeat;opacity:0;transition:opacity 1.8s ease-in-out;will-change:transform,opacity}
 .kb i.on{opacity:1}
 .kb i.go{animation:kb 7.5s linear forwards}
@@ -454,6 +454,10 @@ document.querySelectorAll('video[autoplay]').forEach(v=>io.observe(v))}
  let k=0;const show=()=>{const e=els[k%N];e.classList.remove('go');void e.offsetWidth;e.classList.add('go','on');const prev=els[(k+N-1)%N];if(prev!==e)prev.classList.remove('on');
   new Image().src=`media/img/hero${pick[(k+1)%N]}.jpg`;k++};
  show();setInterval(show,5500)}
+// parallax: o bloco de postais da capa sobe na metade da velocidade da página (os degradês e o texto seguem normais)
+{const kb=document.querySelector('.kb'),hero=document.querySelector('.hero');let tick=false;
+ const upd=()=>{tick=false;const y=scrollY;if(y<=hero.offsetHeight)kb.style.transform=`translate3d(0,${(y*.5).toFixed(1)}px,0)`};
+ addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});upd()}
 // contact
 const m=document.getElementById('mail');
 if(CFG.email.includes('@')){m.textContent=CFG.email;m.href='mailto:'+CFG.email}else m.style.display='none';
