@@ -36,10 +36,17 @@ nav ul a:hover{color:var(--tx)}
 .hero{position:relative;min-height:100svh;background:#0b0b0e url(media/img/hero.jpg) center 35%/cover;display:flex;align-items:flex-end;overflow:hidden}
 .hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s}
 .hero video.on{opacity:.6}
-.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0b0b0eb8 0%,#0b0b0e40 60%,#0b0b0e00 100%)}
+.hero:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#0b0b0eb8 0%,#0b0b0e40 60%,#0b0b0e00 100%)}
 .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0b0b0e55 0%,#0b0b0e00 40%,#0b0b0e 100%)}
 .hero video{z-index:1}.hero:after{z-index:1}
 .hero .wrap{position:relative;z-index:2;padding-bottom:9vh;width:100%}
+/* capa: postais em Ken Burns com crossfade (~5 s cada) */
+.kb{position:absolute;inset:0;z-index:0;overflow:hidden}
+.kb i{position:absolute;inset:-4%;background:center/cover no-repeat;opacity:0;transition:opacity 1.8s ease-in-out;will-change:transform,opacity}
+.kb i.on{opacity:1}
+.kb i.go{animation:kb 7.5s linear forwards}
+@keyframes kb{from{transform:scale(var(--s0,1.02)) translate(var(--x0,0),var(--y0,0))}to{transform:scale(var(--s1,1.12)) translate(var(--x1,0),var(--y1,0))}}
+@media(prefers-reduced-motion:reduce){.kb i.go{animation:none}}
 /* capa: fonte manuscrita. A pesada original (Space Grotesk 700) fica guardada em ?f=0 */
 .hero h1{font-family:"Great Vibes",cursive;font-weight:400;font-size:clamp(76px,14vw,210px);letter-spacing:0;line-height:1.1;text-shadow:0 4px 30px #0008}
 .hero h1.f0{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
@@ -47,7 +54,7 @@ nav ul a:hover{color:var(--tx)}
 .hero h1 b{color:var(--acc);font-weight:inherit}
 .hlogo{width:min(880px,88vw);height:auto;filter:drop-shadow(0 4px 24px #0009)}
 .hero h1 .htxt{display:none}.hero h1.txt .htxt{display:inline}.hero h1.txt .hlogo{display:none}
-.hero p{font-size:clamp(18px,2.2vw,26px);max-width:760px;color:#d9d5ce;margin-top:18px}
+.hero p{font-size:clamp(18px,2.2vw,26px);max-width:min(880px,88vw);color:#d9d5ce;margin-top:18px}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
 .tags span{border:1px solid #ffffff2a;border-radius:99px;padding:6px 14px;font-size:13px;background:#0b0b0e66}
 /* sections */
@@ -146,6 +153,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 </div></nav>
 
 <header class="hero" id="top">
+  <div class="kb" aria-hidden="true"></div>
   <div class="wrap">
     <h1 id="ttl"><img class="hlogo" src="media/img/logo-gold.svg" alt="DreamTools"><span class="htxt">Dream<b>Tools</b></span></h1>
     <!-- capa: postal Ghibli, Cape Schanck (Melbourne) -->
@@ -429,6 +437,13 @@ lb.onclick=()=>setL(L()=='pt'?'en':'pt');
 // loops automáticos: tocam só quando visíveis
 {const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting)v.play().catch(()=>{});else v.pause()}),{threshold:.25});
 document.querySelectorAll('video[autoplay]').forEach(v=>io.observe(v))}
+// Ken Burns da capa
+{const kb=document.querySelector('.kb'),N=6,moves=[['1.02','1.12','0','-2%','0','1%'],['1.12','1.02','2%','0','-1%','0'],['1.03','1.13','-2%','1%','1%','-1%'],['1.12','1.03','0','0','-2%','1%'],['1.02','1.12','2%','-1%','-1%','0'],['1.13','1.03','-1%','1%','1%','-1%']];
+ const els=[...Array(N)].map((_,i)=>{const e=document.createElement('i');e.style.backgroundImage=`url(media/img/hero${i+1}.jpg)`;const m=moves[i%moves.length];
+  e.style.cssText+=`;--s0:${m[0]};--s1:${m[1]};--x0:${m[2]};--x1:${m[3]};--y0:${m[4]};--y1:${m[5]}`;kb.appendChild(e);return e});
+ let k=0;const show=()=>{const e=els[k%N];e.classList.remove('go');void e.offsetWidth;e.classList.add('go','on');const prev=els[(k+N-1)%N];if(prev!==e)prev.classList.remove('on');
+  new Image().src=`media/img/hero${(k+1)%N+1}.jpg`;k++};
+ show();if(!matchMedia('(prefers-reduced-motion:reduce)').matches)setInterval(show,5500)}
 // contact
 const m=document.getElementById('mail');
 if(CFG.email.includes('@')){m.textContent=CFG.email;m.href='mailto:'+CFG.email}else m.style.display='none';
