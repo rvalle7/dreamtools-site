@@ -52,7 +52,7 @@ nav ul a:hover{color:var(--tx)}
 .hero h1.f0{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
 .hero h1.f1{font-family:"Pinyon Script"}.hero h1.f3{font-family:"Monsieur La Doulaise"}.hero h1.f4{font-family:"Alex Brush"}.hero h1.f5{font-family:"Parisienne"}.hero h1.f6{font-family:"Italianno";font-size:clamp(90px,17vw,250px)}
 .hero h1 b{color:var(--acc);font-weight:inherit}
-.hlogo{width:min(880px,88vw);height:auto;filter:drop-shadow(0 4px 24px #0009) saturate(.84);transition:filter 1.8s ease-in-out}
+.hlogo{width:min(880px,88vw);height:auto;filter:drop-shadow(0 4px 24px #0009) saturate(.17) brightness(1.18);transition:filter 1.8s ease-in-out}
 .hero h1 .htxt{display:none}.hero h1.txt .htxt{display:inline}.hero h1.txt .hlogo{display:none}
 .hero p{font-size:clamp(18px,2.2vw,26px);max-width:min(880px,88vw);color:#d9d5ce;margin-top:18px}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
@@ -456,7 +456,7 @@ document.querySelectorAll('video[autoplay]').forEach(v=>io.observe(v))}
    const d=x.getImageData(0,0,48,27).data;let sx=0,sy=0;for(let i=0;i<d.length;i+=4){const r=d[i]/255,g=d[i+1]/255,b=d[i+2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),dl=mx-mn;if(!dl)continue;
    let h=mx===r?((g-b)/dl)%6:mx===g?(b-r)/dl+2:(r-g)/dl+4;h*=60;const w=(dl/mx)*mx;sx+=Math.cos(h*Math.PI/180)*w;sy+=Math.sin(h*Math.PI/180)*w}
    res((Math.atan2(sy,sx)*180/Math.PI+360)%360)}catch(e){res(GOLD)}};im.onerror=()=>res(GOLD);im.src=src});
- const tint=i=>{const h=hues[i];if(h==null)return;let dh=((h-GOLD+540)%360)-180;logo.style.filter=`drop-shadow(0 4px 24px #0009) hue-rotate(${dh.toFixed(0)}deg) saturate(.84)`};
+ const tint=i=>{const h=hues[i];if(h==null)return;let dh=((h-GOLD+540)%360)-180;logo.style.filter=`drop-shadow(0 4px 24px #0009) hue-rotate(${dh.toFixed(0)}deg) saturate(.17) brightness(1.18)`};
  window.__kbTint=(i,src)=>hueOf(src).then(h=>{hues[i]=h;if(i===0)tint(0)});
 const kb=document.querySelector('.kb'),N=6,POOL=34,pick=[...Array(POOL).keys()].map(i=>i+1).sort(()=>Math.random()-.5).slice(0,N),moves=[['1.02','1.12','0','-2%','0','1%'],['1.12','1.02','2%','0','-1%','0'],['1.03','1.13','-2%','1%','1%','-1%'],['1.12','1.03','0','0','-2%','1%'],['1.02','1.12','2%','-1%','-1%','0'],['1.13','1.03','-1%','1%','1%','-1%']];
  const els=[...Array(N)].map((_,i)=>{const e=document.createElement('i');e.style.backgroundImage=`url(media/img/hero${pick[i]}.jpg)`;const m=moves[i%moves.length];
