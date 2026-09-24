@@ -60,6 +60,11 @@ nav ul a:hover{color:var(--tx)}
  background:linear-gradient(100deg,#dfe3ec 0%,#fff 18%,#c9cfdb 30%,#fff 42%,#eef2f8 58%,#c4cbd8 72%,#fff 86%,#e6eaf2 100%);
  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
  animation:sheen 7s linear infinite;filter:drop-shadow(0 6px 26px #0008)}
+/* avatar ClimberFX colado à direita da caixa, mesma altura (1em de linha + padding da caixa = 1.14em) */
+#ttl{display:flex;align-items:flex-start;flex-wrap:nowrap}
+.hero h1 .havatar{position:static;inset:auto;opacity:1;z-index:auto;height:1.14em;width:1.14em;object-fit:cover;flex:none;box-shadow:0 18px 50px -18px #000c}
+#ttl:not(.svg):not(.txt){font-size:max(36px,min(176px,calc((100vw - 48px)/6.8)))}
+.hero h1.svg,.hero h1.txt{display:block}.hero h1.svg .havatar,.hero h1.txt .havatar{display:none}
 /* caixa no vermelho da marca atrás do lettering principal */
 .hero h1 .hbox{display:inline-block;background:#e10435;padding:.04em .16em .1em;line-height:1;box-shadow:0 18px 50px -18px #000c}
 .hero h1.svg .hbox,.hero h1.txt .hbox{background:none;padding:0;box-shadow:none;display:inline}
@@ -178,7 +183,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 <header class="hero" id="top">
   <div class="kb" aria-hidden="true"></div>
   <div class="wrap">
-    <h1 id="ttl"><img class="hlogo" src="media/img/logo-gold.svg" alt="DreamTools"><span class="hbox"><span class="htxt">dreamtools</span></span></h1>
+    <h1 id="ttl"><img class="hlogo" src="media/img/logo-gold.svg" alt="DreamTools"><span class="hbox"><span class="htxt">dreamtools</span></span><video class="havatar" src="media/img/climberfx.mp4" poster="media/img/climberfx.jpg" muted loop playsinline autoplay aria-label="ClimberFX"></video></h1>
     <!-- capa: postal Ghibli, Cape Schanck (Melbourne) -->
     <p class="pt">Estúdio de <strong>Rafael G Rebonato do Valle</strong> — motion designer e artista 3D há mais de 30 anos. De Curitiba para agências e marcas nos EUA, Europa, Oriente Médio e América Latina.</p>
     <p class="en">The studio of <strong>Rafael G Rebonato do Valle</strong> — motion designer and 3D artist for 30+ years. From Curitiba, Brazil, to agencies and brands across the US, Europe, the Middle East and Latin America.</p>
@@ -354,6 +359,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
       <p class="en">Motion designer and 3D artist, self-taught in everything I do, working professionally for over 30 years. Trained in Data Processing — which explains why so much of my work ends up becoming code.</p>
       <p class="pt">A Dreamtools é a minha empresa: produção de motion e 3D para agências no Brasil e no exterior, e o lugar onde as ferramentas que eu crio viram produto. Trabalho remoto, de Curitiba, com estrutura própria.</p>
       <p class="en">Dreamtools is my company: motion and 3D production for agencies in Brazil and abroad, and the place where the tools I build become products. Remote, from Curitiba, Brazil, fully self-equipped.</p>
+      <p class="pt">No mercado de Curitiba, pouca gente me chama de Rafael: sempre fui o <strong>ClimberFX</strong>. É o nome do meu Vimeo, do meu YouTube e do Instagram, e o boneco de cabelo cacheado aí em cima da página é ele.</p>
+      <p class="en">In the Curitiba scene, few people call me Rafael: I've always been <strong>ClimberFX</strong>. It's the name on my Vimeo, YouTube and Instagram, and the curly-haired guy at the top of the page is him.</p>
       <div class="skills"><span>After Effects</span><span>Illustrator</span><span>Premiere</span><span>Photoshop</span><span>DaVinci Resolve</span><span>Maya</span><span>Unreal 5</span><span>Twinmotion</span><span>Unity</span><span>C#</span><span>Python</span><span>ExtendScript</span><span>Visual Studio</span><span>Claude</span><span>Grok</span><span>Firefly</span><span>Gemini</span></div>
       <div class="skills"><span>Português</span><span>English</span><span>Español</span></div>
     </div>
