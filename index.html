@@ -144,8 +144,9 @@ h2{font-size:clamp(46px,7.2vw,88px);margin-bottom:18px}
 .about p{color:#cfcbc3;margin-bottom:16px;font-size:17px}
 .aboutR{display:flex;flex-direction:column;min-height:0}
 .jscroll{position:relative;overflow:hidden;height:420px;padding-left:8px;margin-left:-8px;mask-image:linear-gradient(transparent,#000 7%,#000 93%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 7%,#000 93%,transparent)}
-.jscroll .tl{padding-top:18px}
+.jscroll .tl{padding-top:0}
 .tl li .jp{color:var(--mut)}
+.tl li.jsp{height:110px;padding:0}.tl li.jsp:before{display:none}
 .tl{list-style:none;border-left:1px solid var(--line);padding-left:22px}
 .tl li{position:relative;padding-bottom:18px;color:#cfcbc3}
 .tl li:before{content:"";position:absolute;left:-27px;top:9px;width:9px;height:9px;border-radius:50%;background:var(--acc)}
@@ -514,7 +515,7 @@ const kb=document.querySelector('.kb'),N=6,POOL=34,pick=[...Array(POOL).keys()].
  const M={pt:["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"],en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]};
  const el=document.getElementById('jobs'),box=document.getElementById('jscroll'),R=document.getElementById('aboutR'),left=R.previousElementSibling;
  const draw=()=>{const m=M[L()]||M.en,row=([y,c,p,a,b])=>`<li><b>${m[a-1]}${b?'–'+m[b-1]:''} ${y}</b>${c}${p?' <span class="jp">· '+p+'</span>':''}</li>`,
-  all=J.map(row).join('')+document.getElementById('tlstatic').innerHTML;el.innerHTML=all+all};
+  gap='<li class="jsp" aria-hidden="true"></li>',all=gap+J.map(row).join('')+document.getElementById('tlstatic').innerHTML+gap;el.innerHTML=all+all};
  // altura: a coluna da direita não passa da da esquerda
  const fit=()=>{if(innerWidth<=860){box.style.height='420px';return}box.style.height=Math.max(300,left.offsetHeight)+'px'};
  let y=0,hover=false,last=0;const half=()=>el.scrollHeight/2;
