@@ -402,68 +402,39 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   <span><span id="cnpj"></span> <span id="visits" style="opacity:.55;font-variant-numeric:tabular-nums"></span></span>
 </div></footer>
 
-<div class="modal" id="modal"><button class="x" aria-label="Fechar">×</button><video muted loop playsinline controls></video><div class="t"></div></div>
+<div class="modal" id="modal"><button class="x" aria-label="Fechar">×</button><video playsinline controls preload="metadata"></video><div class="t"></div></div>
 
 <script>
 const CFG={email:"rvalle7@icloud.com",cnpj:"06.141.747/0001-46"};
-// id, pt, en, category(pt|en), big?
-const W=[
-["w09","Metáfora em 3D","3D metaphor","3D · Streaming|3D · Streaming",1],
-["w28","Legado","Legacy","3D · Destilados|3D · Spirits"],
-["w19","Colab de marcas","Brand collab","3D · Produto|3D · Product"],
-["w27","Filme de marca","Brand film","Editorial|Editorial"],
-["w07","Energia & mobilidade","Energy & mobility","Explainer|Explainer",1],
-["w10","Revoada","Flock","2D · Loop|2D · Loop"],
-["w12","Arranha-céu","Skyscraper","Projeção vertical|Vertical projection"],
-["w08","Jornada","Journey","Ilustração 2D|2D illustration"],
-["w14","Aeroporto","Airport","Line art · Brand story|Line art · Brand story"],
-["w01","Descobertas","Discoveries","Saúde · Tipografia cinética|Health · Kinetic type"],
-["w16","Doador é você","The donor is you","Saúde · 30s|Health · 30s"],
-["w11","Plataforma de anúncios","Ads platform","Delivery · Motion|Delivery · Motion",1],
-["w26","Keynote","Keynote","Telecom · Edição|Telecom · Edit"],
-["w02","Gastronomia","Dining","Vertical 9:16|Vertical 9:16"],
-["w15","Escorregador","Slide","Personagens · Loop|Characters · Loop"],
-["w21","Gato","Cat","Glyph · Loop|Glyph · Loop"],
-["w22","Gatos conectados","Linked cats","Glyph · Loop|Glyph · Loop"],
-["w23","Picolé","Popsicle","Glyph · Loop|Glyph · Loop"],
-["w04","Classificados","Classifieds","3D · Personagens|3D · Characters"],
-["w05","Typo motion","Typo motion","Tipografia|Typography"],
-["w06","Vinheta 3D","3D ident","3D · Varejo|3D · Retail"],
-["w17","Linha infantil","Kids line","Ilustração 2D|2D illustration"],
-["w18","Livro animado","Animated book","Editora · 2D|Publishing · 2D"],
-["w13","Do espaço à cidade","Space to city","Google Earth · Institucional|Google Earth · Corporate"],
-["w03","Voo sobre a cidade","City flyover","Aéreo · Institucional|Aerial · Corporate"],
-["w24","Usina solar","Solar farm","Drone · Energia|Drone · Energy"],
-["w20","Quem é você?","Who are you?","Ilustração sobre vídeo|Drawn over live action"],
-["w25","Mutirão","Community drive","Serviço público|Public service"],
-["w29","Abertura de evento","Event opener","Tipografia|Typography"]
-];
+// grid do portfólio: works.json (gerado por portfolio-sync)
 const L=()=>document.documentElement.dataset.l;
 const g=document.getElementById('grid');
-W.forEach(([id,pt,en,cat,big])=>{
-  const [cp,ce]=cat.split('|');
-  const d=document.createElement('div');d.className='card'+(big?' big':'');d.dataset.id=id;d.dataset.pt=pt;d.dataset.en=en;
-  d.innerHTML=`<img src="media/work/${id}.jpg" alt="${pt}" loading="lazy"><video muted loop playsinline preload="none" data-src="media/work/${id}.mp4"></video>
-  <div class="cap"><small class="pt">${cp}</small><small class="en">${ce}</small><h3 class="pt">${pt}</h3><h3 class="en">${en}</h3></div>`;
+const M=document.getElementById('modal'),MV=M.querySelector('video');
+function openM(w){const full=!!w.full;
+  MV.muted=!full;MV.loop=!full;MV.src=full?w.full:`media/work/${w.id}.mp4`;
+  M.querySelector('.t').textContent=L()=='pt'?w.pt:w.en;M.classList.add('on');MV.play().catch(()=>{MV.muted=true;MV.play()})}
+function closeM(){M.classList.remove('on');MV.pause();MV.removeAttribute('src');MV.load()}
+M.addEventListener('click',e=>{if(e.target!==MV)closeM()});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+fetch('works.json',{cache:'no-cache'}).then(r=>r.json()).then(W=>{
+ W.forEach(w=>{const id=w.id;
+  const d=document.createElement('div');d.className='card'+(w.big?' big':'');d.dataset.id=id;
+  d.innerHTML=`<img src="media/work/${id}.jpg" alt="${w.pt}" loading="lazy"><video muted loop playsinline preload="none" data-src="media/work/${id}.mp4"></video>
+  <div class="cap"><small class="pt">${w.cat_pt}</small><small class="en">${w.cat_en}</small><h3 class="pt">${w.pt}</h3><h3 class="en">${w.en}</h3></div>`;
   const v=d.querySelector('video');
   const on=()=>{if(!v.src)v.src=v.dataset.src;v.play().then(()=>d.classList.add('play')).catch(()=>{})};
   const off=()=>{v.pause();d.classList.remove('play')};
   d.addEventListener('mouseenter',on);d.addEventListener('mouseleave',off);
-  d.addEventListener('click',()=>openM(id,L()=='pt'?pt:en));
+  d.addEventListener('click',()=>openM(w));
   g.appendChild(d);
-});
-// autoplay on touch devices when visible
-if(matchMedia('(hover:none)').matches){
+ });
+ // autoplay on touch devices when visible
+ if(matchMedia('(hover:none)').matches){
   const io=new IntersectionObserver(es=>es.forEach(e=>{const d=e.target,v=d.querySelector('video');
     if(e.isIntersecting){if(!v.src)v.src=v.dataset.src;v.play().then(()=>d.classList.add('play')).catch(()=>{})}else{v.pause();d.classList.remove('play')}}),{threshold:.6});
   document.querySelectorAll('.card').forEach(c=>io.observe(c));
-}
-// modal
-const M=document.getElementById('modal'),MV=M.querySelector('video');
-function openM(id,t){MV.src=`media/work/${id}.mp4`;M.querySelector('.t').textContent=t;M.classList.add('on');MV.play()}
-function closeM(){M.classList.remove('on');MV.pause();MV.removeAttribute('src');MV.load()}
-M.addEventListener('click',e=>{if(e.target!==MV)closeM()});
-addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+ }
+});
 // youtube lite
 document.querySelectorAll('.yt').forEach(y=>{const id=y.dataset.id;
   y.innerHTML=`<img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy">`;

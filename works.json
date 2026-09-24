@@ -1,0 +1,263 @@
+[
+ {
+  "id": "w09",
+  "pt": "Metáfora em 3D",
+  "en": "3D metaphor",
+  "cat_pt": "3D · Streaming",
+  "cat_en": "3D · Streaming",
+  "big": true,
+  "full": ""
+ },
+ {
+  "id": "w28",
+  "pt": "Legado",
+  "en": "Legacy",
+  "cat_pt": "3D · Destilados",
+  "cat_en": "3D · Spirits",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w19",
+  "pt": "Colab de marcas",
+  "en": "Brand collab",
+  "cat_pt": "3D · Produto",
+  "cat_en": "3D · Product",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w27",
+  "pt": "Filme de marca",
+  "en": "Brand film",
+  "cat_pt": "Editorial",
+  "cat_en": "Editorial",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w07",
+  "pt": "Energia & mobilidade",
+  "en": "Energy & mobility",
+  "cat_pt": "Explainer",
+  "cat_en": "Explainer",
+  "big": true,
+  "full": ""
+ },
+ {
+  "id": "w10",
+  "pt": "Revoada",
+  "en": "Flock",
+  "cat_pt": "2D · Loop",
+  "cat_en": "2D · Loop",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w12",
+  "pt": "Arranha-céu",
+  "en": "Skyscraper",
+  "cat_pt": "Projeção vertical",
+  "cat_en": "Vertical projection",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w08",
+  "pt": "Jornada",
+  "en": "Journey",
+  "cat_pt": "Ilustração 2D",
+  "cat_en": "2D illustration",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w14",
+  "pt": "Aeroporto",
+  "en": "Airport",
+  "cat_pt": "Line art · Brand story",
+  "cat_en": "Line art · Brand story",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w01",
+  "pt": "Descobertas",
+  "en": "Discoveries",
+  "cat_pt": "Saúde · Tipografia cinética",
+  "cat_en": "Health · Kinetic type",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w16",
+  "pt": "Doador é você",
+  "en": "The donor is you",
+  "cat_pt": "Saúde · 30s",
+  "cat_en": "Health · 30s",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w11",
+  "pt": "Plataforma de anúncios",
+  "en": "Ads platform",
+  "cat_pt": "Delivery · Motion",
+  "cat_en": "Delivery · Motion",
+  "big": true,
+  "full": ""
+ },
+ {
+  "id": "w26",
+  "pt": "Keynote",
+  "en": "Keynote",
+  "cat_pt": "Telecom · Edição",
+  "cat_en": "Telecom · Edit",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w02",
+  "pt": "Gastronomia",
+  "en": "Dining",
+  "cat_pt": "Vertical 9:16",
+  "cat_en": "Vertical 9:16",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w15",
+  "pt": "Escorregador",
+  "en": "Slide",
+  "cat_pt": "Personagens · Loop",
+  "cat_en": "Characters · Loop",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w21",
+  "pt": "Gato",
+  "en": "Cat",
+  "cat_pt": "Glyph · Loop",
+  "cat_en": "Glyph · Loop",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w22",
+  "pt": "Gatos conectados",
+  "en": "Linked cats",
+  "cat_pt": "Glyph · Loop",
+  "cat_en": "Glyph · Loop",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w23",
+  "pt": "Picolé",
+  "en": "Popsicle",
+  "cat_pt": "Glyph · Loop",
+  "cat_en": "Glyph · Loop",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w04",
+  "pt": "Classificados",
+  "en": "Classifieds",
+  "cat_pt": "3D · Personagens",
+  "cat_en": "3D · Characters",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w05",
+  "pt": "Typo motion",
+  "en": "Typo motion",
+  "cat_pt": "Tipografia",
+  "cat_en": "Typography",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w06",
+  "pt": "Vinheta 3D",
+  "en": "3D ident",
+  "cat_pt": "3D · Varejo",
+  "cat_en": "3D · Retail",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w17",
+  "pt": "Linha infantil",
+  "en": "Kids line",
+  "cat_pt": "Ilustração 2D",
+  "cat_en": "2D illustration",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w18",
+  "pt": "Livro animado",
+  "en": "Animated book",
+  "cat_pt": "Editora · 2D",
+  "cat_en": "Publishing · 2D",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w13",
+  "pt": "Do espaço à cidade",
+  "en": "Space to city",
+  "cat_pt": "Google Earth · Institucional",
+  "cat_en": "Google Earth · Corporate",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w03",
+  "pt": "Voo sobre a cidade",
+  "en": "City flyover",
+  "cat_pt": "Aéreo · Institucional",
+  "cat_en": "Aerial · Corporate",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w24",
+  "pt": "Usina solar",
+  "en": "Solar farm",
+  "cat_pt": "Drone · Energia",
+  "cat_en": "Drone · Energy",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w20",
+  "pt": "Quem é você?",
+  "en": "Who are you?",
+  "cat_pt": "Ilustração sobre vídeo",
+  "cat_en": "Drawn over live action",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w25",
+  "pt": "Mutirão",
+  "en": "Community drive",
+  "cat_pt": "Serviço público",
+  "cat_en": "Public service",
+  "big": false,
+  "full": ""
+ },
+ {
+  "id": "w29",
+  "pt": "Abertura de evento",
+  "en": "Event opener",
+  "cat_pt": "Tipografia",
+  "cat_en": "Typography",
+  "big": false,
+  "full": ""
+ }
+]
