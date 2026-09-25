@@ -25,7 +25,9 @@ html[data-l=pt] .en,html[data-l=en] .pt{display:none!important}
 .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
 /* nav */
 nav{position:fixed;inset:0 0 auto;z-index:50;isolation:isolate}
-nav::before{content:"";position:absolute;inset:0 0 -56px;z-index:-1;pointer-events:none;background:linear-gradient(#0b0b0ee6 0%,#0b0b0eb3 40%,#0b0b0e4d 72%,#0b0b0e00 100%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 45%,#0000);mask-image:linear-gradient(#000 45%,#0000)}
+nav::before{content:"";position:absolute;inset:0 0 -56px;z-index:-1;pointer-events:none;background:linear-gradient(#0b0b0ee6 0%,#0b0b0eb3 40%,#0b0b0e4d 72%,#0b0b0e00 100%)}
+.nblur{position:absolute;inset:0 0 -56px;z-index:-2;pointer-events:none}
+.nblur i{position:absolute;inset:0;backdrop-filter:blur(var(--b));-webkit-backdrop-filter:blur(var(--b));-webkit-mask-image:linear-gradient(#000 var(--s),#0000 var(--e));mask-image:linear-gradient(#000 var(--s),#0000 var(--e))}
 nav .wrap{display:flex;align-items:center;gap:28px;height:68px}
 .logo{font:700 20px "Space Grotesk";text-decoration:none;letter-spacing:-.03em}
 .logo b{color:var(--acc)}
@@ -173,7 +175,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 </head>
 <body>
 
-<nav><div class="wrap">
+<nav><div class="nblur" aria-hidden="true"><i style="--b:1px;--s:70%;--e:100%"></i><i style="--b:2px;--s:55%;--e:85%"></i><i style="--b:4px;--s:40%;--e:70%"></i><i style="--b:7px;--s:25%;--e:55%"></i></div><div class="wrap">
   <a class="logo" href="#top"><img src="media/img/logo.svg" alt="DreamTools" style="height:34px;width:auto"></a>
   <ul>
     <li><a href="#work"><span class="pt">Motion</span><span class="en">Motion</span></a></li>
