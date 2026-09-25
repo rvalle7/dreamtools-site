@@ -24,28 +24,14 @@ h1,h2,h3{font-family:"Economica","Arial Narrow",sans-serif;font-weight:700;font-
 html[data-l=pt] .en,html[data-l=en] .pt{display:none!important}
 .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
 /* nav */
-nav{position:fixed;inset:0 0 auto;z-index:50;background:linear-gradient(#0b0b0ee6,#0b0b0e00);backdrop-filter:blur(6px)}
+nav{position:fixed;inset:0 0 auto;z-index:50;isolation:isolate}
+nav::before{content:"";position:absolute;inset:0 0 -56px;z-index:-1;pointer-events:none;background:linear-gradient(#0b0b0ee6 0%,#0b0b0eb3 40%,#0b0b0e4d 72%,#0b0b0e00 100%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 45%,#0000);mask-image:linear-gradient(#000 45%,#0000)}
 nav .wrap{display:flex;align-items:center;gap:28px;height:68px}
 .logo{font:700 20px "Space Grotesk";text-decoration:none;letter-spacing:-.03em}
 .logo b{color:var(--acc)}
 nav ul{display:flex;gap:22px;list-style:none;margin-left:auto;font-size:14px}
 nav ul a{text-decoration:none;color:var(--mut);transition:.2s}
 nav ul a:hover{color:var(--tx)}
-/* glass nav (preview: ?glass=1) */
-html.glass nav{background:none;backdrop-filter:none;padding-top:12px}
-html.glass nav .wrap{height:58px;max-width:min(1180px,calc(100% - 24px));padding:0 10px 0 18px;border-radius:99px;
-  background:linear-gradient(180deg,#ffffff1f,#ffffff06 55%,#ffffff0d),#0d0d1266;
-  backdrop-filter:blur(26px) saturate(170%) brightness(.85);-webkit-backdrop-filter:blur(26px) saturate(170%) brightness(.85);
-  border:1px solid #ffffff26;box-shadow:inset 0 1px 0 #ffffff40,inset 0 -1px 0 #ffffff10,0 10px 30px #0006;position:relative;overflow:hidden}
-html.glass nav .wrap::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:radial-gradient(120% 90% at 20% -30%,#ffffff2e,#0000 55%)}
-html.glass nav ul{gap:6px}
-html.glass nav ul a{color:#e6e6ecd9;text-shadow:0 1px 2px #0008}
-html.glass nav ul a{display:block;padding:7px 14px;border-radius:99px;border:1px solid #0000;transition:background .25s,border-color .25s,color .2s,box-shadow .25s}
-html.glass nav ul a:hover{color:var(--tx);background:#ffffff14;border-color:#ffffff24;box-shadow:inset 0 1px 0 #ffffff33}
-html.glass .lang{background:linear-gradient(180deg,#ffffff24,#ffffff0a);border:1px solid #ffffff33;box-shadow:inset 0 1px 0 #ffffff4d,0 2px 8px #0004;
-  backdrop-filter:blur(10px);padding:7px 14px}
-html.glass .lang:hover{border-color:#ffffff66;background:linear-gradient(180deg,#ffffff33,#ffffff12)}
 .lang{font-family:Barlow,sans-serif;border:1px solid var(--line);background:none;color:var(--tx);border-radius:99px;padding:5px 12px;font:600 12px Barlow;cursor:pointer}
 .lang:hover{border-color:var(--acc)}
 /* hero */
@@ -187,7 +173,6 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 </head>
 <body>
 
-<script>if(/[?&]glass=1/.test(location.search))document.documentElement.classList.add('glass')</script>
 <nav><div class="wrap">
   <a class="logo" href="#top"><img src="media/img/logo.svg" alt="DreamTools" style="height:34px;width:auto"></a>
   <ul>
