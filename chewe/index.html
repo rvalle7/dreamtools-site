@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chewe · plano MSFS 2024 · Ralph Flying Machines</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Caveat:wght@600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --red: #E10435;
+      --red-d: #b00328;
+      --blue: #9EC9E8;
+      --gold: #F2C200;
+      --amber: #ff6a1a;
+      --panel: #1B1F26;
+      --map: #14171C;
+      --line: #2E3540;
+      --ink: #0c0d10;
+      --text: #f3eadc;
+      --muted: #9aa3ad;
+      --cream: #f3eadc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ink);
+      color: var(--text);
+      font-family: Outfit, sans-serif;
+      line-height: 1.55;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: var(--red); text-decoration: none; }
+    a:hover { color: #ff4d6d; }
+
+    .hero {
+      position: relative;
+      min-height: 88vh;
+      overflow: hidden;
+      isolation: isolate;
+      display: flex;
+      align-items: flex-end;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(12,13,16,.18) 0%, rgba(12,13,16,.45) 48%, #0c0d10 100%),
+        url("assets/chewe-water.jpg") center 42% / cover no-repeat;
+    }
+    .hero-bg::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(80% 70% at 35% 40%, transparent 0%, rgba(12,13,16,.55) 100%);
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 36px 0 42px;
+    }
+    .lockup { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .lockup .word { height: clamp(42px, 7vw, 72px); width: auto; filter: drop-shadow(0 8px 22px rgba(0,0,0,.5)); }
+    .lockup .badge { height: clamp(36px, 6vw, 60px); width: auto; filter: drop-shadow(0 10px 24px rgba(225,4,53,.45)); }
+    .kicker {
+      margin-top: 22px;
+      font-family: "Archivo Narrow", sans-serif;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: var(--gold);
+    }
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 84px);
+      line-height: .92;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin: 8px 0 12px;
+    }
+    .hero h1 span { color: var(--red); }
+    .lede {
+      max-width: 58ch;
+      font-size: 18px;
+      color: var(--cream);
+      text-shadow: 0 2px 16px #000;
+    }
+    .sign { font-family: Caveat, cursive; font-size: 26px; color: var(--cream); }
+
+    nav.bar {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(12,13,16,.86);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav.bar .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex; gap: 8px; overflow-x: auto;
+      padding: 10px 0;
+    }
+    nav.bar a {
+      color: var(--muted);
+      font: 700 12px "Archivo Narrow", sans-serif;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    nav.bar a:hover { color: #fff; background: #1b1f26; }
+
+    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 48px 0; }
+    section { scroll-margin-top: 64px; }
+
+    .verdict {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+      margin-top: -28px;
+      position: relative; z-index: 2;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 24px;
+    }
+    .card.go { border-color: rgba(225,4,53,.45); background: linear-gradient(180deg, #2a1216, var(--panel)); }
+    .tag {
+      display: inline-block;
+      font: 700 11px "Archivo Narrow", sans-serif;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--red);
+      color: #fff;
+    }
+    .tag.ok { background: #1e6b45; }
+    .tag.warn { background: #8a5a00; color: var(--gold); }
+    .tag.gap { background: #3a2430; color: #f3b6c2; }
+    h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      letter-spacing: -.02em;
+      margin: 8px 0 12px;
+    }
+    h3 { font-size: 20px; margin: 0 0 8px; }
+    p { color: #d9d2c8; }
+    .muted { color: var(--muted); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 18px 0 8px;
+    }
+    .stat {
+      background: var(--map);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .stat b {
+      display: block;
+      font-size: 26px;
+      color: var(--gold);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: 1.4fr .8fr .8fr;
+      gap: 12px;
+      margin: 18px 0 8px;
+    }
+    .gallery figure {
+      margin: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #000;
+    }
+    .gallery img { width: 100%; height: 220px; object-fit: cover; }
+    .gallery figcaption {
+      padding: 10px 12px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 12px 0 4px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      color: var(--muted);
+      font: 700 11px "Archivo Narrow", sans-serif;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    td strong { color: #fff; }
+
+    .phase {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .phase:last-child { border-bottom: 0; }
+    .num {
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--red);
+      line-height: 1;
+    }
+    .num small { display: block; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .08em; }
+
+    ol.steps, ul.clean { margin: 8px 0 0 18px; color: #d9d2c8; }
+    ol.steps li, ul.clean li { margin: 4px 0; }
+
+    .call {
+      border-left: 3px solid var(--red);
+      padding: 10px 14px;
+      background: #181114;
+      border-radius: 0 12px 12px 0;
+      margin: 14px 0;
+    }
+    .call.blue { border-left-color: var(--blue); background: #121820; }
+    .call.gold { border-left-color: var(--gold); background: #1a170c; }
+
+    code, .path {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 12.5px;
+      color: var(--blue);
+      background: #0b0d11;
+      padding: 1px 6px;
+      border-radius: 6px;
+    }
+    pre {
+      background: #0b0d11;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      overflow: auto;
+      font: 12.5px/1.5 ui-monospace, Consolas, monospace;
+      color: #cfe3f0;
+      margin: 10px 0;
+    }
+
+    .links a {
+      display: block;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--cream);
+    }
+    .links a:hover { color: var(--red); }
+    .links small { display: block; color: var(--muted); font-size: 12px; }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0 50px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .table-wrap { overflow-x: auto; margin: 12px 0 4px; }
+    .table-wrap table { min-width: 760px; }
+    .ax {
+      display: inline-block;
+      font: 700 11px "Archivo Narrow", sans-serif;
+      letter-spacing: .08em;
+      padding: 2px 7px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .ax.x { background: #3a1a22; color: #ff8aa0; }
+    .ax.y { background: #1a3328; color: #7ddea8; }
+    .ax.z { background: #1a2838; color: #9EC9E8; }
+    .need {
+      display: inline-block;
+      font: 700 10px "Archivo Narrow", sans-serif;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .need.must { background: var(--red); color: #fff; }
+    .need.soon { background: #8a5a00; color: var(--gold); }
+    .need.later { background: #2a3140; color: var(--blue); }
+    .need.no { background: #22262c; color: var(--muted); }
+    .tree {
+      background: #0b0d11;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      overflow: auto;
+      font: 12.5px/1.65 ui-monospace, Consolas, monospace;
+      color: #cfe3f0;
+      margin: 10px 0 16px;
+    }
+    .tree .c { color: var(--gold); }
+    .tree .m { color: #7ddea8; }
+    .tree .o { color: var(--muted); }
+    .axis-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 14px 0; }
+    .axis-grid h4 { font-size: 14px; margin-bottom: 6px; color: var(--gold); }
+    .filt { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
+    .filt button {
+      appearance: none; border: 1px solid var(--line); background: var(--map);
+      color: var(--muted); border-radius: 999px; padding: 6px 12px; cursor: pointer;
+      font: 700 11px "Archivo Narrow", sans-serif; letter-spacing: .1em; text-transform: uppercase;
+    }
+    .filt button.on { background: var(--red); border-color: var(--red); color: #fff; }
+    tr.hide { display: none; }
+
+    @media (max-width: 860px) {
+      .verdict, .gallery, .grid2, .grid3, .axis-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .gallery img { height: 180px; }
+      .phase { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <div class="lockup">
+        <img class="word" src="assets/vr73-word.png" alt="vr flights" />
+        <img class="badge" src="assets/vr73-badge.png" alt="73" />
+      </div>
+      <p class="kicker">Ralph Flying Machines · Chewe</p>
+      <h1>Chewe<br /><span>no MSFS 2024</span></h1>
+      <p class="lede">Dá para construir. O 3D já existe. O SDK cobre o pacote. Quatro ducts, oito motores (dois por ducto, coaxial), tilt frente/trás. Hover cru como heli, ou hover com autopilot (fica no sítio, stick = ângulo). Forward assistido — não um avião com carenagem de GT.</p>
+      <p class="sign">Ralph Flying Machines · o Chewe ainda não voa no sim.</p>
+    </div>
+  </header>
+
+  <nav class="bar">
+    <div class="wrap">
+      <a href="#veredicto">Veredicto</a>
+      <a href="#instalados">eVTOLs no teu PC</a>
+      <a href="#sdk">O que o SDK cobre</a>
+      <a href="#fisica">Modelo de voo</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#plano">Plano</a>
+      <a href="#ficheiros">Ficheiros</a>
+      <a href="#rig">Nulls e eixos</a>
+      <a href="#checklists">Checklists</a>
+      <a href="#fontes">Fontes</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <section id="veredicto" class="verdict">
+      <article class="card go">
+        <span class="tag">Resposta curta</span>
+        <h2>Sim — documentação chega para um Chewe voável e completo.</h2>
+        <p>Não existe um tipo oficial chamado “flying car”. Existe um <strong>SimObject modular de aeronave</strong>, com motor eléctrico, rotores visuais, cockpit VR, som, luzes e Community package. É exactamente assim que o Joby, o Archer Midnight, o Jetson One e o VoloCity entram no simulador.</p>
+        <div class="call">O buraco não é “falta de docs para portar o 3D”. O buraco é o <strong>voo assistido de 8 motores + tilt</strong>: o SDK documenta Avião, Helicóptero, Tilt e Eléctrico. Os eVTOLs de série resolvem o resto com WASM e/ou 4–16 motores nativos. Esse código de física deles está encriptado — o nosso fazemos nós.</div>
+      </article>
+      <article class="card">
+        <span class="tag ok">O que já tens</span>
+        <h3>Base pronta</h3>
+        <ul class="clean">
+          <li>Cena Maya <span class="path">Flying Car.mb</span></li>
+          <li>Pipeline: Maya → 3ds Max + plugin SDK</li>
+          <li>4 eVTOLs oficiais no disco para estudar ao vivo (Jetson = hover)</li>
+          <li>8 motores nativos cabem no teto do sim (máx. 16)</li>
+        </ul>
+      </article>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><b>4</b><span>ducts que tilham F/T</span></div>
+      <div class="stat"><b>8</b><span>motores (2 por ducto)</span></div>
+      <div class="stat"><b>2+1</b><span>hover cru · hover AP · fwd</span></div>
+      <div class="stat"><b>4</b><span>bastam se 4 falharem</span></div>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:0">
+    <div class="gallery">
+      <figure>
+        <img src="assets/chewe-water.jpg" alt="Chewe sobre água ao entardecer" />
+        <figcaption>Hero exterior — o que o seletor e o trailer têm de vender.</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/chewe-pad.jpg" alt="Chewe no helipad visto de cima" />
+        <figcaption>Top-down. Quatro ducts, oito hélices coaxiais (cima + baixo).</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/chewe-casa.jpg" alt="Chewe em aproximação" />
+        <figcaption>Forward assistido — ducts inclinados, carro nivelado.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section id="instalados">
+      <span class="tag">Olhámos para o teu install</span>
+      <h2>Os eVTOLs que já tens no MSFS 2024</h2>
+      <p class="muted">Pacotes em <span class="path">LocalCache\Packages\StreamedPackages</span>. Física em arquivos RASA encriptados. Estrutura modular e FLT/panel em claro no “minimal” do Joby e do VoloCity. Pastas VFS em <span class="path">LocalCache\SimObjects\Airplanes\</span>.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Aeronave</th>
+            <th>O que é</th>
+            <th>O que vimos no disco</th>
+            <th>Lição para o Chewe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Joby S4</strong><br /><span class="path">joby</span></td>
+            <td>Tilt-rotor eVTOL, 6 hélices, asa, FBW. Feito pela FlightFX.</td>
+            <td>Modular. Interior/exterior como attachments. <span class="path">FlightModel.wasm</span> num VCockpit 1×1 px. LocalVars: <span class="path">joby_aircraft_isFlyMode</span>, <span class="path">joby_batteryCapacity=150</span>, throttle = aceleração. FLT de voo tem <em>Collective</em>. 3 motores no apron.flt.</td>
+            <td>Não usam o FM de helicóptero “nu”. Injectam WASM. Hover e cruise são um modo (<span class="path">isFlyMode</span>), não uma asa mágica.</td>
+          </tr>
+          <tr>
+            <td><strong>Archer Midnight</strong><br /><span class="path">midnight</span></td>
+            <td>Tilt-rotor, 12 motores, FBW. FlightFX.</td>
+            <td>Mesmo padrão de LocalVars: <span class="path">archer_batteryCapacity=150</span>, <span class="path">archer_isThrottleControllingAcceleration=1</span>. CFGs de física encriptados.</td>
+            <td>Gémeo conceptual do Joby. Confirma a receita FlightFX: bateria + throttle-as-accel + FM custom.</td>
+          </tr>
+          <tr>
+            <td><strong>Jetson One</strong><br /><span class="path">jetsonone</span></td>
+            <td>Multicoptero puro, 8 hélices, sem asa. O hover do Chewe aponta para aqui.</td>
+            <td>Pasta modular completa. <span class="path">state.cfg</span> só tem <span class="path">[engine.0]</span>. Som FlightFX. Física encriptada. Câmara VC já materializada.</td>
+            <td><strong>Referência do hover com AP.</strong> O Chewe sem AP é heli (tu equilibras). Com AP é isto: estacionário, stick em ângulo. Forward continua à parte — ducts tilham.</td>
+          </tr>
+          <tr>
+            <td><strong>VoloCity</strong><br /><span class="path">microsoft-aircraft-volocity</span></td>
+            <td>Air taxi multicoptero oficial. 18 rotores no real; 16 motores no FLT.</td>
+            <td>Attachments separados: fuselagem, <em>engines</em>, <em>propellers</em>, cockpit. <span class="path">runway.flt</span> tem Engine Parameters 1…16. Comentário no panel: VoloStab JS <em>removido</em> — “native behaviors control”. Gauge G3X.</td>
+            <td><strong>Referência de arquitectura nº 1 sem WASM.</strong> O sim aceita dezenas de motores eléctricos nativos. Rotores são uma peça modular, não o fuselagem.</td>
+          </tr>
+          <tr>
+            <td><strong>Heart ES-30</strong><br /><span class="path">asobo_es30</span></td>
+            <td>Híbrido de asa fixa, 4 motores (2 turbo + 2 eléctricos). Não é VTOL.</td>
+            <td><span class="path">state.cfg</span> com engine.0–3. WASM de motor eléctrico citado no SDK (<span class="path">ES30_ElectricMotor_Simulation.wasm</span>).</td>
+            <td>Prova que <span class="path">engine_type = 6</span> (Electric) é de primeira classe. Útil para bateria, não para hover.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call gold">
+        Conclusão da autópsia: <strong>podes (e deves) abrir o Jetson One e o VoloCity no DevMode → SimObject Editor</strong> com o avião carregado. O editor mostra os parâmetros mesmo quando o CFG no disco está em .fsarchive. Isso vale mais do que qualquer leak. Não precisamos de desencriptar o DRM deles.
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="sdk">
+      <span class="tag ok">SDK oficial</span>
+      <h2>O que está documentado — chega para um add-on sério</h2>
+      <div class="grid2">
+        <article class="card">
+          <h3>Coberto de ponta a ponta</h3>
+          <ul class="clean">
+            <li>Project Editor + package modular (common / attachments / presets / liveries)</li>
+            <li>Plugin 3ds Max 2022–2026 + Multi-Exporter glTF (o teu pipeline)</li>
+            <li>Materiais MSFS Standard, Glass, Propeller, Invisible/collision</li>
+            <li>LODs, collision, VR helpers, cameras, luzes, thumbnails</li>
+            <li>Samples: SimpleAircraft, DA62, <strong>Cabri G2 (helicóptero)</strong></li>
+            <li><span class="path">engine_type = 6</span> Electric + sistema eléctrico modular / baterias</li>
+            <li>Até 16 motores (<span class="path">Engine.0</span>…<span class="path">Engine.15</span>)</li>
+            <li>Model Behaviors + templates de rotor / propeller blur</li>
+            <li>WASM gauges e WASM systems (o truque do Joby)</li>
+            <li>Wwise / sound.xml, VFX, checklists, career (opcional)</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Não está documentado como receita</h3>
+          <ul class="clean">
+            <li>Tipo “Quadrotor / multicoptero” no <span class="path">aircraft.cfg</span> — não existe</li>
+            <li><span class="path">[HELICOPTER]</span> só tem MAINROTOR + SECONDARYROTOR de física</li>
+            <li>FM WASM do Joby/Jetson/Archer (FlightModel.wasm) — fechado</li>
+            <li>Fly + drive no mesmo SimObject (carro no chão, voo no ar)</li>
+            <li>Marketplace career para “carro voador” — fora de âmbito v1</li>
+          </ul>
+          <p class="muted" style="margin-top:12px">Isto não bloqueia o Chewe. O hover sem AP já é o heli do SDK. O AP (station-keep + stick em ângulo) e o forward com tilt é WASM depois do 3D estar no sim.</p>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="fisica">
+      <span class="tag warn">Como o Chewe voa</span>
+      <h2>Hover cru ou com AP. Forward assistido. Oito motores.</h2>
+      <p>Não é um Joby (tilt até ficar “asa”). No sítio, o Chewe é um VTOL com interruptor de autopilot. Ducts na vertical nos dois hovers — o que muda é a lei de comando, não o 3D.</p>
+      <div class="grid3">
+        <article class="card go">
+          <span class="tag">Hover · AP off</span>
+          <h3>Como helicóptero</h3>
+          <p>Sem assist. Cíclico, coletivo, pedais — <strong>tu equilibras</strong>. Deriva, vento, torque: o carro não se segura sozinho. É o modo cru, o de aprender e o de fallback se o computador calar.</p>
+        </article>
+        <article class="card">
+          <span class="tag ok">Hover · AP on</span>
+          <h3>Fica no sítio</h3>
+          <p>Apertas autopilot: station-keep, não sai do lugar. Stick em <strong>ângulo parelho</strong> — a deflexão do manche é o ângulo do carro (modo attitude, não rate). Stick ao centro = nivelado e parado. Coletivo sobe/desce no sítio.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Forward</span>
+          <h3>Parece avião, não é</h3>
+          <p>Os <strong>4 ducts tilham para a frente</strong> com a velocidade. Um pouco up no climb, um pouco down no descent — o carro fica nivelado, não o pitch de um Cessna. Ângulos afinam-se em voo.</p>
+        </article>
+      </div>
+      <div class="table-wrap" style="margin-top:16px">
+        <table>
+          <thead>
+            <tr>
+              <th>Entrada</th>
+              <th>Hover AP off (heli)</th>
+              <th>Hover AP on (station-keep)</th>
+              <th>Forward</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Stick / cíclico</strong></td>
+              <td>Rate / cíclico de heli. Soltas = o carro continua a pender. Tu compensas.</td>
+              <td>Ângulo = ângulo. 10° de stick ≈ 10° de atitude. Centro = 0° e segura posição XY.</td>
+              <td>Direção / atitude assistida. Ducts acompanham.</td>
+            </tr>
+            <tr>
+              <td><strong>Coletivo / throttle</strong></td>
+              <td>Potência. Como heli: sobes ou afundas se não gerires.</td>
+              <td>Sobe / desce no sítio. XY preso. Soltar o coletivo não deixa cair à toa — o AP segura hover.</td>
+              <td>Energia / aceleração no eixo do voo.</td>
+            </tr>
+            <tr>
+              <td><strong>Pedais</strong></td>
+              <td>Yaw livre. Anti-torque à mão.</td>
+              <td>Yaw no sítio (roda no hover). Sem deriva lateral.</td>
+              <td>Yaw / coordenação, assistido.</td>
+            </tr>
+            <tr>
+              <td><strong>Ducts (3D)</strong></td>
+              <td>Vertical (TILT 0°)</td>
+              <td>Vertical (TILT 0°) — o AP não inclina os ducts</td>
+              <td>Tilt frente + correção leve up/down</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="call">O botão / switch de autopilot é peça de cockpit com nome estável (<span class="path">AUTOPILOT</span> / <span class="path">AP_HOVER</span>). Liga um L:Var. Sem AP o WASM não mexe na física — deixa o esqueleto de heli. Com AP, o WASM segura posição e traduz stick → atitude.</div>
+      <div class="grid3" style="margin-top:14px">
+        <article class="card">
+          <span class="tag">8 + pane</span>
+          <h3>Dois motores por ducto</h3>
+          <p>Coaxial: cima e baixo, rotação oposta. Oito no total. <strong>Voa com 4</strong> se os outros falharem. Paraquedas no plano, não no v1.</p>
+        </article>
+        <article class="card">
+          <span class="tag">v1 · 3D no ar</span>
+          <h3>8 hélices + 4 tilts</h3>
+          <p><span class="path">engine_type = 6</span>. Handling cru = hover AP off (já é o heli). O botão de AP pode existir no 3D e ainda não fazer nada.</p>
+        </article>
+        <article class="card">
+          <span class="tag gap">v2 · o produto</span>
+          <h3>WASM = o AP</h3>
+          <p>Gauge 1×1. AP off → não toca. AP on → station-keep + ângulo parelho. Forward = tilt dos 4 ducts. Fail de 4 motores. Código nosso.</p>
+        </article>
+      </div>
+      <div class="call blue">
+        Fly+drive fica de fora do v1. Primeiro: pairar cru, pairar com AP, avançar com ducts a inclinar, pousar. Depois asfalto. Paraquedas = attachment, fase à parte.
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="pipeline">
+      <span class="tag">Já decidido em Julho</span>
+      <h2>Pipeline — não mudamos isto</h2>
+      <pre>Maya (metros, pivot limpo, UVs, nomes)
+    → FBX
+        → 3ds Max edu + plugin MSFS 2024
+            → materiais Standard / Glass / Propeller
+            → Multi-Exporter (UniqueID, Remove LOD Prefix, TextureLib)
+                → glTF + PNG  →  PackageSources do SimObject modular
+                    → DevMode Project Editor  →  Community package</pre>
+      <p>Blender fica backup. Max + plugin SDK é a ponte oficial. O Chewe é um <strong>Aircraft package</strong> sozinho — scenery à parte, se algum dia existir.</p>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="plano">
+      <span class="tag">Execução</span>
+      <h2>Plano em quatro fases</h2>
+
+      <div class="phase">
+        <div class="num">0<small>2–4 dias</small></div>
+        <div>
+          <h3>Grey box no seletor</h3>
+          <p>Provar o cano antes de polish. Se isto não voa, o resto é cinema.</p>
+          <ol class="steps">
+            <li>Instalar/actualizar SDK 2024 + samples (Help no DevMode): SimpleAircraft e Cabri G2.</li>
+            <li>New Project → Package Aircraft → Modular. Creator <span class="path">climberfx</span> / <span class="path">Ralph Flying Machines</span>. Nome <span class="path">chewe</span>.</li>
+            <li>Clonar a árvore do Cabri (helicóptero + eléctrico). Substituir mesh por um cubo ou pelo Chewe sem materiais.</li>
+            <li>Build → Community. Abrir no world map. Spawn num helipad qualquer.</li>
+            <li>Confirmar: aparece no seletor, não explode, sobe, eyepoint VR não está no chão.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="num">1<small>o filme</small></div>
+        <div>
+          <h3>Chewe visual no sim — o herói</h3>
+          <p>O 3D entra com os 8 motores e os 4 tilts já a mexer, mesmo que o assistente ainda seja burro.</p>
+          <ol class="steps">
+            <li>Partir o Maya: fuselagem, 4 ducts, 8 hélices (TOP/BOT), canopy/glass, interior, rodas, luzes.</li>
+            <li>Export FBX metros. Pivot de cada hélice no centro do disco. Dois por ducto, eixos opostos.</li>
+            <li>Max: LODs, materiais Propeller × 8, collision, VR helpers no stick/volante.</li>
+            <li>Multi-Exporter: common helper + attachments (fuselagem, ducts/fans, cockpit).</li>
+            <li>8 nós Propeller + 4 grupos <span class="path">TILT_*</span> no XML (hover vertical → forward ao nariz).</li>
+            <li>Cameras.cfg (pilot, landing, chase). Luzes laranja dos ducts + nav/strobe.</li>
+            <li>Thumbnail, som placeholder (Jetson/Cabri), FLT apron / hover / forward.</li>
+            <li>v1 feito quando paira, avança com os ducts a inclinar, e pousa sem explodir.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="num">2<small>sistemas</small></div>
+        <div>
+          <h3>Parece um carro voador, não um Cabri pintado</h3>
+          <ol class="steps">
+            <li>Bateria + <span class="path">engine_type = 6</span>. LocalVar de capacidade (Joby usa 150).</li>
+            <li>Startup simples: battery master → fans spool → ready. Sem magneto de pistão.</li>
+            <li>Painel: HTML/JS mínimo ou G3X emprestado (VoloCity faz isto). Depois um EFB Chewe.</li>
+            <li>Wwise: ducted fan, não rotor de heli. Oito fontes (ou quatro ducts com dois layers).</li>
+            <li>VFX: wash no chão, glow dos anéis laranja.</li>
+            <li>Fail visual: 4 hélices param, as outras 4 aguentam — mesmo antes do WASM fino.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="num">3<small>só se v1 voar</small></div>
+        <div>
+          <h3>Assistente + segurança</h3>
+          <ol class="steps">
+            <li>WASM: AP off = heli (não toca). AP on = station-keep + stick → ângulo.</li>
+            <li>Forward: tilt dos 4 ducts com a velocidade + um pouco up/down no climb/descent.</li>
+            <li>Pane: até 4 motores off, os outros 4 mantêm hover/forward degradado.</li>
+            <li>Paraquedas de emergência — locator + attachment + deploy. Depois do voo estar bom.</li>
+            <li>Drive no chão / career — só se o voo já for o produto.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="ficheiros">
+      <span class="tag">Mapa</span>
+      <h2>Onde vive o quê</h2>
+      <pre>Maya\scenes\Flying Car.mb            ← source 3D
+Chewe_MSFS2024\                      ← este plano + (em breve) projecto SDK
+
+Projecto SDK sugerido
+  climberfx-aircraft-chewe\
+    PackageSources\SimObjects\Airplanes\chewe\
+      common\          helper + cfg base + cameras + sound
+      attachments\
+        climberfx\
+          part_ext_fuselage\
+          part_ext_fans\         4 ducts + 8 hélices (TOP/BOT)
+          part_int_cockpit\
+          function_ext\          behaviors / lights / (depois: chute)
+          function_int\
+      presets\climberfx\default\
+        config\attached_objects.cfg
+        config\aircraft.cfg
+        config\flight_model.cfg
+        config\engines.cfg
+        config\systems.cfg
+      liveries\climberfx\standard\</pre>
+      <p>Pacotes instalados para ter abertos no segundo monitor enquanto afinamos:</p>
+      <ul class="clean">
+        <li><span class="path">…\SimObjects\Airplanes\jetsonone</span></li>
+        <li><span class="path">…\SimObjects\Airplanes\microsoft-aircraft-volocity</span></li>
+        <li><span class="path">…\SimObjects\Airplanes\joby</span></li>
+        <li><span class="path">…\SimObjects\Airplanes\midnight</span></li>
+        <li><span class="path">…\SimObjects\Airplanes\asobo_cabri_g2</span></li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="rig">
+      <span class="tag">Maya agora</span>
+      <h2>Nulls, pivots e eixos — o que o sim vai mexer</h2>
+      <p>O MSFS <strong>não anima a malha pelo nome do shader</strong>. Anima um <em>helper</em> (locator no Maya / Point no Max). A peça é filha desse locator. O XML do modelo liga o <em>nome da Animation Group</em> a uma SimVar. Se o locator, o eixo e os frames já estiverem certos no Maya, o export é mecânico.</p>
+      <div class="call">Regra de ouro: <strong>nunca animes a malha no pivot dela</strong>. Crias um locator no sítio lógico da dobradiça, resetas o transform, parentas a malha, e animas só o locator. Todos os LODs da mesma peça são filhos do <em>mesmo</em> locator (layer Shared). Frame 0 = carro parado no pad. Keys lineares. Sem frames negativos.</div>
+
+      <h3 style="margin-top:22px">Três eixos. Não mistures.</h3>
+      <p class="muted">Maya é Y-up. 3ds Max no plugin Asobo é Z-up. O sim (glTF) é Y-up, X direita, Z nariz. O FBX converte. Por isso o eixo “certo” é o <strong>eixo local do locator depois de chegar ao Max</strong> — no Maya deixas o eixo local alinhado com o movimento real, e no Max confirmas a tabela abaixo.</p>
+      <div class="axis-grid">
+        <article class="card">
+          <h4>MSFS / glTF (o sim)</h4>
+          <p><span class="ax x">+X</span> direita do piloto<br />
+          <span class="ax y">+Y</span> cima<br />
+          <span class="ax z">+Z</span> nariz / frente</p>
+        </article>
+        <article class="card">
+          <h4>3ds Max (plugin oficial)</h4>
+          <p>Unidades metros. Top view: nariz para baixo no ecrã. Xforms reset (scale 100).<br />
+          Spin do fan: <span class="ax y">Y local</span> no Max = <span class="ax z">Z do objeto</span> no sim. É o que o material Propeller usa para o blur.</p>
+        </article>
+        <article class="card">
+          <h4>Maya (a tua cena)</h4>
+          <p>1 unidade = 1 m. Locators, não groups. Freeze + reset.<br />
+          Botões / manípulos / knobs: o SDK pede rotação ou translação no <span class="ax x">X local</span> do objeto (depois do Max). Fans: eixo local do locator = eixo do ducto.</p>
+        </article>
+      </div>
+
+      <h3>Hierarquia Shared — cria isto hoje</h3>
+      <p class="muted"><span class="c" style="color:var(--gold)">dourado</span> = locator · <span style="color:#7ddea8">verde</span> = malha · cinza = v2/v3, mas o locator já existe.</p>
+      <div class="tree">HIPS                          <span class="o">← Point em [0,0,0]. Root de tudo. Layer Shared.</span>
+├─ ATTACH_ROOT                <span class="o">← attach point do package modular (common glTF)</span>
+├─ <span class="c">FUSELAGE</span>
+│  └─ <span class="m">x0_FUSELAGE</span> / x1_… / x2_…
+├─ <span class="c">WINDSHIELD</span>
+│  └─ <span class="m">x0_WINDSHIELD</span>                 <span class="o">material Glass / Windshield</span>
+│
+├─ <span class="c">TILT_FL</span>                      <span class="o">inclina o ducto inteiro (hover ↔ forward + climb/descent)</span>
+│  ├─ <span class="c">FAN_FL_TOP</span>                 <span class="o">hélice de cima. Pivot no centro. Spin +</span>
+│  │  ├─ <span class="m">x0_FAN_FL_TOP</span>            <span class="o">1 nó + 1 material Propeller</span>
+│  │  └─ <span class="m">x0_FAN_FL_TOP_LOW</span>        <span class="o">opcional, blur barato</span>
+│  ├─ <span class="c">FAN_FL_BOT</span>                 <span class="o">hélice de baixo. Spin oposto ao TOP</span>
+│  │  └─ <span class="m">x0_FAN_FL_BOT</span>
+│  └─ <span class="c">DEFLECTOR_FL_*</span>             <span class="o">vanes, se existirem</span>
+├─ <span class="c">TILT_FR</span> → FAN_FR_TOP + FAN_FR_BOT
+├─ <span class="c">TILT_RL</span> → FAN_RL_TOP + FAN_RL_BOT
+├─ <span class="c">TILT_RR</span> → FAN_RR_TOP + FAN_RR_BOT
+│
+├─ <span class="c">CHUTE_CANISTER</span>               <span class="o">v3 — paraquedas de emergência</span>
+│  └─ <span class="c">CHUTE_DEPLOY</span>
+│
+├─ <span class="c">GEAR_FL</span>                      <span class="o">compressão da “perna” (o carro assenta nos ducts)</span>
+│  └─ <span class="c">WHEEL_FL</span>                  <span class="o">spin da roda, se for distinta do fan</span>
+├─ GEAR_FR / GEAR_RL / GEAR_RR  (+ WHEEL_*)
+├─ <span class="c">STEER_FL</span> / <span class="c">STEER_FR</span>        <span class="o">só se as da frente virarem no chão</span>
+│
+├─ <span class="c">DOOR_L</span>  → x0_DOOR_L (+ interior gémeo)
+├─ <span class="c">DOOR_R</span>  → x0_DOOR_R
+├─ <span class="c">CANOPY</span>   → se o vidro levantar à parte
+│
+└─ COCKPIT (attachment interior)
+   ├─ <span class="c">HANDLING_Yoke_1</span>
+   │  ├─ HANDLING_YOKE_1_Lever_StickLR
+   │  ├─ HANDLING_YOKE_1_Lever_StickForeAft
+   │  ├─ HANDLING_Yoke_1_Hand            <span class="o">VR</span>
+   │  └─ HANDLING_Yoke_1_Axes            <span class="o">VR, centro de rotação</span>
+   ├─ <span class="c">HANDLING_Collective</span>
+   │  ├─ HANDLING_Collective_Hand
+   │  └─ HANDLING_Collective_Axes
+   ├─ <span class="c">AUTOPILOT</span> / AP_HOVER     <span class="o">switch. AP off = heli · AP on = station-keep</span>
+   ├─ <span class="c">ENGINE_Lever_Throttle_1</span>
+   ├─ <span class="c">HANDLING_RudderPedals</span>
+   │  ├─ …_Brake_L / …_Brake_R
+   └─ <span class="c">HANDLING_Wheel</span>               <span class="o">volante de carro, se for o comando</span></div>
+
+      <h3>Hover vs forward — os ducts mexem de verdade</h3>
+      <div class="grid2">
+        <article class="card">
+          <h3>Hover VTOL — com e sem AP</h3>
+          <p><span class="path">TILT_*</span> a 0° nos dois casos — eixo do ducto para cima, 8 hélices na vertical. O 3D é o mesmo. Sem autopilot = heli, tu equilibras. Com autopilot = fica no sítio; o stick manda ângulos parelhos (atitude), não rate. O WASM é que muda, não a malha.</p>
+        </article>
+        <article class="card">
+          <h3>Forward (assistido, não Cessna)</h3>
+          <p>Os 4 <span class="path">TILT_*</span> viram para o nariz com a velocidade. Um pouco mais para cima no climb, um pouco para baixo no descent — o carro fica nivelado. Não é pitch de avião. Os 8 <span class="path">FAN_*_TOP/BOT</span> continuam filhos e só fazem spin (TOP e BOT em sentidos opostos).</p>
+        </article>
+      </div>
+      <div class="call blue">No Maya deixas o range do tilt largo (ex. −20° … +70° no eixo de pitch do ducto). O ângulo “certo” afina-se em voo. <strong>Sem flaps, ailerons, profundor nem leme.</strong> Hover AP off = tu és o computador. Hover AP on + forward = WASM + tilt dos quatro ducts.</div>
+
+      <h3 style="margin-top:22px">Tabela de locators</h3>
+      <p class="muted">Nomes sem prefixo de LOD — o prefixo <span class="path">x0_</span> vai só na malha. O XML e o CFG falam com o nome do locator / da Animation Group.</p>
+      <div class="filt" id="rig-filt">
+        <button type="button" class="on" data-f="all">Tudo</button>
+        <button type="button" data-f="must">Obrigatório v1</button>
+        <button type="button" data-f="soon">Fazer já, usar depois</button>
+        <button type="button" data-f="later">v2 / VR</button>
+        <button type="button" data-f="no">Não fazer</button>
+      </div>
+      <div class="table-wrap">
+        <table id="rig-table">
+          <thead>
+            <tr>
+              <th>Locator / grupo</th>
+              <th>Para quê</th>
+              <th>Eixo local</th>
+              <th>Frames</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-need="must">
+              <td><span class="path">HIPS</span></td>
+              <td>Root. Tudo parte daqui. Em [0,0,0], ~1/3 do nariz, Z ≈ linha de água.</td>
+              <td>—</td>
+              <td>estático</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">ATTACH_ROOT</span></td>
+              <td>Nó de attach do glTF common. Os attachments (fuselagem, fans, cockpit) penduram aqui.</td>
+              <td>alinhado ao HIPS</td>
+              <td>estático</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">FAN_FL_TOP</span> · <span class="path">FAN_FL_BOT</span><br />e o mesmo em FR / RL / RR</td>
+              <td>8 hélices. 2 por ducto, coaxial: cima e baixo. Cada uma = 1 locator, pivot no centro, 1 malha, 1 material Propeller. TOP e BOT com eixo de spin <em>invertido</em> (uma horário, outra anti-horário). Sem malhas stopped/slow/blur — o shader trata disso.</td>
+              <td><span class="ax y">Max Y</span> = <span class="ax z">sim Z</span> = eixo do ducto. Inverte o eixo no BOT (ou o sentido do objeto) para contra-rotação.</td>
+              <td>não animes o spin. O sim roda o nó. Pane = escondes / paras 4, as outras 4 ficam.</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">TILT_FL FR RL RR</span></td>
+              <td>Pai das duas hélices do ducto. Inclina o conjunto: hover (vertical) → forward (para o nariz) → um pouco up no climb / down no descent. Os 4 ducts juntos, para o carro ficar nivelado.</td>
+              <td><span class="ax x">X local</span> = pitch do ducto (frente/trás do carro)</td>
+              <td>Range largo no 3D (ex. −20° … +70°). Frame 0 = pad/hover 0°. O assistente escolhe o ângulo em voo — não keys de “modo avião”.</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="later">
+              <td><span class="path">CHUTE_CANISTER</span> · <span class="path">CHUTE_DEPLOY</span></td>
+              <td>Paraquedas de emergência. Canister no tejadilho / traseira. Deploy = saco + linhas (ou attachment pronto). Não entra no v1.</td>
+              <td>eixo de ejeção para cima / trás</td>
+              <td>0 stowed · último = aberto</td>
+              <td><span class="need later">safety</span></td>
+            </tr>
+            <tr data-need="soon">
+              <td><span class="path">DEFLECTOR_*</span></td>
+              <td>Vanes / grelhas dentro do ducto, se o modelo as tiver. Puro visual de “modo voo”.</td>
+              <td><span class="ax x">X local</span> da dobradiça da vane</td>
+              <td>0 fechado/neutro · último = deflecto de cruise</td>
+              <td><span class="need soon">se existirem</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">GEAR_FL FR RL RR</span></td>
+              <td>Compressão da suspensão. O carro assenta nos quatro cantos. Sem isto o contacto no pad flutua.</td>
+              <td><span class="ax y">Y sim</span> / vertical — o locator desce</td>
+              <td>Não retráctil: 0–50% estático no pad, 50–100% compressão. Frame 0 = T-pose.</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">WHEEL_FL FR RL RR</span></td>
+              <td>Só se a roda for malha à parte do fan. Spin no chão. Filho do GEAR_* para comprimir junto.</td>
+              <td>eixo do cubo = <span class="ax x">X sim</span> (lateral)</td>
+              <td>o sim pode rodar pelo nó; ou 0–N frames de 360° linear</td>
+              <td><span class="need must">se houver roda</span></td>
+            </tr>
+            <tr data-need="later">
+              <td><span class="path">STEER_FL FR</span></td>
+              <td>Direção no chão. Pai do GEAR da frente, ou entre GEAR e WHEEL.</td>
+              <td><span class="ax y">Y</span> (yaw da roda), 360° horário na da frente se for tipo nose-gear</td>
+              <td>0 centro · esquerda · direita. Ou 360° contínuo no fork.</td>
+              <td><span class="need later">drive</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">DOOR_L</span> / <span class="path">DOOR_R</span></td>
+              <td>Portas. Exterior e interior são duas malhas, <em>mesmos frames e mesma interpolação</em>. Handle primeiro, depois a porta.</td>
+              <td>dobradiça: <span class="ax y">Y</span> (porta de carro) ou o eixo real da dobradiça</td>
+              <td>0 fechada · último aberta. Quantos frames o gesto pedir (50–100 típico).</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="soon">
+              <td><span class="path">CANOPY</span></td>
+              <td>Se o vidro abrir à parte das portas.</td>
+              <td>dobradiça traseira ou tesoura — o eixo real</td>
+              <td>0 fechado · último aberto</td>
+              <td><span class="need soon">se abrir</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">AUTOPILOT</span> / <span class="path">AP_HOVER</span></td>
+              <td>Switch ou botão no cockpit. Sem isto o piloto não liga o hover assistido. Anima 2 posições (off/on). Liga o L:Var que o WASM lê. No v1 pode ser só visual.</td>
+              <td><span class="ax x">X local</span> (switch) ou empurrão de botão</td>
+              <td>0 off · 1 on</td>
+              <td><span class="need must">v1 mesh</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">HANDLING_Yoke_1</span><br /><span class="path">…_StickLR</span> · <span class="path">…_StickForeAft</span></td>
+              <td>Manche / cíclico. Dois helpers: roll e pitch. Malha do stick filha deles. LOD0 e LOD1 — vê-se de fora.</td>
+              <td>LR = rotação/translação roll · ForeAft = pitch. Extremos curtos: VR não pode exigir um metro de braço.</td>
+              <td>5 frames: 0 centro · 1 esq/frente · 2 centro · 3 dir/trás · 4 centro. Exportas <strong>1–3</strong>.</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">HANDLING_Collective</span></td>
+              <td>Coletivo = sobe/desce. No Chewe pode ser uma alavanca à esquerda ou o teu “throttle de carro” mapeado a coletivo.</td>
+              <td>dobradiça do lever. SDK: anima no <span class="ax x">X local</span> depois do Max.</td>
+              <td>0 baixo (chão) · último = cheio. 6 frames lineares chegam.</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="soon">
+              <td><span class="path">ENGINE_Lever_Throttle_1</span></td>
+              <td>Manete de potência / acelerador. No v1 eléctrico pode ser o mesmo gesto que o coletivo, ou um segundo lever (Joby: throttle = aceleração).</td>
+              <td><span class="ax x">X local</span></td>
+              <td>0 idle · último = max. Linear. Mais frames se tiver notches.</td>
+              <td><span class="need soon">já criar</span></td>
+            </tr>
+            <tr data-need="must">
+              <td><span class="path">HANDLING_RudderPedals</span><br /><span class="path">…_Brake_L/R</span></td>
+              <td>Yaw no ar + travões. Mesmo que o Chewe tenha volante, os pedais existem no heli-feel.</td>
+              <td>translação / rotação do pedal no eixo natural</td>
+              <td>esq · centro · dir. Travão: 0 solto · último fundo</td>
+              <td><span class="need must">v1</span></td>
+            </tr>
+            <tr data-need="later">
+              <td><span class="path">HANDLING_Wheel</span></td>
+              <td>Volante de GT. Pode ser o roll no chão, ou só set dressing no v1.</td>
+              <td>eixo da coluna</td>
+              <td>como yoke: −90° / 0 / +90° nos frames 1–3 se for comando</td>
+              <td><span class="need later">drive / cinema</span></td>
+            </tr>
+            <tr data-need="later">
+              <td><span class="path">HANDLING_Yoke_1_Hand</span><br /><span class="path">HANDLING_Yoke_1_Axes</span><br /><span class="path">HANDLING_Collective_Hand</span> · <span class="path">_Axes</span></td>
+              <td>VR. Hand = onde a mão pega (filho do comando). Axes = centro de rotação. Sem isto o Quest 3 usa bounding box e tapa os ecrãs.</td>
+              <td>orientação da pega, não o eixo de voo</td>
+              <td>estáticos (andam com o pai)</td>
+              <td><span class="need later">VR</span></td>
+            </tr>
+            <tr data-need="soon">
+              <td><span class="path">LIGHT_NavRed</span> · <span class="path">LIGHT_NavGreen</span><br /><span class="path">LIGHT_Strobe</span> · <span class="path">LIGHT_Taxi</span> · <span class="path">LIGHT_Landing</span></td>
+              <td>Malhas emissivas, não locators de voo. Os anéis laranja dos ducts são isto. Nomeia pelo tipo.</td>
+              <td>—</td>
+              <td>vis on/off via material, não key</td>
+              <td><span class="need soon">v1 visual</span></td>
+            </tr>
+            <tr data-need="no">
+              <td><span class="path">AILERON_*</span> · <span class="path">FLAPS_*</span><br /><span class="path">ELEVATOR_*</span> · <span class="path">RUDDER</span> · <span class="path">SPOILER_*</span></td>
+              <td>Superfícies de asa fixa. O Chewe não as tem. Não crias “flaps falsos” só porque o tutorial do DA62 tem. Se um dia houver um aerofólio / airbrake de carro, aí sim, com o nome que for.</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="need no">não</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:22px">Como proceder no Maya, peça a peça</h3>
+      <ol class="steps">
+        <li>Layer <span class="path">Shared</span> só com locators. Layers <span class="path">x0</span>…<span class="path">x3</span> só com malhas prefixadas.</li>
+        <li>Cria o locator (Create → Locator). Move para a dobradiça / centro do disco. <strong>Freeze Transformations + Reset</strong>. Scale 1,1,1. Sem freeze, o Max herda lixo e o blur do fan fica torto.</li>
+        <li>Alinha o eixo local ao movimento: o eixo que vai girar ou deslizar deve ficar óbvio no Local axis do locator (Display → Local Rotation Axes).</li>
+        <li>Parent da malha no locator (não o contrário). Os LODs da mesma peça no mesmo locator.</li>
+        <li>Anima só o locator. Tangentes <strong>linear</strong>. Frame 0 = pose do pad (portas fechadas, coletivo baixo, fans parados na pose neutra, tilt vertical).</li>
+        <li>Não uses Mirror / Instances / Groups como “osso”. O plugin parte. Duplica o locator, mirror do transform à mão, parenta a malha do outro lado.</li>
+        <li>No Max, cada locator animado entra num <strong>Animation Group</strong> com o <em>mesmo nome</em> da tabela. Esse nome é o que o XML chama. Frames exportados = o intervalo útil (no yoke, 1–3, não o 0 nem o 4).</li>
+        <li>Depois do primeiro FBX: no Max, selecciona <span class="path">FAN_FL_TOP</span> e <span class="path">FAN_FL_BOT</span> e confirma que o eixo local Y aponta pelo centro do ducto, em sentidos opostos. Se não apontar, rodas o locator — não “consertas” na malha.</li>
+      </ol>
+
+      <div class="grid2" style="margin-top:16px">
+        <article class="card">
+          <h3>Animation Groups para o Multi-Exporter</h3>
+          <ul class="clean">
+            <li><span class="path">FAN_*_TOP / FAN_*_BOT</span> — 8 nós; spin é shader, grupo só se houver coning</li>
+            <li><span class="path">TILT_FL</span> <span class="path">TILT_FR</span> <span class="path">TILT_RL</span> <span class="path">TILT_RR</span> — 4 grupos, ou um <span class="path">TILT_BANK</span> se os 4 forem sempre iguais</li>
+            <li><span class="path">GEAR_COMPRESSION</span></li>
+            <li><span class="path">WHEEL_FL</span> … se a roda girar por animação</li>
+            <li><span class="path">DOOR_L</span> <span class="path">DOOR_R</span> <span class="path">CANOPY</span></li>
+            <li><span class="path">HANDLING_Yoke_1_StickLR</span></li>
+            <li><span class="path">HANDLING_Yoke_1_StickForeAft</span></li>
+            <li><span class="path">HANDLING_Collective</span></li>
+            <li><span class="path">AUTOPILOT</span> / <span class="path">AP_HOVER</span></li>
+            <li><span class="path">ENGINE_Lever_Throttle_1</span></li>
+            <li><span class="path">HANDLING_RudderPedals</span></li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>O que o XML / CFG vai ler depois</h3>
+          <ul class="clean">
+            <li>8 hélices → <span class="path">prop_node.0–7</span> / <span class="path">rotor_node</span> = <span class="path">FAN_*_TOP/BOT</span></li>
+            <li>4 tilts → XML no grupo <span class="path">TILT_*</span> (v2: SimVar de velocidade + climb)</li>
+            <li>Portas → interactive_point + template <span class="path">ASOBO_ET_COMMON_Interactive_Point_Animation_Template</span></li>
+            <li>Cíclico VR → <span class="path">[VR] yoke_anim_x / yoke_anim_y</span> = nomes dos grupos StickLR / StickForeAft</li>
+            <li>Coletivo VR → <span class="path">collective_anim</span> + <span class="path">collective_node</span></li>
+            <li>AP → L:Var <span class="path">CHEWE_AP_HOVER</span> no switch <span class="path">AUTOPILOT</span>. WASM só intercepta com isto a 1.</li>
+            <li>Tilt hover/fwd → <span class="path">ASOBO_GT_Anim_Template</span> numa SimVar de velocidade / climb (v2)</li>
+          </ul>
+          <p class="muted" style="margin-top:10px">Hoje não precisas de escrever o XML. Precisas dos nomes e dos eixos iguais a esta lista, para o XML cair em cima sem rename.</p>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="checklists">
+      <span class="tag">Maya + Max</span>
+      <h2>O 3D tem de chegar ao plugin assim</h2>
+      <div class="grid2">
+        <article class="card">
+          <h3>Antes de sair do Maya</h3>
+          <ul class="clean">
+            <li>1 unidade = 1 metro. Freeze transforms.</li>
+            <li>Pivot do carro no CG / eixo das rodas, nariz +Z no Max (confirmar no plugin).</li>
+            <li>Cada hélice (8): um nó, um material, pivot no centro. TOP e BOT do mesmo ducto em contra-rotação.</li>
+            <li>Canopy separado (Glass). Interior separado (LOD + collision VR).</li>
+            <li>Nomes da tabela: <span class="path">HIPS</span>, 4× <span class="path">TILT_*</span>, 8× <span class="path">FAN_*_TOP/BOT</span>, <span class="path">GEAR_*</span>, <span class="path">DOOR_*</span>, <span class="path">HANDLING_*</span>, <span class="path">AUTOPILOT</span>. Ver <a href="#rig">Nulls e eixos</a>.</li>
+            <li>Sem keyframes negativos. Sem escala não-uniforme nos fans.</li>
+            <li>Orçamento v1 exterior LOD0: ~80–150k tris. Interior: o que o Quest 3 aguentar — começar magro.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>No 3ds Max / Multi-Exporter</h3>
+          <ul class="clean">
+            <li>Use Asobo Unique ID = on</li>
+            <li>Remove LOD Prefix = on</li>
+            <li>Generate TextureLib na primeira exportação</li>
+            <li>Export Meshes + Animations · Bake All</li>
+            <li>Reset root transforms em cada attachment</li>
+            <li>Um grupo por peça, um preset por LOD</li>
+            <li>glTF + PNG, nunca GLB com texturas embutidas</li>
+            <li>Material Propeller nas 8 hélices (TOP/BOT, sentidos opostos) — o blur é shader</li>
+            <li>Collision mesh Invisible no cockpit (VR mouse / mãos)</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="fontes">
+      <span class="tag">Abrir e deixar aberto</span>
+      <h2>Documentação que importa de verdade</h2>
+      <div class="grid2">
+        <div class="links">
+          <a href="https://docs.flightsimulator.com/msfs2024/html/7_Samples_Tutorials/Tutorials/Aircraft_Checklist/Aircraft_Creation_Workflow.htm" target="_blank" rel="noopener">Aircraft Creation Workflow<span>O checklist oficial de um avião modular 2024.</span></a>
+          <a href="https://docs.flightsimulator.com/msfs2024/html/5_Content_Configuration/Modular_SimObjects/Modular_SimObjects.htm" target="_blank" rel="noopener">Modular SimObjects<span>common / attachments / presets. É o esqueleto do Chewe.</span></a>
+          <a href="https://docs.flightsimulator.com/msfs2024/html/3_Models_And_Textures/Modeling/Aircraft/Model_Exporting.htm" target="_blank" rel="noopener">Model Exporting + Multi-Exporter 3ds Max<span>O teu passo Maya→sim.</span></a>
+          <a href="https://docs.flightsimulator.com/msfs2024/html/3_Models_And_Textures/Modeling/Aircraft/Airframe/Propellers_Turbines_And_Blades.htm" target="_blank" rel="noopener">Propellers, Turbines and Blades<span>Material Propeller, blur, rotor_node, XML de rotor.</span></a>
+        </div>
+        <div class="links">
+          <a href="https://docs.flightsimulator.com/msfs2024/html/5_Content_Configuration/CFG_Files/engines_cfg.htm" target="_blank" rel="noopener">engines.cfg<span>engine_type 6 = Electric. Até 16 motores.</span></a>
+          <a href="https://docs.flightsimulator.com/msfs2024/html/5_Content_Configuration/CFG_Files/flight_model_cfg.htm" target="_blank" rel="noopener">flight_model.cfg<span>Esqueleto do v1. O hover/forward assistido é WASM.</span></a>
+          <a href="https://docs.flightsimulator.com/msfs2024/html/3_Models_And_Textures/Modeling/Aircraft/Airframe/Animations/Animations_Overview.htm" target="_blank" rel="noopener">Animations Overview<span>Helpers, HIPS, PLOTs, frame 0 = T-pose, keys lineares.</span></a>
+          <a href="https://docs.flightsimulator.com/msfs2024/html/3_Models_And_Textures/Modeling/Aircraft/Cockpit/Animations/Yoke_Animation.htm" target="_blank" rel="noopener">Yoke / Collective<span>5 frames do cíclico, coletivo linear, nomes HANDLING_*.</span></a>
+          <a href="https://docs.flightsimulator.com/msfs2024/html/3_Models_And_Textures/Modeling/Aircraft/Cockpit/VR_Helpers.htm" target="_blank" rel="noopener">VR Helpers<span>Quest 3 não perdoa collision e eyepoint maus.</span></a>
+          <a href="https://docs.flightsimulator.com/msfs2024/html/7_Samples_Tutorials/Samples_And_Tutorials.htm" target="_blank" rel="noopener">Samples (Cabri G2 + SimpleAircraft)<span>Descarregar pelo Help do DevMode, não pelo site.</span></a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <footer>
+      <p class="sign">Ralph Flying Machines · Chewe</p>
+      <p>Actualizado 17 Ago 2026. Este HTML é o guia de desenvolvimento. Hover AP off = heli. Hover AP on = station-keep, stick em ângulo. Forward = ducts a inclinar. WASM nosso.</p>
+      <p style="margin-top:8px">Próximo passo, quando disseres: projecto SDK vazio e um cubo com 4 tilts a pairar.</p>
+    </footer>
+  </div>
+  <script>
+    (function () {
+      var bar = document.getElementById("rig-filt");
+      if (!bar) return;
+      var rows = document.querySelectorAll("#rig-table tbody tr");
+      bar.addEventListener("click", function (e) {
+        var btn = e.target.closest("button");
+        if (!btn) return;
+        bar.querySelectorAll("button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+        var f = btn.getAttribute("data-f");
+        rows.forEach(function (r) {
+          r.classList.toggle("hide", f !== "all" && r.getAttribute("data-need") !== f);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
