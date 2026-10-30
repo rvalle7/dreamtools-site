@@ -78,7 +78,7 @@
     ctx.fillStyle = '#000';
     // ripas proporcionais a tela (no celular ficam mais finas)
     const k = Math.min(1, Math.min(innerWidth, innerHeight) / 900);
-    const passo = 31 * 1.24 * ESC * Math.min(1, 2 * k) * 1.15, ripa = passo * 0.59;   // no celular o dobro do que era (no PC nao muda)
+    const passo = 31 * 1.24 * ESC * Math.min(1, 2 * k) * 1.15 * 0.85, ripa = passo * 0.59;   // no celular o dobro do que era (no PC nao muda)
     for (let i = -60; i < 60; i++) {
       // cada ripa chacoalha um pouquinho nas rajadas
       const dy = rajada * passo * 0.22 * Math.sin(t * 0.011 + i * 1.7);
@@ -92,7 +92,7 @@
   function medir() {
     W = cv.width = Math.max(200, Math.round(innerWidth * 1.24 * ESC));
     H = cv.height = Math.max(150, Math.round(innerHeight * 1.24 * ESC));
-    B = Math.max(W, H * 0.6);
+    B = Math.max(W, H * 0.6) * 0.85;   // plantas 15% menores
   }
   medir();
   addEventListener('resize', medir);
