@@ -77,7 +77,8 @@
     ctx.transform(1, 0, -0.21, 1, 0, 0);
     ctx.fillStyle = '#000';
     // ripas proporcionais a tela (no celular ficam mais finas)
-    const passo = 31 * 1.24 * ESC * Math.min(1, Math.min(innerWidth, innerHeight) / 900) * 1.15, ripa = passo * 0.59;
+    const k = Math.min(1, Math.min(innerWidth, innerHeight) / 900);
+    const passo = 31 * 1.24 * ESC * Math.min(1, 2 * k) * 1.15, ripa = passo * 0.59;   // no celular o dobro do que era (no PC nao muda)
     for (let i = -60; i < 60; i++) {
       // cada ripa chacoalha um pouquinho nas rajadas
       const dy = rajada * passo * 0.22 * Math.sin(t * 0.011 + i * 1.7);
