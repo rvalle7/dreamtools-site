@@ -61,12 +61,12 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
    --alt = altura sobre a mesa (1 caindo, 0 encostada): longe a projecao e comprida e transparente,
    ao encostar encolhe ate o filete fino e fica mais opaca. O mouse mexe na direcao o tempo todo. */
 @property --alt { syntax: '<number>'; inherits: true; initial-value: 0; }
-.capa:not(.escolhida) { filter: drop-shadow(calc((var(--sx, 0) * .45 + 1) * (1 + var(--alt) * 280) * 1px) calc((var(--sy, 0) * .45 + 2) * (1 + var(--alt) * 280) * 1px) 0 rgba(0, 0, 0, calc(.3 - var(--alt) * .23))); }
+.capa:not(.escolhida) { filter: drop-shadow(calc((var(--sx, 0) * .6 + .4) * (1 + var(--alt) * 280) * 1px) calc((var(--sy, 0) * .6 + .8) * (1 + var(--alt) * 280) * 1px) 0 rgba(0, 0, 0, calc(.3 - var(--alt) * .23))); }
 .capas.coluna { flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 4vh; padding-top: 8vh; }
 .capa { position: relative; width: var(--c); height: var(--c); padding: 0;
   transform: translateY(70vh) scale(1.9) rotate(calc(var(--i) * 6deg - 3deg)); opacity: 0; --alt: 1;
   transition: transform 1.5s cubic-bezier(.16, .84, .3, 1.06) calc(var(--i) * .3s), opacity .5s ease calc(var(--i) * .3s),
-    --alt 1.5s cubic-bezier(.16, .84, .3, 1) calc(var(--i) * .3s); }
+    --alt 1.5s cubic-bezier(.3, .45, .35, 1) calc(var(--i) * .3s);   /* a projecao longa fica mais tempo na tela */ }
 .capa img { width: 100%; height: 100%; object-fit: cover; pointer-events: none;
   transition: box-shadow .6s var(--lento), transform .6s var(--lento); }
 .capas.assentou .capa { transform: none; opacity: 1; --alt: 0; }
@@ -188,7 +188,7 @@ body:not(.intro) #abertura { visibility: hidden; }
 .dupla.invertida .foto { order: 2; }
 .foto { margin: 0; height: 66vh; overflow: hidden; }
 /* fotos das telas: o mesmo filete de sombra seca das capas, seguindo a luz do mouse */
-.pagina .foto { filter: drop-shadow(calc((var(--sx, 0) * .45 + 1) * 1px) calc((var(--sy, 0) * .45 + 2) * 1px) 0 rgba(0, 0, 0, .3)); }
+.pagina .foto { filter: drop-shadow(calc((var(--sx, 0) * .6 + .4) * 1px) calc((var(--sy, 0) * .6 + .8) * 1px) 0 rgba(0, 0, 0, .3)); }
 .foto img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); transition: transform 1.6s var(--lento); }
 .texto { max-width: 32em; }
 .texto p { font-size: 18px; line-height: 1.75; margin: 0 0 1.1em; }

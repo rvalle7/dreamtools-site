@@ -261,14 +261,17 @@
   // a luz segue o mouse com atraso (bem sutil); as sombras de folhagem e veneziana se alternam devagar
   const foco = $('#luz .foco');
   let lx = innerWidth * 0.6, ly = innerHeight * 0.4, mx = lx, my = ly;
+  let sxl = lx, syl = ly;
   addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
   (function luz() {
     lx += (mx - lx) * 0.04; ly += (my - ly) * 0.04;
     foco.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
     // direcao da sombra: para o lado oposto da luz (sx ate 8, sy ate 6)
     // (no body: vale para as capas, ate caindo, e para as fotos das outras telas)
-    document.body.style.setProperty('--sx', ((innerWidth / 2 - lx) / innerWidth * 16).toFixed(1));
-    document.body.style.setProperty('--sy', ((innerHeight / 2 - ly) / innerHeight * 12).toFixed(1));
+    // a sombra segue o mouse bem mais rapido que a luz, para a projecao girar ja durante a queda das capas
+    sxl += (mx - sxl) * 0.15; syl += (my - syl) * 0.15;
+    document.body.style.setProperty('--sx', ((innerWidth / 2 - sxl) / innerWidth * 16).toFixed(2));
+    document.body.style.setProperty('--sy', ((innerHeight / 2 - syl) / innerHeight * 12).toFixed(2));
     requestAnimationFrame(luz);
   })();
 
