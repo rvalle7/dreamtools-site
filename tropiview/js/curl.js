@@ -53,23 +53,41 @@
     }
 
     _tex(img, verso) {
-      const k = img.src + (verso ? '#v' : '');
+      // a chave e o endereco da imagem (mesmo antes de baixar), nunca vazio: cada folha tem a sua textura
+      if (!img.src && img.dataset.src) img.src = img.dataset.src;     // pegou antes de baixar: baixa agora
+      const k = (img.dataset.src || img.src) + (verso ? '#v' : '');
       let t = this.cache.get(k);
+      const pronta = img.complete && img.naturalWidth > 0;
+      if (t && !t.userData.pronta && pronta) { this._pinta(t, img); }  // a imagem chegou depois: pinta agora
       if (!t) {
-        // o <img> do DOM tem width = tamanho na tela; a textura precisa do tamanho real
+        // o <img> do DOM tem width = tamanho na tela; a textura usa o tamanho real (desenhado num canvas)
         const cv = document.createElement('canvas');
-        cv.width = img.naturalWidth || 800; cv.height = img.naturalHeight || 800;
-        if (img.complete && img.naturalWidth) cv.getContext('2d').drawImage(img, 0, 0);
-        else img.addEventListener('load', () => { cv.getContext('2d').drawImage(img, 0, 0); t.needsUpdate = true; }, { once: true });
+        cv.width = cv.height = 2;
         t = new THREE.Texture(cv);
         t.encoding = THREE.sRGBEncoding;
         t.anisotropy = 4;
         if (verso) { t.repeat.set(1, -1); t.offset.set(0, 1); }
-        t.needsUpdate = true;
+        t.userData.pronta = false;
+        if (pronta) this._pinta(t, img);
+        else {
+          // enquanto baixa, a folha mostra branco (papel), nunca preto
+          const c = cv.getContext('2d'); c.fillStyle = '#f4f2ee'; c.fillRect(0, 0, 2, 2); t.needsUpdate = true;
+          img.addEventListener('load', () => { this._pinta(t, img); if (this.aoPintar) this.aoPintar(); }, { once: true });
+        }
         this.cache.set(k, t);
-        if (this.cache.size > 12) { const [k0, t0] = this.cache.entries().next().value; t0.dispose(); this.cache.delete(k0); }
+        if (this.cache.size > 12) {
+          for (const [k0, t0] of this.cache) {          // descarta a mais antiga que nao esta em uso agora
+            if (t0 !== this.matF.map && t0 !== this.matV.map && t0 !== t) { t0.dispose(); this.cache.delete(k0); break; }
+          }
+        }
       }
       return t;
+    }
+    _pinta(t, img) {
+      const cv = document.createElement('canvas');
+      cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+      cv.getContext('2d').drawImage(img, 0, 0);
+      t.image = cv; t.userData.pronta = true; t.needsUpdate = true;
     }
 
     folha(imgFrente, imgVerso) {

@@ -16,6 +16,7 @@
       this.palco.className = 'paginas';
       el.appendChild(this.palco);
       this.curl = new Curl(el);
+      this.curl.aoPintar = () => { if (this.vira) this._desenhar(); };
       this._eventos();
       addEventListener('resize', () => this.medir());
     }
