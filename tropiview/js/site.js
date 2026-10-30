@@ -218,7 +218,16 @@
     const fx = (e.clientX / innerWidth - 0.5), fy = (e.clientY / innerHeight - 0.5);
     $$('.pagina .foto img').forEach(im => im.style.transform = `translate(${(-fx * 9).toFixed(2)}%, ${(-fy * 9).toFixed(2)}%) scale(1.2)`);
   });
-  addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch' && !e.target.closest('#livro')) mostrarUI(); });
+  // no celular o menu so aparece com um toque rapido (tap); rolar ou arrastar nao mostra
+  let toque = null;
+  addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') toque = { x: e.clientX, y: e.clientY, t: performance.now(), livro: !!e.target.closest('#livro') }; });
+  addEventListener('pointerup', (e) => {
+    if (e.pointerType !== 'touch' || !toque) return;
+    const tap = Math.hypot(e.clientX - toque.x, e.clientY - toque.y) < 10 && performance.now() - toque.t < 350;
+    if (tap && !toque.livro) mostrarUI();
+    toque = null;
+  });
+  addEventListener('pointercancel', () => { toque = null; });   // o navegador assumiu o gesto (rolagem)
   document.addEventListener('focusin', (e) => { if (e.target.closest('.ui')) mostrarUI(); });
 
   // ---------- luz sobre a mesa ----------
