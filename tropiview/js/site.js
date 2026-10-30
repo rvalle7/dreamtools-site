@@ -180,7 +180,8 @@
 
   // ---------- controles ----------
   $$('.lang').forEach(b => b.onclick = () => { est.lang = b.dataset.lang; guardar('lang', est.lang); traduzir(); });
-  $$('.tam').forEach(b => b.onclick = () => { est.tam = b.dataset.tam; carregarCal(); });
+  // trocar 30/18 mantem a pagina que esta aberta
+  $$('.tam').forEach(b => b.onclick = () => { if (est.tam === b.dataset.tam) return; const k = livro.k; est.tam = b.dataset.tam; carregarCal(); livro.ir(k); });
   $('#prox').onclick = () => livro.prox();
   $('#ant').onclick = () => livro.ant();
   const cheia = $('#cheia');

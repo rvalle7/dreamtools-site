@@ -80,12 +80,13 @@
     _comecar(i, G, P) {
       const s = this.folhas[i];
       this.curl.folha(s.frente, s.verso);
-      this.vira = { i, G, P, t: 0 };
+      this.vira = { i, G, P, t: 0, phi: undefined };
       this._desenhar();
       this.curl.visivel(true);
     }
     _desenhar() {
-      this.vira.t = this.curl.desenhar(this.vira.G, this.vira.P);
+      const v = this.vira;
+      v.t = this.curl.desenhar(v.G, v.P, v.phi);
       this.render();
     }
     _terminar(virou) {
@@ -99,14 +100,15 @@
       if (this.fila) { const d = Math.sign(this.fila); this.fila -= d; d > 0 ? this.prox() : this.ant(); }
     }
     // leva o ponteiro ate o alvo, suave na saida e na chegada
-    // solta = true: saiu da mao; desacelera e assenta suave (ease out). Senao, ease in-out.
+    // anima o giro da folha ate o alvo (0 = embaixo, PI = virada). solta = saiu da mao: so desacelera.
     _animar(alvo, dur, fim, solta) {
-      const v = this.vira, P0 = { ...v.P }, t0 = performance.now();
+      const v = this.vira, f0 = this.curl.phi ?? (v.t * Math.PI), x0 = v.P.x, t0 = performance.now();
       cancelAnimationFrame(this._raf);
       const passo = (agora) => {
         const u = Math.min(1, (agora - t0) / dur);
         const e = solta ? 1 - Math.pow(1 - u, 3) : (1 - Math.cos(Math.PI * u)) / 2;
-        v.P = { x: P0.x + (alvo.x - P0.x) * e, y: P0.y + (alvo.y - P0.y) * e };
+        v.phi = f0 + (alvo - f0) * e;
+        v.P = { x: x0 + (v.G.x - x0) * e, y: v.P.y };       // o puxao para o lado se desfaz junto
         this._desenhar();
         if (u < 1) this._raf = requestAnimationFrame(passo); else fim();
       };
@@ -117,15 +119,17 @@
       if (this.vira) { this.fila = Math.min(this.fila + 1, 3); return; }
       if (this.k >= this.N) return;
       const G = { x: this.S * 0.38, y: this.S };
-      this._comecar(this.k, G, { ...G });
-      this._animar({ x: G.x - this.S * 0.12, y: -G.y }, DUR, () => this._terminar(true));
+      this._comecar(this.k, G, { x: G.x - this.S * 0.1, y: G.y });
+      this.vira.phi = 0; this.curl.phi = 0;
+      this._animar(Math.PI, DUR, () => this._terminar(true));
     }
     ant() {
       if (this.vira) { this.fila = Math.max(this.fila - 1, -3); return; }
       if (this.k <= 0) return;
       const G = { x: this.S * 0.38, y: this.S };
-      this._comecar(this.k - 1, G, { x: G.x, y: -G.y });
-      this._animar({ x: G.x - this.S * 0.12, y: G.y }, DUR, () => this._terminar(false));
+      this._comecar(this.k - 1, G, { x: G.x - this.S * 0.1, y: -G.y });
+      this.vira.phi = Math.PI; this.curl.phi = Math.PI;
+      this._animar(0, DUR, () => this._terminar(false));
     }
     ir(alvo) { // pula direto (sem animar cada folha)
       cancelAnimationFrame(this._raf);
@@ -173,9 +177,8 @@
           const vel = p1 && p0 && p1[0] > p0[0] ? (p1[1] - p0[1]) / (p1[0] - p0[0]) * 1000 : 0;
           virou = Math.abs(vel) > 1.2 ? vel > 0 : v.t > 0.5;
         }
-        const alvo = virou ? { x: v.G.x, y: -v.G.y } : { x: v.G.x, y: v.G.y };
         const falta = Math.abs((virou ? 1 : 0) - v.t);
-        this._animar(alvo, Math.max(700, DUR * 1.3 * falta), () => this._terminar(virou), true);
+        this._animar(virou ? Math.PI : 0, Math.max(650, DUR * 1.2 * falta), () => this._terminar(virou), true);
       };
       el.addEventListener('pointerup', solta);
       el.addEventListener('pointercancel', solta);

@@ -82,16 +82,28 @@
     // Folha = giro rigido em volta da dobradica (phi) + a ponta pega descolando num cilindro (peel),
     // na direcao em que o mouse puxa. A borda de cima nunca descola.
     // G = ponto pego (x do centro, y para baixo da dobradica); P = ponteiro. Devolve t (0..1).
-    _phi(G, P) {   // giro em que a beira pega fica na altura do ponteiro (com perspectiva)
+    // a folha inteira curva ao longo do comprimento: angulo cresce da emenda (a0) ate a ponta (a0 + 2b).
+    // A mesma curva em todas as colunas: o papel nao estica.
+    _arco(phi) {
+      let b = 0.55 * Math.sin(phi);
+      b = Math.min(b, phi, Math.PI - phi);           // nada entra na parede
+      return { a0: phi - b, k: 2 * b / this.H };
+    }
+    _noArco(c, v) {   // ponto a distancia v da emenda -> [para baixo, para a camera, angulo ali]
+      const a1 = c.a0 + c.k * v;
+      if (Math.abs(c.k) < 1e-7) return [v * Math.cos(c.a0), v * Math.sin(c.a0), a1];
+      return [(Math.sin(a1) - Math.sin(c.a0)) / c.k, (Math.cos(c.a0) - Math.cos(a1)) / c.k, a1];
+    }
+    _phi(G, P) {   // giro em que o ponto pego fica na altura do ponteiro (com a curva e a perspectiva)
       const D = this.D, v = G.y;
-      const proj = (f) => v * Math.cos(f) * D / (D - v * Math.sin(f));
+      const proj = (f) => { const [y, z] = this._noArco(this._arco(f), v); return y * D / (D - z); };
       let lo = 0, hi = Math.PI;
       for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2; if (proj(m) > P.y) lo = m; else hi = m; }
       return (lo + hi) / 2;
     }
-    desenhar(G, P) {
+    desenhar(G, P, phiFixo) {
       const a = this.geo.attributes.position.array, b = this.base, W = this.W, W2 = W / 2, H = this.H;
-      const phi = this._phi(G, P), t = phi / Math.PI, sp = Math.sin(phi);
+      const phi = phiFixo ?? this._phi(G, P), t = phi / Math.PI, sp = Math.sin(phi);
       // peel: a ponta pega anda (no plano da folha) para cima e para o lado do mouse
       const lado = Math.max(-1, Math.min(1, (P.x - G.x) / W2));
       let dx = lado * 0.45, dy = -1; const L = Math.hypot(dx, dy); dx /= L; dy /= L;
@@ -119,7 +131,7 @@
         for (let k = 0; k < 20; k++) { const m = (lo + hi) / 2; if (invade(linha(m)) > 0) hi = m; else lo = m; }
         peel = lo; l = linha(peel);
       }
-      const cf = Math.cos(phi);
+      const arco = this._arco(phi);
       for (let i = 0; i < a.length; i += 3) {
         const px = b[i], py = b[i + 1];
         let qx = px, qy = py, z = 0;
@@ -132,8 +144,9 @@
             qx = px - l.nx * s + l.nx * o; qy = py - l.ny * s + l.ny * o;
           }
         }
-        // gira tudo em volta da dobradica
-        const yy = qy * cf - z * sp, zz = qy * sp + z * cf;
+        // leva o ponto para a folha curvada em volta da emenda; o descolar da ponta vai pela normal
+        const [yb, zb, al] = this._noArco(arco, qy);
+        const yy = yb - z * Math.sin(al), zz = zb + z * Math.cos(al);
         a[i] = qx; a[i + 1] = -yy; a[i + 2] = zz;
       }
       this.geo.attributes.position.needsUpdate = true;
@@ -142,6 +155,7 @@
       this.sombra.scale.set(1, 1, 0);
       this.matS.opacity = 0.18 * sp;
       this.r.render(this.cena, this.cam);
+      this.phi = phi;
       return t;
     }
   }
