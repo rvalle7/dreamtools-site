@@ -49,10 +49,24 @@
   capas.innerHTML = CATALOGO.map((c, i) =>
     `<button class="capa" data-cal="${c.id}" style="--i:${i}" aria-label="${c.nome}"><img alt="" src="${capaDe(c.id)}" draggable="false"></button>`).join('');
   function medirMesa() {
-    const n = CATALOGO.length, porLinha = Math.min(n, 4);
-    const lado = Math.min((innerWidth * 0.74 - (porLinha - 1) * innerWidth * 0.05) / porLinha, innerHeight * 0.5);
+    const n = CATALOGO.length;
+    const empe = innerHeight > innerWidth * 1.15;   // celular em pe: um embaixo do outro
+    capas.classList.toggle('coluna', empe);
+    let lado;
+    if (empe) {
+      const gap = innerHeight * 0.04, porCol = Math.min(n, 3);
+      lado = Math.min(innerWidth * 0.66, (innerHeight * 0.74 - (porCol - 1) * gap) / porCol);
+    } else {
+      const porLinha = Math.min(n, 4);
+      lado = Math.min((innerWidth * 0.74 - (porLinha - 1) * innerWidth * 0.05) / porLinha, innerHeight * 0.5);
+    }
     capas.style.setProperty('--c', Math.floor(lado) + 'px');
   }
+  // as capas precisam estar carregadas antes de cair na mesa (no celular a internet e mais lenta)
+  const capasProntas = Promise.race([
+    Promise.all($$('.capa img').map(im => im.decode ? im.decode().catch(() => {}) : Promise.resolve())),
+    new Promise(r => setTimeout(r, 8000)),
+  ]);
   // os calendarios caem de tras da camera, um depois do outro, e se assentam na mesa
   function entrarMesa() {
     $$('.capa').forEach(c => { c.style.transition = 'none'; c.style.transform = ''; c.style.opacity = ''; });
@@ -245,7 +259,7 @@
       if (acabou) return; acabou = true;
       document.body.classList.remove('intro', 'desenha', 'brilha', 'plim');
       mostrarUI();
-      setTimeout(entrarMesa, 250);   // os calendarios caem na mesa
+      capasProntas.then(() => setTimeout(entrarMesa, 250));   // os calendarios caem na mesa quando as fotos chegaram
     };
     $('#abertura').addEventListener('click', fim);
     requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('desenha')));

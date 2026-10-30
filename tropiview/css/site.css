@@ -54,6 +54,7 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
 /* ---------- a mesa ---------- */
 #mesa { display: grid; place-items: center; }
 .capas { --c: 300px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5vw; padding-top: 4vh; }
+.capas.coluna { flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 4vh; padding-top: 8vh; }
 .capa { position: relative; width: var(--c); height: var(--c); padding: 0;
   transform: translateY(70vh) scale(1.9) rotate(calc(var(--i) * 6deg - 3deg)); opacity: 0;
   transition: transform 1.5s cubic-bezier(.16, .84, .3, 1.06) calc(var(--i) * .3s), opacity .5s ease calc(var(--i) * .3s); }
@@ -188,7 +189,6 @@ body:not(.intro) #abertura { visibility: hidden; }
 @media (max-width: 820px) {
   .marca { width: 112px; }
   .menu { top: 100px; font-size: 15px; }
-  .capas { gap: 6vw; padding-top: 10vh; }
   .dupla { grid-template-columns: 1fr; padding: 220px 6vw 40px; gap: 4vh; align-content: start; overflow-y: auto; }
   .dupla.invertida .foto { order: 0; }
   .foto { height: 30vh; }

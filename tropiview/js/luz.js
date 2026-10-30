@@ -5,6 +5,9 @@
   const cv = document.getElementById('sombra');
   if (!cv) return;
   const ctx = cv.getContext('2d');
+  // o tamanho e o desfoque tambem vao aqui, para funcionar mesmo se o navegador ainda tiver o CSS antigo
+  Object.assign(cv.style, { position: 'absolute', left: '-12%', top: '-12%', width: '124%', height: '124%',
+    opacity: '.15', mixBlendMode: 'multiply', filter: 'blur(6px)' });
   const ESC = 0.25;
   let W = 0, H = 0;
 
