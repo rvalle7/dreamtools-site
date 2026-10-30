@@ -245,3 +245,10 @@ body:not(.intro) #abertura { visibility: hidden; }
   .medidas .ficha dd { font-size: 13px; line-height: 1.4; }
   .esquema { max-width: 150px; }
 }
+
+/* na abertura so o botao de tela cheia aparece (fade in), para ver a vinheta em tela cheia */
+body.intro .ui-top { z-index: 110; }
+body.intro .menu, body.intro .marca { pointer-events: none; }
+body.intro .ctrl { opacity: 1; pointer-events: auto; animation: aparece-cheia 1.2s .4s both; }
+body.intro .ctrl .lang { opacity: 0; pointer-events: none; }
+@keyframes aparece-cheia { from { opacity: 0; } }
