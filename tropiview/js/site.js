@@ -318,14 +318,18 @@
     document.getElementById('abertura').appendChild(ov);
     // as pecas ficam paradas; so acendem e apagam em sequencia. SENTIDO 1 = de dentro para fora (saindo
     // do tunel, vindo para a camera); -1 = de fora para dentro (entrando).
-    const SENTIDO = 1, N = aneis.length, DUR = window.__tunelDur || 460, t0 = performance.now();
-    ov.style.opacity = 0.22;
+    const SENTIDO = 1, N = aneis.length, DUR = window.__tunelDur || 900, t0 = performance.now();
+    const RASTRO = 5;                                              // ~5 aneis acesos de cada vez, em leque
+    ov.style.opacity = 0.26;
     const passo = (t) => {
-      const u = Math.min(1, (t - t0) / DUR), pos = u * (N + 3);
+      const u = Math.min(1, (t - t0) / DUR), pos = u * (N + RASTRO + 1);
       aneis.forEach((g, i) => {
         const k = SENTIDO > 0 ? N - 1 - i : i;                     // ordem de acender
         const d = pos - k;
-        g.style.opacity = d >= 0 && d < 3 ? (d < 2 ? 1 : 3 - d).toFixed(2) : 0;
+        let o = 0;
+        if (d > 0 && d < 0.35) o = d / 0.35;                       // acende rapido
+        else if (d >= 0.35) o = Math.pow(Math.max(0, 1 - (d - 0.35) / RASTRO), 1.6);   // apaga devagar
+        g.style.opacity = o.toFixed(3);
       });
       if (u < 1) requestAnimationFrame(passo); else ov.remove();
     };
