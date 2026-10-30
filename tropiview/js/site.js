@@ -289,6 +289,43 @@
     img.src = `img/${chave}/p${String(TV_SEQ[chave].meses[+pag - 1]).padStart(2, '0')}-top.webp`;
   });
 
+  // ---------- tunel: o quadradinho da marca repetido para fora, como obturador / tunel de fotos ----------
+  // So o desenho, branco e transparente, sem brilho; bem rapido (~1/3 de segundo).
+  window.__tunel = (d) => { window.__tunelDur = d; tunel(document.querySelector(".logo-intro svg") || document.querySelector(".marca svg")); };
+  function tunel(svgLogo) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const tmp = document.createElement('div'); tmp.innerHTML = TV_LOGO;
+    const pecas = [...tmp.querySelectorAll('.lg1, .lg2, .lg3')].map(e => e.outerHTML).join('');
+    const ICX = 236, ICY = 40, ICL = 80;                         // centro e lado do quadradinho no desenho do logo
+    const vb = svgLogo.viewBox.baseVal, r = svgLogo.getBoundingClientRect(), e = r.width / vb.width;
+    const cx = r.left + ICX * e, cy = r.top + ICY * e;
+    const ov = document.createElementNS(ns, 'svg');
+    ov.setAttribute('class', 'tunel');
+    ov.setAttribute('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
+    const N = 9, K = 1.75, GIRO = 13;                          // camadas, quanto cresce e quanto gira cada uma
+    const camadas = [];
+    for (let i = 0; i < N; i++) {
+      const g = document.createElementNS(ns, 'g');
+      g.innerHTML = pecas;
+      ov.appendChild(g); camadas.push(g);
+    }
+    document.getElementById('abertura').appendChild(ov);
+    const t0 = performance.now(), DUR = window.__tunelDur || 340;
+    const passo = (t) => {
+      const u = Math.min(1, (t - t0) / DUR);
+      const andou = u * 2.2;                                     // quantas camadas a camera atravessa
+      camadas.forEach((g, i) => {
+        const n = i + andou, esc = e * Math.pow(K, n);
+        g.setAttribute('transform', `translate(${cx} ${cy}) rotate(${GIRO * n}) scale(${esc}) translate(${-ICX} ${-ICY})`);
+        // cada camada some quando fica enorme (passou pela camera)
+        g.style.opacity = Math.max(0, 1 - (esc * ICL) / (Math.max(innerWidth, innerHeight) * 2.6)).toFixed(3);
+      });
+      ov.style.opacity = (0.2 * Math.sin(Math.PI * u)).toFixed(3);   // entra e sai suave, bem transparente
+      if (u < 1) requestAnimationFrame(passo); else ov.remove();
+    };
+    requestAnimationFrame(passo);
+  }
+
   // ---------- abertura: a marca se desenha, brilha, faz plim e sobe para o canto ----------
   function abertura() {
     const box = $('.logo-intro');
@@ -337,6 +374,7 @@
       est_.style.left = (r.left + r.width * 0.98) + 'px';
       est_.style.top = (r.top + r.height * 0.06) + 'px';
     }, 3500);
+    setTimeout(() => tunel(svg), 4000);   // o quadradinho se replica para fora, passando por tras da camera
     setTimeout(() => document.body.classList.add('plim'), 4300);
     setTimeout(() => {   // sobe para o canto
       const r0 = box.getBoundingClientRect(), r1 = $('.marca').getBoundingClientRect();
