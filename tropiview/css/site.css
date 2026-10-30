@@ -222,6 +222,9 @@ body:not(.intro) #abertura { visibility: hidden; }
   .menu { top: 100px; font-size: 15px; }
   .dupla { grid-template-columns: 1fr; padding: 220px 6vw 40px; gap: 4vh; align-content: start; overflow-y: auto; }
   .dupla.invertida .foto { order: 0; }
+  /* contato no celular igual as outras telas: foto logo abaixo do menu, texto embaixo, rola se precisar */
+  #contato { justify-content: flex-start; padding: 220px 6vw 40px; overflow-y: auto; }
+  .foto-contato { width: 100%; }
   .foto { height: 30vh; }
   .ui-bot { flex-wrap: wrap; justify-content: center; height: auto; padding-bottom: 10px; gap: 6px 18px; }
   .folha { margin-left: 0; }
