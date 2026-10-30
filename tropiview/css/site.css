@@ -176,6 +176,9 @@ body:not(.intro) #abertura { visibility: hidden; }
 .ficha dt { color: var(--mute); font: 300 13px var(--display); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 2px; }
 .ficha dd { margin: 0; font-size: 15px; }
 #contato { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 8vw; }
+/* foto em cima do "get in touch" */
+.foto-contato { width: min(54vh, 78vw); height: auto; aspect-ratio: 3 / 2; margin-bottom: 4.5vh; flex: none; }
+#contato h2 { margin-bottom: .35em; }
 #contato p { color: var(--mute); max-width: 30em; margin: 0 0 2.2em; }
 .email { font: 300 clamp(28px, 4.2vw, 60px)/1.2 var(--display); letter-spacing: .02em; text-decoration: none;
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .6s var(--lento); }
