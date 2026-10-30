@@ -320,7 +320,7 @@
     // do tunel, vindo para a camera); -1 = de fora para dentro (entrando).
     const SENTIDO = 1, N = aneis.length, DUR = window.__tunelDur || 1300, t0 = performance.now();
     const RASTRO = 6.6;                                            // ~5 aneis acesos de cada vez, em leque
-    ov.style.opacity = 0.3;
+    ov.style.opacity = 1;                                           // os primeiros, colados na marca, tao fortes quanto ela
     const passo = (t) => {
       const u = Math.min(1, (t - t0) / DUR), pos = u * (N + RASTRO + 1);
       aneis.forEach((g, i) => {
@@ -329,9 +329,10 @@
         let o = 0;
         if (d > 0 && d < 0.35) o = d / 0.35;                       // acende rapido
         else if (d >= 0.35) o = Math.max(0, 1 - (d - 0.35) / RASTRO);   // apaga devagar: o rastro fica em escada (1, .8, .6, .4, .2)
-        // perto da marca acende a 100%; chegando na borda da tela ja esta quase apagado (5%)
+        // perto da marca acende a 100%; vai apagando para fora e chega suave (easy in) nos 5% da borda
         const perto = k / Math.max(1, N - 1);
-        g.style.opacity = (o * Math.pow(0.05, perto)).toFixed(3);
+        const forca = 0.05 + 0.95 * Math.pow(1 - perto, 2);
+        g.style.opacity = (o * forca).toFixed(3);
       });
       if (u < 1) requestAnimationFrame(passo); else ov.remove();
     };
