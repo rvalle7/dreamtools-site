@@ -178,6 +178,23 @@
   addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch' && !e.target.closest('#livro')) mostrarUI(); });
   document.addEventListener('focusin', (e) => { if (e.target.closest('.ui')) mostrarUI(); });
 
+  // ---------- luz sobre a mesa ----------
+  // a luz segue o mouse com atraso (bem sutil); as sombras de folhagem e veneziana se alternam devagar
+  const foco = $('#luz .foco');
+  let lx = innerWidth * 0.6, ly = innerHeight * 0.4, mx = lx, my = ly;
+  addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
+  (function luz() {
+    lx += (mx - lx) * 0.04; ly += (my - ly) * 0.04;
+    foco.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
+    // sombra das capas: no maximo 8 px, para o lado oposto da luz
+    capas.style.setProperty('--sx', ((innerWidth / 2 - lx) / innerWidth * 16).toFixed(1));
+    capas.style.setProperty('--sy', ((innerHeight / 2 - ly) / innerHeight * 12).toFixed(1));
+    requestAnimationFrame(luz);
+  })();
+  const gobos = $$('#luz .gobo');
+  let gAtual = 0;
+  setInterval(() => { gobos[gAtual].classList.remove('on'); gAtual = (gAtual + 1) % gobos.length; gobos[gAtual].classList.add('on'); }, 26000);
+
   // ---------- controles ----------
   $$('.lang').forEach(b => b.onclick = () => { est.lang = b.dataset.lang; guardar('lang', est.lang); traduzir(); });
   // trocar 30/18 mantem a pagina que esta aberta
