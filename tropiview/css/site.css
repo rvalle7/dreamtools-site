@@ -40,8 +40,6 @@ a { color: inherit; }
   border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 244, 222, .22), rgba(255, 244, 222, .07) 55%, transparent);
   mix-blend-mode: soft-light; will-change: transform; opacity: 0; transition: opacity 2s; }
 body:not(.intro) .foco { opacity: 1; }
-/* as capas na mesa jogam a sombra para o lado oposto da luz */
-.capas.assentou .capa:not(.escolhida) { filter: drop-shadow(calc(var(--sx, 0) * 1px) calc(var(--sy, 0) * 1px) 10px rgba(0, 0, 0, .14)); }
 
 /* ---------- camadas (mesa, calendario, paginas) ---------- */
 .camada { position: fixed; inset: 0; opacity: 0; visibility: hidden; transition: opacity .8s var(--suave), visibility 0s .8s; }
@@ -64,11 +62,9 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
   transform: translateY(70vh) scale(1.9) rotate(calc(var(--i) * 6deg - 3deg)); opacity: 0;
   transition: transform 1.5s cubic-bezier(.16, .84, .3, 1.06) calc(var(--i) * .3s), opacity .5s ease calc(var(--i) * .3s); }
 .capa img { width: 100%; height: 100%; object-fit: cover; pointer-events: none;
-  box-shadow: 0 90px 120px -30px rgba(0, 0, 0, .28);
-  transition: box-shadow 1.5s cubic-bezier(.16, .84, .3, 1) calc(var(--i) * .3s), transform .6s var(--lento); }
+  transition: transform .6s var(--lento); }   /* calendarios sem sombra, como as fotos */
 .capas.assentou .capa { transform: none; opacity: 1; }
-.capas.assentou .capa img { box-shadow: 0 16px 26px -14px rgba(0, 0, 0, .5); }
-.capas.assentou .capa:hover img { transform: translateY(-8px); box-shadow: 0 34px 40px -22px rgba(0, 0, 0, .45); }
+.capas.assentou .capa:hover img { transform: translateY(-8px); }
 /* brilho: um swipe de luz diagonal passa pela capa logo antes de ela assentar (so na primeira entrada) */
 .capa::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0;
   background: linear-gradient(115deg, transparent 44.5%, rgba(255, 255, 255, .4) 47%, rgba(255, 255, 255, .4) 53%, transparent 55.5%) 120% 0 / 300% 100% no-repeat;   /* metade da forca, borda mais viva */
@@ -78,7 +74,7 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
 /* zoom: a capa escolhida vai para o centro; as outras escorregam para fora */
 .capas.assentou .capa[style*="transform"] { transition: transform 1.15s var(--suave), opacity .9s var(--suave); }
 .capa.escolhida { z-index: 2; }
-.capa.escolhida img { transform: none !important; box-shadow: 0 24px 50px -30px rgba(0, 0, 0, .55); }
+.capa.escolhida img { transform: none !important; }
 
 /* a frase da contracapa: aparece quando a marca sobe e some atras dos calendarios */
 .citacao { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -46%); margin: 0; width: min(36ch, 84vw);
@@ -99,8 +95,7 @@ body.cita-sai .citacao { opacity: 0; transform: translate(-50%, -50%) scale(.97)
 }
 #livro.pegando { cursor: grabbing; }
 .paginas, .folha-l { position: absolute; inset: 0; }
-.folha-l img { position: absolute; left: 0; width: var(--s); height: var(--s); visibility: hidden; pointer-events: none;
-  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, .55); }
+.folha-l img { position: absolute; left: 0; width: var(--s); height: var(--s); visibility: hidden; pointer-events: none; }
 .folha-l .verso { top: 0; }
 .folha-l .frente { top: var(--s); }
 .folha-l img.on { visibility: visible; }
