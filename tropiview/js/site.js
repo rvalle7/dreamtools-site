@@ -119,7 +119,7 @@
   function iniciarDeriva() {
     pararDeriva();
     const paradas = [COR.mesa, '#EDA431', '#F4C64E', '#D0688F', '#7E6CC6', '#5AA7DE'].map(hsl);
-    const T = 120000, t0 = performance.now();
+    const T = 60000, t0 = performance.now();   // 1 min a volta inteira
     const passo = (t) => {
       if (est.tela !== 'mesa') { rafDeriva = 0; return; }
       const e = (1 - Math.cos(2 * Math.PI * ((t - t0) / T))) / 2;       // vai e volta, suave nas pontas
