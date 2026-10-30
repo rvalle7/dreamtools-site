@@ -22,8 +22,8 @@
       addEventListener('resize', () => this.medir());
     }
 
-    carregar(chave, seq, hd) {
-      const pg = (n, k) => `${this.base}/${chave}/p${String(n).padStart(2, '0')}-${k}${hd ? '' : '-800'}.webp`;
+    carregar(chave, seq, res) {   // res: '' (1600), '-1200' ou '-800'
+      const pg = (n, k) => `${this.base}/${chave}/p${String(n).padStart(2, '0')}-${k}${res}.webp`;
       const m = seq.meses;
       const folhas = [{ frente: pg(seq.capa, 'sq'), verso: pg(m[0], 'top') }];
       for (let j = 0; j < m.length; j++)

@@ -45,7 +45,10 @@
   }
   function carregarCal() {
     const chave = `${est.cal}-${est.tam}`;
-    livro.carregar(chave, TV_SEQ[chave], innerHeight * devicePixelRatio > 1100);
+    // baixa so o tamanho que a tela precisa: lado da pagina na tela x densidade de pixels
+    const fio = Math.max(10, innerHeight * 0.022);
+    const lado = Math.min((innerHeight - 2 * fio) / 2, innerWidth * 0.92) * (devicePixelRatio || 1);
+    livro.carregar(chave, TV_SEQ[chave], lado <= 820 ? '-800' : lado <= 1250 ? '-1200' : '');
     $$('.tam').forEach(b => b.setAttribute('aria-pressed', b.dataset.tam === est.tam));
   }
   const capaDe = (id) => `img/${id}-30/p${String(TV_SEQ[id + '-30'].capa).padStart(2, '0')}-sq-800.webp`;
