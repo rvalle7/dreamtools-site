@@ -27,19 +27,10 @@ a { color: inherit; }
 
 /* ---------- luz sobre a mesa ---------- */
 #luz { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-.gobo { position: absolute; inset: -12%; opacity: 0; mix-blend-mode: multiply; filter: blur(16px);
-  background: center / cover no-repeat;
-  -webkit-mask-image: radial-gradient(ellipse 85% 80% at 55% 45%, #000 35%, transparent 85%);
-          mask-image: radial-gradient(ellipse 85% 80% at 55% 45%, #000 35%, transparent 85%);
-  transition: opacity 7s ease-in-out; animation: deriva 48s ease-in-out infinite alternate; }
-.gobo.folhagem { background-image: url(folhagem.svg); }
-.gobo.veneziana { background-image: url(veneziana.svg); filter: blur(10px); animation-duration: 64s; }
-.gobo.on { opacity: .15; }
-@keyframes deriva {
-  0% { transform: translate(-2%, -1.5%) rotate(-1.2deg) scale(1.02); }
-  50% { transform: translate(1.5%, 1%) rotate(.6deg) scale(1); }
-  100% { transform: translate(2.5%, -1%) rotate(1.4deg) scale(1.03); }
-}
+#sombra { position: absolute; left: -12%; top: -12%; width: 124%; height: 124%; opacity: .15; mix-blend-mode: multiply;
+  filter: blur(6px);
+  -webkit-mask-image: radial-gradient(ellipse 80% 75% at 55% 45%, #000 35%, transparent 85%);
+          mask-image: radial-gradient(ellipse 80% 75% at 55% 45%, #000 35%, transparent 85%); }
 .foco { position: absolute; left: 0; top: 0; width: 90vmax; height: 90vmax; margin: -45vmax 0 0 -45vmax;
   border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 244, 222, .22), rgba(255, 244, 222, .07) 55%, transparent);
   mix-blend-mode: soft-light; will-change: transform; opacity: 0; transition: opacity 2s; }

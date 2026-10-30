@@ -191,9 +191,6 @@
     capas.style.setProperty('--sy', ((innerHeight / 2 - ly) / innerHeight * 12).toFixed(1));
     requestAnimationFrame(luz);
   })();
-  const gobos = $$('#luz .gobo');
-  let gAtual = 0;
-  setInterval(() => { gobos[gAtual].classList.remove('on'); gAtual = (gAtual + 1) % gobos.length; gobos[gAtual].classList.add('on'); }, 26000);
 
   // ---------- controles ----------
   $$('.lang').forEach(b => b.onclick = () => { est.lang = b.dataset.lang; guardar('lang', est.lang); traduzir(); });
