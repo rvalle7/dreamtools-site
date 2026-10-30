@@ -331,7 +331,7 @@
         else if (d >= 0.35) o = Math.max(0, 1 - (d - 0.35) / RASTRO);   // apaga devagar: o rastro fica em escada (1, .8, .6, .4, .2)
         // perto da marca acende a 100%; vai apagando para fora e chega suave (easy in) nos 5% da borda
         const perto = k / Math.max(1, N - 1);
-        const forca = 0.05 + 0.95 * Math.pow(1 - perto, 2);
+        const forca = Math.pow(1 - perto, 2);
         g.style.opacity = (o * forca).toFixed(3);
       });
       if (u < 1) requestAnimationFrame(passo); else ov.remove();
