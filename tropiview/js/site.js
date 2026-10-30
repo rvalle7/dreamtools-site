@@ -262,7 +262,7 @@
   const foco = $('#luz .foco');
   let lx = innerWidth * 0.6, ly = innerHeight * 0.4, mx = lx, my = ly;
   let sxl = lx, syl = ly;
-  const ALTO = 0.62, ENCOSTADA = 0.012, LEVANTADA = 0.045;   // alturas da sombra projetada (ver projetar)
+  const ALTO = 0.62, ENCOSTADA = 0.012, LEVANTADA = 0.045, FOTO = 0.03;   // alturas da sombra projetada (ver projetar)
   addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
   (function luz() {
     lx += (mx - lx) * 0.04; ly += (my - ly) * 0.04;
@@ -311,7 +311,36 @@
       sb.style.left = (r.left - rp.left + pg.scrollLeft) + 'px'; sb.style.top = (r.top - rp.top + pg.scrollTop) + 'px';
       sb.style.width = r.width + 'px'; sb.style.height = r.height + 'px';
       sb.style.transformOrigin = `${(lx - r.left).toFixed(1)}px ${(ly - r.top).toFixed(1)}px`;
-      sb.style.transform = `scale(${(1 / (1 - ENCOSTADA)).toFixed(4)})`;
+      sb.style.transform = `scale(${(1 / (1 - FOTO)).toFixed(4)})`;
+    }
+    raios(lx, ly);
+  }
+
+  // ---------- god rays de sombra na marca ----------
+  // Chegando o mouse perto da marca, ela projeta fios de sombra para o lado oposto: varias copias da marca,
+  // cada uma escalada um pouco mais em volta do ponto do mouse, bem transparentes, formando os raios.
+  const NR = 28;
+  let raiosEl = null;
+  function raios(lx, ly) {
+    const m = document.querySelector('.marca');
+    if (!m || B.classList.contains('intro') || !m.firstElementChild) return;
+    if (!raiosEl) {
+      raiosEl = document.createElement('div'); raiosEl.className = 'raios';
+      raiosEl.innerHTML = Array.from({ length: NR }, () => `<div>${m.innerHTML}</div>`).join('');
+      m.appendChild(raiosEl);
+    }
+    const r = m.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const d = Math.hypot(lx - cx, ly - cy);
+    const forca = Math.max(0, Math.min(1, 1 - (d - r.width * 0.5) / 380));   // so aparece chegando perto
+    raiosEl.style.opacity = forca.toFixed(3);
+    if (forca <= 0) return;
+    const ox = (lx - r.left).toFixed(1), oy = (ly - r.top).toFixed(1);
+    for (let i = 0; i < NR; i++) {
+      const c = raiosEl.children[i];
+      c.style.transformOrigin = `${ox}px ${oy}px`;
+      c.style.transform = `scale(${(1 + (i + 1) * 0.024).toFixed(4)})`;
+      c.style.opacity = (0.075 * (1 - i / NR)).toFixed(3);
     }
   }
 
