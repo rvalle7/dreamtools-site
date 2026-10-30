@@ -187,7 +187,9 @@ body:not(.intro) #abertura { visibility: hidden; }
 .texto { max-width: 32em; }
 .texto p { font-size: 18px; line-height: 1.75; margin: 0 0 1.1em; }
 .medidas { display: grid; grid-template-columns: minmax(150px, 210px) 1fr; gap: 3vw; align-items: end; margin-top: 3.5vh; }
-.medidas .ficha { margin: 0; grid-template-columns: 1fr; gap: 14px; }
+.medidas { grid-template-columns: minmax(130px, 170px) 1fr; }
+.medidas .ficha { margin: 0; grid-template-columns: 1fr 1fr; gap: 12px 22px; }
+.medidas .ficha dd { font-size: 14px; line-height: 1.45; }
 .esquema { margin: 0; max-width: 210px; }
 .esquema svg { display: block; width: 100%; height: auto; overflow: visible; }
 .esquema .ch, .esquema .tr, .esquema .co { fill: none; stroke: #fff; stroke-width: 1; vector-effect: non-scaling-stroke; }
@@ -226,8 +228,20 @@ body:not(.intro) #abertura { visibility: hidden; }
   #contato { justify-content: flex-start; padding: 220px 6vw 40px; overflow-y: auto; }
   .foto-contato { width: 100%; }
   .foto { height: 30vh; }
+  .medidas { grid-template-columns: 1fr; gap: 4vh; }
+  .esquema { max-width: 230px; }
   .ui-bot { flex-wrap: wrap; justify-content: center; height: auto; padding-bottom: 10px; gap: 6px 18px; }
   .folha { margin-left: 0; }
 }
 
 .aviso-arquivo { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 200; padding: 10px 18px; background: rgba(0,0,0,.55); font-size: 14px; }
+
+/* telas baixas (notebook 720-800px): o About tem que caber inteiro */
+@media (min-width: 821px) and (max-height: 820px) {
+  .pagina h2 { font-size: clamp(40px, 4.4vw, 64px); }
+  .texto p { font-size: 16px; line-height: 1.6; margin-bottom: .9em; }
+  .medidas { margin-top: 2vh; }
+  .medidas .ficha { gap: 8px 20px; }
+  .medidas .ficha dd { font-size: 13px; line-height: 1.4; }
+  .esquema { max-width: 150px; }
+}
