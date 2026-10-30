@@ -27,6 +27,9 @@ a { color: inherit; }
 
 /* ---------- luz sobre a mesa ---------- */
 #luz { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+/* rampa sutil de hue sobre qualquer cor de fundo: ceu em cima, dourado embaixo */
+#rampa { position: absolute; inset: 0; mix-blend-mode: soft-light; pointer-events: none;
+  background: linear-gradient(172deg, rgba(110, 170, 240, .38) 0%, rgba(110, 170, 240, 0) 42%, rgba(255, 196, 80, 0) 58%, rgba(255, 196, 80, .42) 100%); }
 #sombra { position: absolute; left: -12%; top: -12%; width: 124%; height: 124%; opacity: .3; mix-blend-mode: multiply;
   filter: blur(6px);
   /* rampa: a sombra aparece so em manchas (luz da janela em cima a direita, um pedaco embaixo a esquerda) */
