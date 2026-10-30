@@ -50,6 +50,12 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
 .capas.assentou .capa { transform: none; opacity: 1; }
 .capas.assentou .capa img { box-shadow: 0 16px 26px -14px rgba(0, 0, 0, .5); }
 .capas.assentou .capa:hover img { transform: translateY(-8px); box-shadow: 0 34px 40px -22px rgba(0, 0, 0, .45); }
+/* brilho: um swipe de luz diagonal passa pela capa logo antes de ela assentar (so na primeira entrada) */
+.capa::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, .0) 42%, rgba(255, 255, 255, .8) 50%, rgba(255, 255, 255, 0) 58%, transparent 62%) 120% 0 / 300% 100% no-repeat;
+  mix-blend-mode: screen; }
+.capas.assentou.estreia .capa::after { animation: swipe 1s cubic-bezier(.45, 0, .25, 1) calc(var(--i) * .3s + .75s) both; }
+@keyframes swipe { 0% { opacity: 1; background-position: 120% 0; } 100% { opacity: 1; background-position: -20% 0; } }
 /* zoom: a capa escolhida vai para o centro; as outras escorregam para fora */
 .capas.assentou .capa[style*="transform"] { transition: transform 1.15s var(--suave), opacity .9s var(--suave); }
 .capa.escolhida { z-index: 2; }

@@ -59,6 +59,8 @@
     capas.classList.remove('assentou');
     capas.getBoundingClientRect();
     $$('.capa').forEach(c => c.style.transition = '');
+    const primeira = !capas.dataset.ja; capas.dataset.ja = '1';
+    capas.classList.toggle('estreia', primeira);   // o brilho so na entrada do carregamento
     requestAnimationFrame(() => capas.classList.add('assentou'));
   }
 
