@@ -292,35 +292,41 @@
   // ---------- tunel: o quadradinho da marca repetido para fora, como obturador / tunel de fotos ----------
   // So o desenho, branco e transparente, sem brilho; bem rapido (~1/3 de segundo).
   window.__tunel = (d) => { window.__tunelDur = d; tunel(document.querySelector(".logo-intro svg") || document.querySelector(".marca svg")); };
+  // Anel do desenho de referencia do Rafa (ref tunel logo topiview.ai): 4 pecas, raio 1.
+  // De um anel para o de dentro: 85 por cento do tamanho e +10 graus. Repetido para dentro e para fora ate passar da tela.
+  const ANEL = ["M-0.8070 0.4366C-0.8087 0.4360 -0.8104 0.4352 -0.8120 0.4345L-0.8249 0.5076C-0.8324 0.5501 -0.8040 0.5907 -0.7615 0.5981L0.0199 0.7359L-0.8070 0.4366Z", "M-0.4391 -0.8093C-0.4385 -0.8110 -0.4378 -0.8126 -0.4370 -0.8143L-0.5102 -0.8272C-0.5527 -0.8347 -0.5932 -0.8063 -0.6007 -0.7638L-0.7385 0.0176L-0.4391 -0.8093Z", "M0.8068 -0.4414C0.8085 -0.4408 0.8101 -0.4401 0.8117 -0.4393L0.8246 -0.5125C0.8321 -0.5550 0.8037 -0.5955 0.7612 -0.6030L-0.0202 -0.7408L0.8068 -0.4414Z", "M0.4389 0.8045C0.4382 0.8062 0.4375 0.8078 0.4368 0.8094L0.5099 0.8223C0.5524 0.8298 0.5929 0.8014 0.6004 0.7589L0.7382 -0.0225L0.4389 0.8045Z"];
   function tunel(svgLogo) {
     const ns = 'http://www.w3.org/2000/svg';
-    const tmp = document.createElement('div'); tmp.innerHTML = TV_LOGO;
-    const pecas = [...tmp.querySelectorAll('.lg1, .lg2, .lg3')].map(e => e.outerHTML).join('');
-    const ICX = 236, ICY = 40, ICL = 80;                         // centro e lado do quadradinho no desenho do logo
+    const ICX = 236, ICY = 40, ICL = 80;                         // centro e lado do quadradinho no logo
     const vb = svgLogo.viewBox.baseVal, r = svgLogo.getBoundingClientRect(), e = r.width / vb.width;
     const cx = r.left + ICX * e, cy = r.top + ICY * e;
+    const R0 = (ICL / 2) * e * 1.1676, Q = 0.85, GIRO = 10;      // anel base encaixado no quadradinho
+    const diag = Math.hypot(innerWidth, innerHeight);
+    const nFora = Math.floor(Math.log(diag * 1.1 / R0) / Math.log(Q));   // anel mais externo (negativo)
+    const nDentro = 14;
     const ov = document.createElementNS(ns, 'svg');
     ov.setAttribute('class', 'tunel');
     ov.setAttribute('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
-    const N = 9, K = 1.75, GIRO = 13;                          // camadas, quanto cresce e quanto gira cada uma
-    const camadas = [];
-    for (let i = 0; i < N; i++) {
+    const pecas = ANEL.map(d => `<path d="${d}"/>`).join('');
+    const aneis = [];
+    for (let n = nFora; n <= nDentro; n++) {
       const g = document.createElementNS(ns, 'g');
-      g.innerHTML = pecas;
-      ov.appendChild(g); camadas.push(g);
+      g.setAttribute('transform', `translate(${cx} ${cy}) rotate(${GIRO * n}) scale(${R0 * Math.pow(Q, n)})`);
+      g.innerHTML = pecas; g.style.opacity = 0;
+      ov.appendChild(g); aneis.push(g);
     }
     document.getElementById('abertura').appendChild(ov);
-    const t0 = performance.now(), DUR = window.__tunelDur || 340;
+    // as pecas ficam paradas; so acendem e apagam em sequencia. SENTIDO 1 = de dentro para fora (saindo
+    // do tunel, vindo para a camera); -1 = de fora para dentro (entrando).
+    const SENTIDO = 1, N = aneis.length, DUR = window.__tunelDur || 460, t0 = performance.now();
+    ov.style.opacity = 0.22;
     const passo = (t) => {
-      const u = Math.min(1, (t - t0) / DUR);
-      const andou = u * 2.2;                                     // quantas camadas a camera atravessa
-      camadas.forEach((g, i) => {
-        const n = i + andou, esc = e * Math.pow(K, n);
-        g.setAttribute('transform', `translate(${cx} ${cy}) rotate(${GIRO * n}) scale(${esc}) translate(${-ICX} ${-ICY})`);
-        // cada camada some quando fica enorme (passou pela camera)
-        g.style.opacity = Math.max(0, 1 - (esc * ICL) / (Math.max(innerWidth, innerHeight) * 2.6)).toFixed(3);
+      const u = Math.min(1, (t - t0) / DUR), pos = u * (N + 3);
+      aneis.forEach((g, i) => {
+        const k = SENTIDO > 0 ? N - 1 - i : i;                     // ordem de acender
+        const d = pos - k;
+        g.style.opacity = d >= 0 && d < 3 ? (d < 2 ? 1 : 3 - d).toFixed(2) : 0;
       });
-      ov.style.opacity = (0.2 * Math.sin(Math.PI * u)).toFixed(3);   // entra e sai suave, bem transparente
       if (u < 1) requestAnimationFrame(passo); else ov.remove();
     };
     requestAnimationFrame(passo);
