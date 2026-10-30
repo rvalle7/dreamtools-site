@@ -319,7 +319,7 @@
     // as pecas ficam paradas; so acendem e apagam em sequencia. SENTIDO 1 = de dentro para fora (saindo
     // do tunel, vindo para a camera); -1 = de fora para dentro (entrando).
     const SENTIDO = 1, N = aneis.length, DUR = window.__tunelDur || 1300, t0 = performance.now();
-    const RASTRO = 5.5;                                            // ~5 aneis acesos de cada vez, em leque
+    const RASTRO = 6.6;                                            // ~5 aneis acesos de cada vez, em leque
     ov.style.opacity = 0.3;
     const passo = (t) => {
       const u = Math.min(1, (t - t0) / DUR), pos = u * (N + RASTRO + 1);
