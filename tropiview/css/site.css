@@ -29,8 +29,8 @@ a { color: inherit; }
 #luz { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 #sombra { position: absolute; left: -12%; top: -12%; width: 124%; height: 124%; opacity: .15; mix-blend-mode: multiply;
   filter: blur(6px);
-  -webkit-mask-image: radial-gradient(ellipse 80% 75% at 55% 45%, #000 35%, transparent 85%);
-          mask-image: radial-gradient(ellipse 80% 75% at 55% 45%, #000 35%, transparent 85%); }
+  -webkit-mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 50%, transparent 100%);
+          mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 50%, transparent 100%); }
 .foco { position: absolute; left: 0; top: 0; width: 90vmax; height: 90vmax; margin: -45vmax 0 0 -45vmax;
   border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 244, 222, .22), rgba(255, 244, 222, .07) 55%, transparent);
   mix-blend-mode: soft-light; will-change: transform; opacity: 0; transition: opacity 2s; }

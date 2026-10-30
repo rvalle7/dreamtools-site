@@ -86,16 +86,19 @@
     if (d) { s = d / (1 - Math.abs(2 * l - 1)); hh = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; }
     return [(hh * 60 + 360) % 360, s * 100, l * 100]; };
   let corAtual = null, rafCor;
+  // no iPhone as barras de cima e de baixo do Safari seguem o theme-color e o fundo do <html>
+  const tema = document.querySelector('meta[name="theme-color"]');
+  function aplicaCor(c) { B.style.backgroundColor = c; document.documentElement.style.backgroundColor = c; if (tema) tema.content = c; }
   function pintar(cor) {
     const alvo = hsl(cor);
-    if (!corAtual) { corAtual = alvo; B.style.backgroundColor = cor; return; }
+    if (!corAtual) { corAtual = alvo; aplicaCor(cor); return; }
     const de = [...corAtual]; let dh = alvo[0] - de[0]; if (dh > 180) dh -= 360; if (dh < -180) dh += 360;
     cancelAnimationFrame(rafCor);
     const t0 = performance.now();
     const passo = (t) => {
       const u = Math.min(1, (t - t0) / 1100), e = (1 - Math.cos(Math.PI * u)) / 2;
       corAtual = [(de[0] + dh * e + 360) % 360, de[1] + (alvo[1] - de[1]) * e, de[2] + (alvo[2] - de[2]) * e];
-      B.style.backgroundColor = `hsl(${corAtual[0].toFixed(1)} ${corAtual[1].toFixed(1)}% ${corAtual[2].toFixed(1)}%)`;
+      aplicaCor(`hsl(${corAtual[0].toFixed(1)} ${corAtual[1].toFixed(1)}% ${corAtual[2].toFixed(1)}%)`);
       if (u < 1) rafCor = requestAnimationFrame(passo);
     };
     rafCor = requestAnimationFrame(passo);

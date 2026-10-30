@@ -35,8 +35,8 @@
   }
   // duas arvores entrando pelas bordas (fracoes da tela)
   const arvores = [
-    { x: -0.08, y: 1.08, ang: -0.95, g: galho(0, 0.30, 0.030, 0) },
-    { x: 1.10, y: -0.06, ang: 2.35, g: galho(0, 0.26, 0.026, 0) },
+    { x: -0.04, y: 1.04, ang: -0.9, g: galho(0, 0.40, 0.036, 0) },
+    { x: 1.06, y: -0.04, ang: 2.4, g: galho(0, 0.36, 0.032, 0) },
   ];
 
   // ---------- o vento ----------
@@ -103,7 +103,7 @@
       const base = copa.x > 0.5 ? 1.35 + i * 0.32 : -0.95 + i * 0.3;
       const fol = [];
       for (let j = 0; j < 26; j++) fol.push({ t: 0.08 + j * 0.035, l: 0.9 + rnd() * 0.25, fase: rnd() * 6.28 });
-      palmas.push({ copa, ang: base + (rnd() - 0.5) * 0.15, comp: 0.36 + rnd() * 0.12, curva: 0.55 + rnd() * 0.3, fase: rnd() * 6.28, fol });
+      palmas.push({ copa, ang: base + (rnd() - 0.5) * 0.15, comp: 0.5 + rnd() * 0.16, curva: 0.55 + rnd() * 0.3, fase: rnd() * 6.28, fol });
     }
   }
   function desenhaPalmeira(t, v) {
