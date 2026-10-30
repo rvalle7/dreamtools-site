@@ -27,7 +27,7 @@ a { color: inherit; }
 
 /* ---------- luz sobre a mesa ---------- */
 #luz { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-#sombra { position: absolute; left: -12%; top: -12%; width: 124%; height: 124%; opacity: .15; mix-blend-mode: multiply;
+#sombra { position: absolute; left: -12%; top: -12%; width: 124%; height: 124%; opacity: .3; mix-blend-mode: multiply;
   filter: blur(6px);
   -webkit-mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 50%, transparent 100%);
           mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 50%, transparent 100%); }

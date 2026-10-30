@@ -7,7 +7,7 @@
   const ctx = cv.getContext('2d');
   // o tamanho e o desfoque tambem vao aqui, para funcionar mesmo se o navegador ainda tiver o CSS antigo
   Object.assign(cv.style, { position: 'absolute', left: '-12%', top: '-12%', width: '124%', height: '124%',
-    opacity: '.15', mixBlendMode: 'multiply', filter: 'blur(6px)' });
+    opacity: '.3', mixBlendMode: 'multiply', filter: 'blur(6px)' });
   const ESC = 0.25;
   let W = 0, H = 0;
 
@@ -72,7 +72,7 @@
 
   function desenhaVeneziana(t, v) {
     ctx.save();
-    ctx.translate(W * 0.5, H * 0.5);
+    ctx.translate(W * 0.74, H * 0.26);   // a cruz da janela fica para cima e para a direita, fora do meio
     ctx.rotate(-0.24 + Math.sin(t * 0.0007) * 0.004 * v);
     ctx.transform(1, 0, -0.21, 1, 0, 0);
     ctx.fillStyle = '#000';
