@@ -142,6 +142,10 @@ body.ui-on .menu a { transform: none; }
 .folha { margin-left: auto; font: 300 18px var(--display); text-transform: uppercase; letter-spacing: .1em; }
 #rotulo { min-width: 12ch; text-align: center; }
 .folha button { font-family: var(--sans); font-size: 22px; line-height: 1; padding: 4px 8px; }
+.tam { display: inline-flex; align-items: flex-end; gap: 7px; }
+.tam .mini { overflow: visible; }
+.tam .mini .ch, .tam .mini .tr { fill: none; stroke: currentColor; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.tam .mini .tr { stroke-dasharray: 2 1.6; opacity: .75; }
 .tam { opacity: .55; } .tam[aria-pressed="true"] { opacity: 1; }
 .voltar { opacity: .85; } .voltar:hover { opacity: 1; }
 .sep { width: 1px; height: 14px; background: currentColor; opacity: .4; }
