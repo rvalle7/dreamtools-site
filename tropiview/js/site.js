@@ -303,7 +303,7 @@
     const R0 = (ICL / 2) * e * 1.1676, Q = 0.85, GIRO = 10;      // anel base encaixado no quadradinho
     const diag = Math.hypot(innerWidth, innerHeight);
     const nFora = Math.floor(Math.log(diag * 1.1 / R0) / Math.log(Q));   // anel mais externo (negativo)
-    const nDentro = 14;
+    const nDentro = -2;   // o anel -1 e a borda do proprio quadradinho da marca: o tunel comeca logo depois dele
     const ov = document.createElementNS(ns, 'svg');
     ov.setAttribute('class', 'tunel');
     ov.setAttribute('viewBox', `0 0 ${innerWidth} ${innerHeight}`);
