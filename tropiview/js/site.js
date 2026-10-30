@@ -96,6 +96,7 @@
   const tema = document.querySelector('meta[name="theme-color"]');
   function aplicaCor(c) { B.style.backgroundColor = c; document.documentElement.style.backgroundColor = c; if (tema) tema.content = c; }
   function pintar(cor) {
+    pararDeriva();
     const alvo = hsl(cor);
     if (!corAtual) { corAtual = alvo; aplicaCor(cor); return; }
     const de = [...corAtual]; let dh = alvo[0] - de[0]; if (dh > 180) dh -= 360; if (dh < -180) dh += 360;
@@ -106,9 +107,32 @@
       corAtual = [(de[0] + dh * e + 360) % 360, de[1] + (alvo[1] - de[1]) * e, de[2] + (alvo[2] - de[2]) * e];
       aplicaCor(`hsl(${corAtual[0].toFixed(1)} ${corAtual[1].toFixed(1)}% ${corAtual[2].toFixed(1)}%)`);
       if (u < 1) rafCor = requestAnimationFrame(passo);
+      else if (cor === COR.mesa && est.tela === 'mesa' && !B.classList.contains('intro')) iniciarDeriva();
     };
     rafCor = requestAnimationFrame(passo);
   }
+
+  // so na mesa principal: o fundo passeia bem devagar pelas cores do por do sol da abertura e volta
+  // (laranja -> dourado -> amarelo -> rosado -> roxo -> azul do ceu -> ... -> laranja), ~2 min a volta inteira
+  let rafDeriva = 0;
+  function pararDeriva() { cancelAnimationFrame(rafDeriva); rafDeriva = 0; }
+  function iniciarDeriva() {
+    pararDeriva();
+    const paradas = [COR.mesa, '#EDA431', '#F4C64E', '#D0688F', '#7E6CC6', '#5AA7DE'].map(hsl);
+    const T = 120000, t0 = performance.now();
+    const passo = (t) => {
+      if (est.tela !== 'mesa') { rafDeriva = 0; return; }
+      const e = (1 - Math.cos(2 * Math.PI * ((t - t0) / T))) / 2;       // vai e volta, suave nas pontas
+      const x = e * (paradas.length - 1), i = Math.min(paradas.length - 2, Math.floor(x)), f = x - i;
+      const a = paradas[i], b = paradas[i + 1];
+      let dh = b[0] - a[0]; if (dh > 180) dh -= 360; if (dh < -180) dh += 360;
+      corAtual = [(a[0] + dh * f + 360) % 360, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
+      aplicaCor(`hsl(${corAtual[0].toFixed(1)} ${corAtual[1].toFixed(1)}% ${corAtual[2].toFixed(1)}%)`);
+      rafDeriva = requestAnimationFrame(passo);
+    };
+    rafDeriva = requestAnimationFrame(passo);
+  }
+
   function ir(tela) {
     if (tela === est.tela) { if (tela === 'mesa') return; }
     const de = est.tela;
@@ -297,6 +321,7 @@
       if (acabou) return; acabou = true;
       document.body.classList.remove('intro', 'desenha', 'brilha', 'plim');
       mostrarUI();
+      setTimeout(() => { if (est.tela === 'mesa' && !rafDeriva) pintar(COR.mesa); }, 1200);   // comeca o passeio de cor da mesa
       capasProntas.then(() => setTimeout(entrarMesa, 250));   // os calendarios caem na mesa quando as fotos chegaram
       // as fotos das outras telas so baixam depois que a mesa esta montada
       capasProntas.then(() => setTimeout(() => $$('.foto img[data-src]').forEach(im => im.src = im.dataset.src), 3000));
