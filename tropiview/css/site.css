@@ -58,7 +58,7 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
 #mesa { display: grid; place-items: center; }
 .capas { --c: 300px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5vw; padding-top: 4vh; }
 /* filete de sombra bem fino, para o lado oposto da luz do mouse */
-.capas.assentou .capa:not(.escolhida) { filter: drop-shadow(calc(var(--sx, 0) * .45px + 1px) calc(var(--sy, 0) * .45px + 2px) 3px rgba(0, 0, 0, .26)); }
+.capas.assentou .capa:not(.escolhida) { filter: drop-shadow(calc(var(--sx, 0) * .45px + 1px) calc(var(--sy, 0) * .45px + 2px) 0 rgba(0, 0, 0, .3)); }
 .capas.coluna { flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 4vh; padding-top: 8vh; }
 .capa { position: relative; width: var(--c); height: var(--c); padding: 0;
   transform: translateY(70vh) scale(1.9) rotate(calc(var(--i) * 6deg - 3deg)); opacity: 0;
@@ -66,11 +66,11 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
 .capa img { width: 100%; height: 100%; object-fit: cover; pointer-events: none;
   /* caindo na mesa (disco jogado em camera lenta): longe da mesa a sombra e grande, difusa e deslocada;
      conforme encosta ela encolhe ate sobrar so o filete fino */
-  box-shadow: 46px 64px 80px -6px rgba(0, 0, 0, .34);
+  box-shadow: 150px 190px 0 0 rgba(0, 0, 0, .08);   /* longe: comprida, borda seca, bem transparente */
   transition: box-shadow 1.5s cubic-bezier(.16, .84, .3, 1) calc(var(--i) * .3s), transform .6s var(--lento); }
 .capas.assentou .capa { transform: none; opacity: 1; }
-.capas.assentou .capa img { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
-.capas.assentou .capa:hover img { transform: translateY(-8px); box-shadow: 0 16px 20px -12px rgba(0, 0, 0, .25); transition-delay: 0s; transition-duration: .6s; }
+.capas.assentou .capa img { box-shadow: 0 0 0 0 rgba(0, 0, 0, .3); }   /* encostou: some atras da capa, fica o filete */
+.capas.assentou .capa:hover img { transform: translateY(-8px); box-shadow: 6px 10px 0 0 rgba(0, 0, 0, .2); transition-delay: 0s; transition-duration: .6s; }
 /* brilho: um swipe de luz diagonal passa pela capa logo antes de ela assentar (so na primeira entrada) */
 .capa::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0;
   background: linear-gradient(115deg, transparent 44.5%, rgba(255, 255, 255, .4) 47%, rgba(255, 255, 255, .4) 53%, transparent 55.5%) 120% 0 / 300% 100% no-repeat;   /* metade da forca, borda mais viva */
