@@ -318,8 +318,10 @@
     document.getElementById('abertura').appendChild(ov);
     // as pecas ficam paradas; so acendem e apagam em sequencia. SENTIDO 1 = de dentro para fora (saindo
     // do tunel, vindo para a camera); -1 = de fora para dentro (entrando).
-    const SENTIDO = 1, N = aneis.length, DUR = window.__tunelDur || 1130, t0 = performance.now();
+    const SENTIDO = 1, N = aneis.length, DUR = window.__tunelDur || 1130;
     const RASTRO = 5.5;                                            // ~5 aneis acesos de cada vez, em leque
+    // o primeiro anel demorava a acender (a aceleracao comeca parada): corta metade dessa pausa inicial
+    const t0 = performance.now() - 0.5 * Math.sqrt(0.35 / (N + RASTRO + 1)) * DUR;
     ov.style.opacity = 1;                                           // os primeiros, colados na marca, tao fortes quanto ela
     const passo = (t) => {
       const u = Math.min(1, (t - t0) / DUR), pos = u * u * (N + RASTRO + 1);   // acende o primeiro e vem acelerando para fora
