@@ -262,6 +262,7 @@
   const foco = $('#luz .foco');
   let lx = innerWidth * 0.6, ly = innerHeight * 0.4, mx = lx, my = ly;
   let sxl = lx, syl = ly;
+  const ALTO = 0.62, ENCOSTADA = 0.012, LEVANTADA = 0.045;   // alturas da sombra projetada (ver projetar)
   addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
   (function luz() {
     lx += (mx - lx) * 0.04; ly += (my - ly) * 0.04;
@@ -272,8 +273,47 @@
     sxl += (mx - sxl) * 0.15; syl += (my - syl) * 0.15;
     document.body.style.setProperty('--sx', ((innerWidth / 2 - sxl) / innerWidth * 16).toFixed(2));
     document.body.style.setProperty('--sy', ((innerHeight / 2 - syl) / innerHeight * 12).toFixed(2));
+    projetar(sxl, syl);
     requestAnimationFrame(luz);
   })();
+
+  // ---------- sombra projetada: o mouse e um projetor ----------
+  // De cada canto da capa/foto traca-se uma linha a partir do mouse e projeta-se na mesa: a sombra e a propria
+  // peca escalada em volta do ponto do mouse. Escala = 1 / (1 - altura): caindo de longe ela vem grandona e
+  // transparente; encostada sobra so um filete seco, do lado oposto da luz, mais grosso quanto mais longe o mouse.
+  function sombraDe(el, dentro) {
+    let sb = el.__sombra;
+    if (!sb) { sb = el.__sombra = document.createElement('i'); sb.className = 'projecao'; (dentro ? el : el.parentNode).appendChild(sb); }
+    return sb;
+  }
+  function projetar(lx, ly) {
+    const est0 = B.dataset.estado;
+    if (est0 === 'mesa' || zoom) {
+      $$('.capa').forEach(c => {
+        const sb = sombraDe(c, true);
+        if (c.classList.contains('escolhida')) { sb.style.opacity = 0; return; }
+        const r = c.getBoundingClientRect(); if (!r.width) return;
+        const alt = parseFloat(getComputedStyle(c).getPropertyValue('--alt')) || 0;
+        // mouse em cima: a capa sobe um pouco da mesa (suave) e a projecao abre em volta
+        const alvo = c.matches(':hover') && !c.classList.contains('escolhida') ? LEVANTADA : ENCOSTADA;
+        c.__lev = c.__lev == null ? alvo : c.__lev + (alvo - c.__lev) * 0.12;
+        const h = alt * ALTO + c.__lev;
+        const k = 1 / (1 - h), e = c.offsetWidth / r.width;
+        sb.style.transformOrigin = `${((lx - r.left) * e).toFixed(1)}px ${((ly - r.top) * e).toFixed(1)}px`;
+        sb.style.transform = `scale(${k.toFixed(4)})`;
+        sb.style.opacity = (0.3 - alt * 0.2).toFixed(3);
+      });
+    }
+    const pg = document.getElementById(est0);
+    if (pg && pg.classList.contains('pagina')) {
+      const f = pg.querySelector('.foto'); if (!f) return;
+      const sb = sombraDe(f, false), r = f.getBoundingClientRect(), rp = pg.getBoundingClientRect();
+      sb.style.left = (r.left - rp.left + pg.scrollLeft) + 'px'; sb.style.top = (r.top - rp.top + pg.scrollTop) + 'px';
+      sb.style.width = r.width + 'px'; sb.style.height = r.height + 'px';
+      sb.style.transformOrigin = `${(lx - r.left).toFixed(1)}px ${(ly - r.top).toFixed(1)}px`;
+      sb.style.transform = `scale(${(1 / (1 - ENCOSTADA)).toFixed(4)})`;
+    }
+  }
 
   // ---------- controles ----------
   $$('.lang').forEach(b => b.onclick = () => { est.lang = b.dataset.lang; guardar('lang', est.lang); traduzir(); });

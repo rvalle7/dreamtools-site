@@ -57,11 +57,11 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
 /* ---------- a mesa ---------- */
 #mesa { display: grid; place-items: center; }
 .capas { --c: 300px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5vw; padding-top: 4vh; }
-/* sombra de borda seca, sempre para o lado oposto da luz do mouse.
-   --alt = altura sobre a mesa (1 caindo, 0 encostada): longe a projecao e comprida e transparente,
-   ao encostar encolhe ate o filete fino e fica mais opaca. O mouse mexe na direcao o tempo todo. */
+/* sombra projetada (js/site.js projetar): borda seca, a peca escalada em volta do ponto do mouse.
+   --alt = altura sobre a mesa (1 caindo, 0 encostada), animada junto com a queda */
 @property --alt { syntax: '<number>'; inherits: true; initial-value: 0; }
-.capa:not(.escolhida) { filter: drop-shadow(calc((var(--sx, 0) * .6 + .4) * (1 + var(--alt) * 280) * 1px) calc((var(--sy, 0) * .6 + .8) * (1 + var(--alt) * 280) * 1px) 0 rgba(0, 0, 0, calc(.3 - var(--alt) * .23))); }
+.projecao { position: absolute; inset: 0; z-index: -1; background: #000; opacity: 0; pointer-events: none; will-change: transform; }
+.capa > img { position: relative; }
 .capas.coluna { flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 4vh; padding-top: 8vh; }
 .capa { position: relative; width: var(--c); height: var(--c); padding: 0;
   transform: translateY(70vh) scale(1.9) rotate(calc(var(--i) * 6deg - 3deg)); opacity: 0; --alt: 1;
@@ -70,7 +70,7 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
 .capa img { width: 100%; height: 100%; object-fit: cover; pointer-events: none;
   transition: box-shadow .6s var(--lento), transform .6s var(--lento); }
 .capas.assentou .capa { transform: none; opacity: 1; --alt: 0; }
-.capas.assentou .capa:hover img { transform: translateY(-8px); }
+.capas.assentou .capa:hover img { transform: scale(1.03); }   /* sobe da mesa (vem um pouco para a camera); a sombra abre em volta */
 /* brilho: um swipe de luz diagonal passa pela capa logo antes de ela assentar (so na primeira entrada) */
 .capa::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0;
   background: linear-gradient(115deg, transparent 44.5%, rgba(255, 255, 255, .4) 47%, rgba(255, 255, 255, .4) 53%, transparent 55.5%) 120% 0 / 300% 100% no-repeat;   /* metade da forca, borda mais viva */
@@ -188,7 +188,8 @@ body:not(.intro) #abertura { visibility: hidden; }
 .dupla.invertida .foto { order: 2; }
 .foto { margin: 0; height: 66vh; overflow: hidden; }
 /* fotos das telas: o mesmo filete de sombra seca das capas, seguindo a luz do mouse */
-.pagina .foto { filter: drop-shadow(calc((var(--sx, 0) * .6 + .4) * 1px) calc((var(--sy, 0) * .6 + .8) * 1px) 0 rgba(0, 0, 0, .3)); }
+.pagina .foto { position: relative; z-index: 1; }
+.pagina > .projecao { inset: auto; opacity: .3; z-index: 0; }
 .foto img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); transition: transform 1.6s var(--lento); }
 .texto { max-width: 32em; }
 .texto p { font-size: 18px; line-height: 1.75; margin: 0 0 1.1em; }
