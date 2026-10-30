@@ -8,6 +8,7 @@
     constructor(el, opts) {
       this.el = el;
       this.onMuda = opts.onMuda || (() => {});
+      this.onCarga = opts.onCarga || (() => {});
       this.base = opts.base || 'img';
       this.k = 0;              // quantas folhas ja viraram
       this.vira = null;        // folha em movimento: {i, G, P, dir}
@@ -83,6 +84,10 @@
         for (const im of [this.folhas[i].frente, this.folhas[i].verso])
           if (!im.src && im.dataset.src) { im.src = im.dataset.src; im.decode && im.decode().catch(() => {}); }
     }
+    _contaCarga() {
+      const todas = this.folhas.flatMap(f => [f.frente, f.verso]);
+      this.onCarga(todas.filter(i => i.src && i.complete && i.naturalWidth).length / todas.length);
+    }
     // escolheu o calendario: baixa ja as folhas em volta e depois todas as outras, uma por vez, em segundo plano.
     // O que ja baixou fica guardado (o navegador mantem as imagens), entao voltar paginas nao recarrega.
     preparar() {
@@ -93,11 +98,12 @@
       const proxima = () => {
         if (lote !== this._lote) return;            // trocou de calendario: para esta fila
         const im = fila.find(i => !i.src && i.dataset.src);
-        if (!im) return;
+        if (!im) { this._contaCarga(); return; }
         im.src = im.dataset.src;
-        const segue = () => setTimeout(proxima, 30);
+        const segue = () => { this._contaCarga(); setTimeout(proxima, 30); };
         (im.decode ? im.decode() : Promise.resolve()).then(segue, segue);
       };
+      this._contaCarga();
       setTimeout(proxima, 600);
     }
 

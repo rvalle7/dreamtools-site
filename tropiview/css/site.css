@@ -10,7 +10,7 @@
 * { box-sizing: border-box; }
 html, body { height: 100%; overflow: hidden; }
 body {
-  margin: 0; background: #FF723F; color: var(--ink);
+  margin: 0; background: #5AA7DE; color: var(--ink);
   font: 300 17px/1.6 var(--sans); letter-spacing: .01em;
   -webkit-font-smoothing: antialiased; overscroll-behavior: none;
 }
@@ -101,6 +101,11 @@ body.cita-sai .citacao { opacity: 0; transform: translate(-50%, -50%) scale(.97)
 .folha-l .verso { top: 0; }
 .folha-l .frente { top: var(--s); }
 .folha-l img.on { visibility: visible; }
+#carga { position: absolute; left: 50%; bottom: 14px; width: min(40vw, 320px); height: 1px; transform: translateX(-50%);
+  background: rgba(255, 255, 255, .22); transition: opacity 1.2s ease .6s; }
+#carga::after { content: ''; position: absolute; inset: 0; background: #fff; transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0)); transition: transform .4s ease; }
+#carga.cheia { opacity: 0; }
 canvas.curl { position: absolute; pointer-events: none; z-index: 5; }
 
 /* ---------- interface ---------- */

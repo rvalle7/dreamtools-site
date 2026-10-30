@@ -25,7 +25,13 @@
   }
 
   // ---------- livro ----------
-  const livro = new Livro($('#livro'), { onMuda: (i, n) => rotulo(i, n) });
+  const livro = new Livro($('#livro'), { onMuda: (i, n) => rotulo(i, n), onCarga: (p) => carga(p) });
+  // linha fininha embaixo do calendario: enche conforme as paginas baixam e some quando completa
+  function carga(p) {
+    const l = $('#carga');
+    l.style.setProperty('--p', p.toFixed(3));
+    l.classList.toggle('cheia', p >= 1);
+  }
   window.__tvLivro = livro;   // para depurar no console
   function rotulo(i, n) {
     const m = T('months');
@@ -163,6 +169,25 @@
     });
   }
 
+  // ---------- abertura: o fundo entardece enquanto a marca se constroi ----------
+  // azul do ceu -> roxo -> (tons quentes) -> amarelo -> dourado -> o laranja da mesa
+  function porDoSol() {
+    const paradas = ['#5AA7DE', '#7E6CC6', '#D0688F', '#F4C64E', '#EDA431', COR.mesa].map(hsl);
+    const dur = 5600, t0 = performance.now();
+    corAtual = paradas[0]; aplicaCor(paradas[0] && `hsl(${paradas[0][0]} ${paradas[0][1]}% ${paradas[0][2]}%)`);
+    const passo = (t) => {
+      const u = Math.min(1, (t - t0) / dur), e = (1 - Math.cos(Math.PI * u)) / 2;
+      const x = e * (paradas.length - 1), i = Math.min(paradas.length - 2, Math.floor(x)), f = x - i;
+      const a = paradas[i], b = paradas[i + 1];
+      let dh = b[0] - a[0]; if (dh > 180) dh -= 360; if (dh < -180) dh += 360;
+      corAtual = [(a[0] + dh * f + 360) % 360, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
+      aplicaCor(`hsl(${corAtual[0].toFixed(1)} ${corAtual[1].toFixed(1)}% ${corAtual[2].toFixed(1)}%)`);
+      if (u < 1 && B.classList.contains('intro')) rafCor = requestAnimationFrame(passo);
+      else pintar(COR.mesa);
+    };
+    rafCor = requestAnimationFrame(passo);
+  }
+
   // ---------- roda, teclado ----------
   let trava = 0;
   addEventListener('wheel', (e) => {
@@ -289,7 +314,7 @@
 
   medirMesa();
   est.cal = CATALOGO[0].id; carregarCal(); est.cal = null;
-  pintar(COR.mesa);
+  porDoSol();
   $$('.menu a').forEach(a => a.classList.toggle('atual', a.dataset.ir === 'mesa'));
   traduzir();
   abertura();
