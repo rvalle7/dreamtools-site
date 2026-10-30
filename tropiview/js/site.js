@@ -265,9 +265,10 @@
   (function luz() {
     lx += (mx - lx) * 0.04; ly += (my - ly) * 0.04;
     foco.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
-    // sombra das capas: no maximo 8 px, para o lado oposto da luz
-    capas.style.setProperty('--sx', ((innerWidth / 2 - lx) / innerWidth * 16).toFixed(1));
-    capas.style.setProperty('--sy', ((innerHeight / 2 - ly) / innerHeight * 12).toFixed(1));
+    // direcao da sombra: para o lado oposto da luz (sx ate 8, sy ate 6)
+    // (no body: vale para as capas, ate caindo, e para as fotos das outras telas)
+    document.body.style.setProperty('--sx', ((innerWidth / 2 - lx) / innerWidth * 16).toFixed(1));
+    document.body.style.setProperty('--sy', ((innerHeight / 2 - ly) / innerHeight * 12).toFixed(1));
     requestAnimationFrame(luz);
   })();
 
