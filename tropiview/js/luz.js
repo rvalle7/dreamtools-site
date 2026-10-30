@@ -91,18 +91,61 @@
   medir();
   addEventListener('resize', medir);
 
-  // alterna arvore e veneziana a cada 26 s, numa troca lenta de 7 s
-  let modo = location.hash === '#arvore' ? 0 : 1, troca = 0, inicioTroca = -1e9;
-  setInterval(() => { troca = modo; modo = 1 - modo; inicioTroca = performance.now(); }, 26000);
+  // ---------- a palmeira ----------
+  // folhas compridas saindo de uma copa fora da tela, com foliolos largos que tremulam
+  const palmas = [];
+  for (const copa of [{ x: 1.04, y: -0.08 }, { x: -0.06, y: 0.9 }]) {
+    const n = 7;
+    for (let i = 0; i < n; i++) {
+      const base = copa.x > 0.5 ? 1.35 + i * 0.32 : -0.95 + i * 0.3;
+      const fol = [];
+      for (let j = 0; j < 26; j++) fol.push({ t: 0.08 + j * 0.035, l: 0.9 + rnd() * 0.25, fase: rnd() * 6.28 });
+      palmas.push({ copa, ang: base + (rnd() - 0.5) * 0.15, comp: 0.36 + rnd() * 0.12, curva: 0.55 + rnd() * 0.3, fase: rnd() * 6.28, fol });
+    }
+  }
+  function desenhaPalmeira(t, v) {
+    ctx.strokeStyle = '#000'; ctx.fillStyle = '#000'; ctx.lineCap = 'round';
+    for (const p of palmas) {
+      const x0 = p.copa.x * W, y0 = p.copa.y * H, L = p.comp * W;
+      const balanco = (Math.sin(t * 0.0009 + p.fase) * 0.5 + v) * 0.05;
+      // a nervura central: curva que vai caindo para a ponta
+      const pts = [];
+      for (let k = 0; k <= 24; k++) {
+        const u = k / 24, a = p.ang + balanco * (0.4 + u) + p.curva * u * u * (p.copa.x > 0.5 ? -1 : 1) * 0.6;
+        const ant = pts[k - 1] || [x0, y0];
+        pts.push(k === 0 ? [x0, y0, a] : [ant[0] + Math.cos(a) * L / 24, ant[1] + Math.sin(a) * L / 24, a]);
+      }
+      ctx.lineWidth = Math.max(1, W * 0.006);
+      ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (const q of pts) ctx.lineTo(q[0], q[1]); ctx.stroke();
+      // foliolos dos dois lados, largos, tremulando com o vento
+      for (const f of p.fol) {
+        const k = Math.min(23, Math.floor(f.t * 24)), q = pts[k];
+        const comp = L * 0.26 * f.l * Math.sin(Math.PI * Math.min(1, f.t * 1.05)) + L * 0.04;
+        for (const lado of [-1, 1]) {
+          const a = q[2] + lado * (0.85 + Math.sin(t * 0.005 + f.fase + lado) * 0.12 * v);
+          const ex = q[0] + Math.cos(a) * comp, ey = q[1] + Math.sin(a) * comp;
+          const lx = Math.cos(a + 1.57) * comp * 0.09, ly = Math.sin(a + 1.57) * comp * 0.09;
+          ctx.beginPath(); ctx.moveTo(q[0], q[1]);
+          ctx.quadraticCurveTo((q[0] + ex) / 2 + lx, (q[1] + ey) / 2 + ly, ex, ey);
+          ctx.quadraticCurveTo((q[0] + ex) / 2 - lx, (q[1] + ey) / 2 - ly, q[0], q[1]);
+          ctx.fill();
+        }
+      }
+    }
+  }
+
+  // ---------- revezamento: veneziana, galhos, palmeira (26 s cada, troca lenta de 7 s) ----------
+  const MODOS = [desenhaVeneziana, desenhaArvore, desenhaPalmeira];
+  const inicial = { '#arvore': 1, '#palmeira': 2 }[location.hash] ?? 0;
+  let atual = inicial, anterior = inicial, inicioTroca = -1e9;
+  setInterval(() => { anterior = atual; atual = (atual + 1) % MODOS.length; inicioTroca = performance.now(); }, 26000);
 
   function quadro(t) {
     const v = vento(t);
     ctx.clearRect(0, 0, W, H);
     const u = Math.min(1, (t - inicioTroca) / 7000), e = (1 - Math.cos(Math.PI * u)) / 2;
-    const pesos = modo === 0 ? [e, 1 - e] : [1 - e, e];   // [arvore, veneziana]
-    if (u >= 1) { pesos[0] = modo === 0 ? 1 : 0; pesos[1] = 1 - pesos[0]; }
-    if (pesos[0] > 0.01) { ctx.globalAlpha = pesos[0]; desenhaArvore(t, v); }
-    if (pesos[1] > 0.01) { ctx.globalAlpha = pesos[1]; desenhaVeneziana(t, v); }
+    if (u < 1 && 1 - e > 0.01) { ctx.globalAlpha = 1 - e; MODOS[anterior](t, v); }
+    ctx.globalAlpha = u < 1 ? e : 1; MODOS[atual](t, v);
     ctx.globalAlpha = 1;
     requestAnimationFrame(quadro);
   }
