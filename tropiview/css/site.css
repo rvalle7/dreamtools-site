@@ -238,6 +238,8 @@ body:not(.intro) #abertura { visibility: hidden; }
   .dupla.invertida .foto { order: 0; }
   /* contato no celular igual as outras telas: foto logo abaixo do menu, texto embaixo, rola se precisar */
   #contato { justify-content: flex-start; padding: 220px 6vw 40px; overflow-y: auto; }
+  #contato { overflow-x: hidden; }
+  .email { font-size: min(28px, 6.3vw); max-width: 100%; }   /* o e-mail inteiro cabe na largura do iPhone */
   .foto-contato { width: 100%; }
   .foto { height: 30vh; }
   .medidas { grid-template-columns: 1fr; gap: 4vh; }

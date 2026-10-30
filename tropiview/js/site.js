@@ -263,7 +263,8 @@
   let lx = innerWidth * 0.6, ly = innerHeight * 0.4, mx = lx, my = ly;
   let sxl = lx, syl = ly;
   const ALTO = 0.62, ENCOSTADA = 0.012, LEVANTADA = 0.045, FOTO = 0.03;   // alturas da sombra projetada (ver projetar)
-  addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
+  let temMouse = false;   // no celular (sem mouse) os raios da marca ficam desligados
+  addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; if (e.pointerType === 'mouse' && matchMedia('(hover: hover)').matches) temMouse = true; }, { passive: true });
   (function luz() {
     lx += (mx - lx) * 0.04; ly += (my - ly) * 0.04;
     foco.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
@@ -323,7 +324,7 @@
   let raiosEl = null;
   function raios(lx, ly) {
     const m = document.querySelector('.marca');
-    if (!m || B.classList.contains('intro') || !m.firstElementChild) return;
+    if (!m || !temMouse || B.classList.contains('intro') || !m.firstElementChild) return;
     if (!raiosEl) {
       raiosEl = document.createElement('div'); raiosEl.className = 'raios';
       raiosEl.innerHTML = Array.from({ length: NR }, () => `<div>${m.innerHTML}</div>`).join('');
