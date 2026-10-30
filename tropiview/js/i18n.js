@@ -2,7 +2,7 @@
 window.TV_I18N = {
   en: {
     'nav.about': 'About', 'nav.calendars': 'Calendars', 'nav.photographers': 'Photographers', 'nav.contact': 'Contact',
-    hint: 'Drag the page up to turn it', all: 'All calendars',
+    hint: 'Drag the page up to turn it', all: 'All calendars', 'sch.closed': 'closed', 'sch.open': 'open, hanging',
     quote: 'More than a one-off collaboration, this is an act of collective building. A project that brings photographers, designers and creators together around one goal: to reveal Rio de Janeiro through the harmony of colour, light and design.',
     tagline: 'art, design & memory',
     cover: 'Cover', back: 'Back cover', summary: 'The year at a glance',
@@ -26,7 +26,7 @@ window.TV_I18N = {
   },
   pt: {
     'nav.about': 'Sobre', 'nav.calendars': 'Calendários', 'nav.photographers': 'Fotógrafos', 'nav.contact': 'Contato',
-    hint: 'Arraste a página para cima para virar', all: 'Todos os calendários',
+    hint: 'Arraste a página para cima para virar', all: 'Todos os calendários', 'sch.closed': 'fechado', 'sch.open': 'aberto, pendurado',
     quote: 'Mais do que uma colaboração pontual, este é um gesto de construção coletiva. Um projeto que une fotógrafos, designers e criadores em torno de um objetivo: revelar o Rio de Janeiro através da harmonia entre cor, luz e design.',
     tagline: 'arte, design & memória',
     cover: 'Capa', back: 'Contracapa', summary: 'O ano inteiro',

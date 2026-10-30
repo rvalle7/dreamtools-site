@@ -180,6 +180,18 @@ body:not(.intro) #abertura { visibility: hidden; }
 .foto img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); transition: transform 1.6s var(--lento); }
 .texto { max-width: 32em; }
 .texto p { font-size: 18px; line-height: 1.75; margin: 0 0 1.1em; }
+.medidas { display: grid; grid-template-columns: minmax(150px, 210px) 1fr; gap: 3vw; align-items: end; margin-top: 3.5vh; }
+.medidas .ficha { margin: 0; grid-template-columns: 1fr; gap: 14px; }
+.esquema { margin: 0; max-width: 210px; }
+.esquema svg { display: block; width: 100%; height: auto; overflow: visible; }
+.esquema .ch, .esquema .tr, .esquema .co { fill: none; stroke: #fff; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.esquema .tr { stroke-dasharray: 4 3; opacity: .8; }
+.esquema .co { opacity: .6; }
+.esquema text { fill: #fff; font: 300 11px var(--display); letter-spacing: .06em; }
+.esquema text.rot { font-size: 10px; opacity: .75; text-transform: uppercase; }
+.esquema figcaption { display: flex; align-items: center; gap: 8px; margin-top: 8px; font: 300 12px var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+.esquema figcaption .ch-l, .esquema figcaption .tr-l { width: 22px; height: 0; border-top: 1px solid #fff; }
+.esquema figcaption .tr-l { border-top-style: dashed; margin-left: 10px; }
 .ficha { margin: 4vh 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 3vw; }
 .ficha dt { color: var(--mute); font: 300 13px var(--display); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 2px; }
 .ficha dd { margin: 0; font-size: 15px; }

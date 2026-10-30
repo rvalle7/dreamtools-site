@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/site.css?v=1443">
+<link rel="stylesheet" href="css/site.css?v=1447">
 <script>
   // aberto direto do arquivo, o navegador bloqueia as fotos na folha 3D: pula para o servidor local
   if (location.protocol === 'file:') {
@@ -72,12 +72,38 @@
     <h2 data-t="about.h"></h2>
     <p data-t="about.p1"></p>
     <p data-t="about.p2"></p>
+    <div class="medidas">
+    <figure class="esquema" aria-label="30 x 30 cm (60 open) and 18 x 18 cm (36 open)">
+      <svg viewBox="0 0 330 340">
+        <rect x="40" y="60" width="120" height="120" class="tr"/>
+        <rect x="40" y="180" width="120" height="120" class="ch"/>
+        <circle cx="100.0" cy="64" r="1.6" class="ch"/>
+        <path d="M40 312h120M40 308v8M160 308v8" class="co"/>
+        <text x="100.0" y="330" text-anchor="middle">30 cm</text>
+        <path d="M172 180v120M168 180h8M168 300h8" class="co"/>
+        <text x="178" y="244.0">30</text>
+        <path d="M28 60v240M24 60h8M24 300h8" class="co tr"/>
+        <text x="22" y="184" text-anchor="end">60</text>
+        <text x="100.0" y="244.0" text-anchor="middle" class="rot" data-t="sch.closed"></text>
+        <rect x="230" y="156" width="72" height="72" class="tr"/>
+        <rect x="230" y="228" width="72" height="72" class="ch"/>
+        <circle cx="266.0" cy="160" r="1.6" class="ch"/>
+        <path d="M230 312h72M230 308v8M302 308v8" class="co"/>
+        <text x="266.0" y="330" text-anchor="middle">18 cm</text>
+        <path d="M314 228v72M310 228h8M310 300h8" class="co"/>
+        <text x="320" y="268.0">18</text>
+        <path d="M218 156v144M214 156h8M214 300h8" class="co tr"/>
+        <text x="212" y="232" text-anchor="end">36</text>
+        <text x="266.0" y="268.0" text-anchor="middle" class="rot" data-t="sch.closed"></text>
+      </svg>
+      <figcaption><span class="ch-l"></span><span data-t="sch.closed"></span><span class="tr-l"></span><span data-t="sch.open"></span></figcaption>
+    </figure>
     <dl class="ficha">
-      <div><dt data-t="spec.formats"></dt><dd data-t="spec.formats.v"></dd></div>
       <div><dt data-t="spec.months"></dt><dd data-t="spec.months.v"></dd></div>
       <div><dt data-t="spec.paper"></dt><dd data-t="spec.paper.v"></dd></div>
       <div><dt data-t="spec.langs"></dt><dd data-t="spec.langs.v"></dd></div>
     </dl>
+    </div>
   </div>
 </section>
 
@@ -112,12 +138,12 @@
   </div>
 </footer>
 
-<script src="js/vendor/three.min.js?v=1443"></script>
-<script src="js/data.js?v=1443"></script>
-<script src="js/i18n.js?v=1443"></script>
-<script src="js/curl.js?v=1443"></script>
-<script src="js/livro.js?v=1443"></script>
-<script src="js/site.js?v=1443"></script>
-<script src="js/luz.js?v=1443"></script>
+<script src="js/vendor/three.min.js?v=1447"></script>
+<script src="js/data.js?v=1447"></script>
+<script src="js/i18n.js?v=1447"></script>
+<script src="js/curl.js?v=1447"></script>
+<script src="js/livro.js?v=1447"></script>
+<script src="js/site.js?v=1447"></script>
+<script src="js/luz.js?v=1447"></script>
 </body>
 </html>
