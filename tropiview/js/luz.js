@@ -9,7 +9,7 @@
   Object.assign(cv.style, { position: 'absolute', left: '-12%', top: '-12%', width: '124%', height: '124%',
     opacity: '.3', mixBlendMode: 'multiply', filter: 'blur(6px)' });
   const ESC = 0.25;
-  let W = 0, H = 0;
+  let W = 0, H = 0, B = 0;   // B: medida de referencia das plantas (largura no PC, ~altura no celular em pe)
 
   // gerador aleatorio com semente (a arvore e sempre a mesma)
   let semente = 73;
@@ -51,15 +51,15 @@
     // pontas balancam mais que o tronco
     const balanco = (0.012 + prof * 0.016) * (Math.sin(t * (0.0011 + prof * 0.0004) + g.fase) * 0.6 + v * 0.9);
     const a = ang + g.ang + balanco;
-    const L = g.comp * W, ex = x + Math.cos(a) * L, ey = y + Math.sin(a) * L;
-    ctx.lineWidth = Math.max(1, g.larg * W);
+    const L = g.comp * B, ex = x + Math.cos(a) * L, ey = y + Math.sin(a) * L;
+    ctx.lineWidth = Math.max(1, g.larg * B);
     ctx.beginPath(); ctx.moveTo(x, y);
     const cx = (x + ex) / 2 + Math.cos(a + 1.57) * L * 0.06, cy = (y + ey) / 2 + Math.sin(a + 1.57) * L * 0.06;
     ctx.quadraticCurveTo(cx, cy, ex, ey); ctx.stroke();
     for (const f of g.folhas) {
       const fx = x + (ex - x) * f.t + Math.cos(a + 1.57) * f.dx, fy = y + (ey - y) * f.t + Math.sin(a + 1.57) * f.dx;
       const tremor = Math.sin(t * 0.004 + f.fase) * 0.15 * v;
-      ctx.beginPath(); ctx.ellipse(fx, fy, f.rx * W, f.ry * W, f.r + a + tremor, 0, 6.283); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(fx, fy, f.rx * B, f.ry * B, f.r + a + tremor, 0, 6.283); ctx.fill();
     }
     for (const c of g.filhos)
       desenhaGalho(c.g, x + (ex - x) * c.em, y + (ey - y) * c.em, a, prof + 1, t, v);
@@ -76,7 +76,8 @@
     ctx.rotate(-0.24 + Math.sin(t * 0.0007) * 0.004 * v);
     ctx.transform(1, 0, -0.21, 1, 0, 0);
     ctx.fillStyle = '#000';
-    const passo = 31 * ESC * (W / (innerWidth * ESC)), ripa = passo * 0.59;
+    // ripas proporcionais a tela (no celular ficam mais finas)
+    const passo = 31 * 1.24 * ESC * Math.min(1, Math.min(innerWidth, innerHeight) / 900) * 1.15, ripa = passo * 0.59;
     for (let i = -60; i < 60; i++) {
       // cada ripa chacoalha um pouquinho nas rajadas
       const dy = rajada * passo * 0.22 * Math.sin(t * 0.011 + i * 1.7);
@@ -90,6 +91,7 @@
   function medir() {
     W = cv.width = Math.max(200, Math.round(innerWidth * 1.24 * ESC));
     H = cv.height = Math.max(150, Math.round(innerHeight * 1.24 * ESC));
+    B = Math.max(W, H * 0.6);
   }
   medir();
   addEventListener('resize', medir);
@@ -109,7 +111,7 @@
   function desenhaPalmeira(t, v) {
     ctx.strokeStyle = '#000'; ctx.fillStyle = '#000'; ctx.lineCap = 'round';
     for (const p of palmas) {
-      const x0 = p.copa.x * W, y0 = p.copa.y * H, L = p.comp * W;
+      const x0 = p.copa.x * W, y0 = p.copa.y * H, L = p.comp * B;
       const balanco = (Math.sin(t * 0.0009 + p.fase) * 0.5 + v) * 0.05;
       // a nervura central: curva que vai caindo para a ponta
       const pts = [];
@@ -118,7 +120,7 @@
         const ant = pts[k - 1] || [x0, y0];
         pts.push(k === 0 ? [x0, y0, a] : [ant[0] + Math.cos(a) * L / 24, ant[1] + Math.sin(a) * L / 24, a]);
       }
-      ctx.lineWidth = Math.max(1, W * 0.006);
+      ctx.lineWidth = Math.max(1, B * 0.006);
       ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (const q of pts) ctx.lineTo(q[0], q[1]); ctx.stroke();
       // foliolos dos dois lados, largos, tremulando com o vento
       for (const f of p.fol) {

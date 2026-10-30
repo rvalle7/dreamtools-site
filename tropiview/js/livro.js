@@ -31,14 +31,13 @@
       this.folhas = folhas.map((d) => {
         const s = document.createElement('div');
         s.className = 'folha-l';
-        s.innerHTML = `<img class="frente" alt="" draggable="false" decoding="async" src="${d.frente}">` +
-                      `<img class="verso" alt="" draggable="false" decoding="async" src="${d.verso}">`;
+        // as imagens so baixam quando a folha chega perto (data-src -> src): no celular nao trava a abertura
+        s.innerHTML = `<img class="frente" alt="" draggable="false" decoding="async" data-src="${d.frente}">` +
+                      `<img class="verso" alt="" draggable="false" decoding="async" data-src="${d.verso}">`;
         this.palco.appendChild(s);
         return { el: s, frente: s.children[0], verso: s.children[1] };
       });
-      this.k = 0; this.vira = null; this.fila = 0; this._fimId = 0;
-      // decodifica as imagens antes, para nenhuma troca piscar
-      this.folhas.forEach(f => [f.frente, f.verso].forEach(im => im.decode && im.decode().catch(() => {})));
+      this.k = 0; this.vira = null; this.fila = 0; this._fimId = 0; this._ult = undefined;
       this.medir();
     }
 
@@ -73,7 +72,32 @@
         s.frente.classList.toggle('on', i === baixo);
       });
       const idx = Math.round(f);
-      if (idx !== this._ult) { this._ult = idx; this.onMuda(idx, N); }
+      if (idx !== this._ult) { this._ult = idx; this.onMuda(idx, N); this._baixar(idx); }
+    }
+
+    // baixa (e decodifica) so as folhas em volta da pagina aberta, para a virada nao piscar
+    _baixar(idx) {
+      if (!this.ativo) return;   // so depois que um calendario foi escolhido
+      for (let i = Math.max(0, idx - 2); i <= Math.min(this.N - 1, idx + 3); i++)
+        for (const im of [this.folhas[i].frente, this.folhas[i].verso])
+          if (!im.src && im.dataset.src) { im.src = im.dataset.src; im.decode && im.decode().catch(() => {}); }
+    }
+    // escolheu o calendario: baixa ja as folhas em volta e depois todas as outras, uma por vez, em segundo plano.
+    // O que ja baixou fica guardado (o navegador mantem as imagens), entao voltar paginas nao recarrega.
+    preparar() {
+      this.ativo = true;
+      this._baixar(Math.round(this.f));
+      const lote = this._lote = (this._lote || 0) + 1;
+      const fila = this.folhas.flatMap(f => [f.frente, f.verso]);
+      const proxima = () => {
+        if (lote !== this._lote) return;            // trocou de calendario: para esta fila
+        const im = fila.find(i => !i.src && i.dataset.src);
+        if (!im) return;
+        im.src = im.dataset.src;
+        const segue = () => setTimeout(proxima, 30);
+        (im.decode ? im.decode() : Promise.resolve()).then(segue, segue);
+      };
+      setTimeout(proxima, 600);
     }
 
     // --- uma folha em movimento: G = ponto pego (coords da folha), P = ponteiro ---

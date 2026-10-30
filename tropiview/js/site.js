@@ -47,7 +47,7 @@
   // ---------- a mesa ----------
   const capas = $('.capas');
   capas.innerHTML = CATALOGO.map((c, i) =>
-    `<button class="capa" data-cal="${c.id}" style="--i:${i}" aria-label="${c.nome}"><img alt="" src="${capaDe(c.id)}" draggable="false"></button>`).join('');
+    `<button class="capa" data-cal="${c.id}" style="--i:${i}" aria-label="${c.nome}"><img alt="" src="${capaDe(c.id)}" fetchpriority="high" draggable="false"></button>`).join('');
   function medirMesa() {
     const n = CATALOGO.length;
     const empe = innerHeight > innerWidth * 1.15;   // celular em pe: um embaixo do outro
@@ -136,6 +136,7 @@
     pintar(CATALOGO.find(x => x.id === est.cal).cor);
     // quando a capa chega, troca pelo calendario de verdade sem piscar:
     // espera a imagem da capa estar pronta e so tira a mesa dois quadros depois
+    livro.preparar();
     const capaLivro = livro.folhas[0].frente;
     const pronta = capaLivro.decode ? capaLivro.decode().catch(() => {}) : Promise.resolve();
     setTimeout(() => pronta.then(() => {
@@ -212,7 +213,7 @@
   // ---------- controles ----------
   $$('.lang').forEach(b => b.onclick = () => { est.lang = b.dataset.lang; guardar('lang', est.lang); traduzir(); });
   // trocar 30/18 mantem a pagina que esta aberta
-  $$('.tam').forEach(b => b.onclick = () => { if (est.tam === b.dataset.tam) return; const k = livro.k; est.tam = b.dataset.tam; carregarCal(); livro.ir(k); });
+  $$('.tam').forEach(b => b.onclick = () => { if (est.tam === b.dataset.tam) return; const k = livro.k; est.tam = b.dataset.tam; carregarCal(); livro.ir(k); livro.preparar(); });
   $('#prox').onclick = () => livro.prox();
   $('#ant').onclick = () => livro.ant();
   const cheia = $('#cheia');
@@ -263,6 +264,8 @@
       document.body.classList.remove('intro', 'desenha', 'brilha', 'plim');
       mostrarUI();
       capasProntas.then(() => setTimeout(entrarMesa, 250));   // os calendarios caem na mesa quando as fotos chegaram
+      // as fotos das outras telas so baixam depois que a mesa esta montada
+      capasProntas.then(() => setTimeout(() => $$('.foto img[data-src]').forEach(im => im.src = im.dataset.src), 3000));
     };
     $('#abertura').addEventListener('click', fim);
     requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('desenha')));
