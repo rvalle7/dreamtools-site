@@ -99,12 +99,13 @@
       if (this.fila) { const d = Math.sign(this.fila); this.fila -= d; d > 0 ? this.prox() : this.ant(); }
     }
     // leva o ponteiro ate o alvo, suave na saida e na chegada
-    _animar(alvo, dur, fim) {
+    // solta = true: saiu da mao; desacelera e assenta suave (ease out). Senao, ease in-out.
+    _animar(alvo, dur, fim, solta) {
       const v = this.vira, P0 = { ...v.P }, t0 = performance.now();
       cancelAnimationFrame(this._raf);
       const passo = (agora) => {
         const u = Math.min(1, (agora - t0) / dur);
-        const e = (1 - Math.cos(Math.PI * u)) / 2;
+        const e = solta ? 1 - Math.pow(1 - u, 3) : (1 - Math.cos(Math.PI * u)) / 2;
         v.P = { x: P0.x + (alvo.x - P0.x) * e, y: P0.y + (alvo.y - P0.y) * e };
         this._desenhar();
         if (u < 1) this._raf = requestAnimationFrame(passo); else fim();
@@ -174,7 +175,7 @@
         }
         const alvo = virou ? { x: v.G.x, y: -v.G.y } : { x: v.G.x, y: v.G.y };
         const falta = Math.abs((virou ? 1 : 0) - v.t);
-        this._animar(alvo, Math.max(420, DUR * falta), () => this._terminar(virou));
+        this._animar(alvo, Math.max(700, DUR * 1.3 * falta), () => this._terminar(virou), true);
       };
       el.addEventListener('pointerup', solta);
       el.addEventListener('pointercancel', solta);

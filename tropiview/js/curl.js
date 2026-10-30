@@ -95,9 +95,10 @@
       // peel: a ponta pega anda (no plano da folha) para cima e para o lado do mouse
       const lado = Math.max(-1, Math.min(1, (P.x - G.x) / W2));
       let dx = lado * 0.45, dy = -1; const L = Math.hypot(dx, dy); dx /= L; dy /= L;
-      const r = Math.max(0.5, W * 0.24 * sp);
+      const sp15 = Math.pow(sp, 1.5);   // a ponta desentorta antes de a folha deitar
+      const r = Math.max(0.5, W * 0.24 * sp15);
       const PR = Math.PI * r;
-      let peel = W * 0.22 * sp;
+      let peel = W * 0.22 * sp15;
       // acha a linha onde a curva comeca; se ela chegar na dobradica, o peel encolhe
       const linha = (pe) => {
         if (pe < 0.5) return null;
