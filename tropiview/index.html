@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>TropiView · Calendars 2027</title>
+<meta name="description" content="TropiView: art, design and memory. Wall calendars of Rio de Janeiro and dogs, 2027.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<script>
+  // aberto direto do arquivo, o navegador bloqueia as fotos na folha 3D: pula para o servidor local
+  if (location.protocol === 'file:') {
+    fetch('http://localhost:8137/js/data.js', { mode: 'no-cors' })
+      .then(() => location.replace('http://localhost:8137/'))
+      .catch(() => document.addEventListener('DOMContentLoaded', () => {
+        const a = document.createElement('div'); a.className = 'aviso-arquivo';
+        a.textContent = 'Para as páginas virarem, abra pelo "Abrir site.bat".';
+        document.body.appendChild(a);
+      }));
+  }
+</script>
+</head>
+<body class="intro" data-estado="mesa">
+
+<!-- abertura: a marca se constroi no meio e sobe para o canto -->
+<div id="abertura" aria-hidden="true">
+  <div class="logo-intro"></div>
+  <svg class="estrela" viewBox="-50 -50 100 100"><path d="M0-50C3-12 12-3 50 0 12 3 3 12 0 50-3 12-12 3-50 0-12-3-3-12 0-50Z"/></svg>
+</div>
+
+<header class="ui ui-top">
+  <a class="marca" href="#" data-ir="mesa" aria-label="TropiView"></a>
+  <nav class="menu">
+    <a href="#" data-ir="sobre" data-t="nav.about"></a>
+    <a href="#" data-ir="mesa" data-t="nav.calendars"></a>
+    <a href="#" data-ir="fotografos" data-t="nav.photographers"></a>
+    <a href="#" data-ir="contato" data-t="nav.contact"></a>
+  </nav>
+  <div class="ctrl">
+    <button class="lang" data-lang="en">EN</button>
+    <button class="lang" data-lang="pt">PT</button>
+    <button id="cheia" aria-label="Full screen"><span class="ico-cheia"></span></button>
+  </div>
+</header>
+
+<!-- a mesa: os calendarios fechados, vistos de cima -->
+<section id="mesa" class="camada" aria-label="Calendars">
+  <div class="capas"></div>
+</section>
+
+<!-- um calendario aberto -->
+<section id="visor" class="camada" aria-label="Calendar">
+  <div id="livro" tabindex="0" aria-roledescription="calendar"></div>
+</section>
+
+<section id="sobre" class="camada pagina dupla">
+  <figure class="foto"><img alt="Arcos da Lapa, Rio de Janeiro" src="img/fotos/arcos-lapa.webp"></figure>
+  <div class="texto">
+    <h2 data-t="about.h"></h2>
+    <p data-t="about.p1"></p>
+    <p data-t="about.p2"></p>
+    <dl class="ficha">
+      <div><dt data-t="spec.formats"></dt><dd data-t="spec.formats.v"></dd></div>
+      <div><dt data-t="spec.months"></dt><dd data-t="spec.months.v"></dd></div>
+      <div><dt data-t="spec.paper"></dt><dd data-t="spec.paper.v"></dd></div>
+      <div><dt data-t="spec.langs"></dt><dd data-t="spec.langs.v"></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="fotografos" class="camada pagina dupla invertida">
+  <figure class="foto"><img alt="Copacabana, Rio de Janeiro" src="img/fotos/copacabana.webp"></figure>
+  <div class="texto">
+    <h2 data-t="ph.h"></h2>
+    <p data-t="ph.p1"></p>
+    <p data-t="ph.p2"></p>
+  </div>
+</section>
+
+<section id="contato" class="camada pagina">
+  <h2 data-t="ct.h"></h2>
+  <p data-t="ct.p"></p>
+  <a class="email" href="mailto:tropiviewbrasil@gmail.com"><svg class="ico env" viewBox="0 0 30 21" aria-hidden="true"><rect x="1.25" y="1.25" width="27.5" height="18.5"/><path d="M1.6 1.8 15 11.6 28.4 1.8"/></svg>tropiviewbrasil@gmail.com</a>
+  <a class="insta" href="https://instagram.com/tropiview_" target="_blank" rel="noopener"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r=".6" fill="currentColor" stroke="none"/></svg>@tropiview_</a>
+</section>
+
+<footer class="ui ui-bot">
+  <div class="escolha">
+    <button class="voltar" data-ir="mesa" data-t="all"></button>
+    <span class="sep"></span>
+    <button class="tam" data-tam="30">30 × 30</button>
+    <button class="tam" data-tam="18">18 × 18</button>
+  </div>
+  <div class="folha">
+    <button id="ant" aria-label="Previous page">‹</button>
+    <span id="rotulo"></span>
+    <button id="prox" aria-label="Next page">›</button>
+  </div>
+</footer>
+
+<script src="js/vendor/three.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/curl.js"></script>
+<script src="js/livro.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>
