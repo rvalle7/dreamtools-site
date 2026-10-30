@@ -29,8 +29,10 @@ a { color: inherit; }
 #luz { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 #sombra { position: absolute; left: -12%; top: -12%; width: 124%; height: 124%; opacity: .3; mix-blend-mode: multiply;
   filter: blur(6px);
-  -webkit-mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 50%, transparent 100%);
-          mask-image: radial-gradient(ellipse 95% 90% at 50% 50%, #000 50%, transparent 100%); }
+  /* rampa: a sombra aparece so em manchas (luz da janela em cima a direita, um pedaco embaixo a esquerda) */
+  --manchas: radial-gradient(ellipse 46% 52% at 74% 24%, #000 0%, rgba(0, 0, 0, .65) 38%, transparent 74%),
+             radial-gradient(ellipse 34% 38% at 20% 80%, rgba(0, 0, 0, .8) 0%, rgba(0, 0, 0, .4) 40%, transparent 72%);
+  -webkit-mask-image: var(--manchas); mask-image: var(--manchas); }
 .foco { position: absolute; left: 0; top: 0; width: 90vmax; height: 90vmax; margin: -45vmax 0 0 -45vmax;
   border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 244, 222, .22), rgba(255, 244, 222, .07) 55%, transparent);
   mix-blend-mode: soft-light; will-change: transform; opacity: 0; transition: opacity 2s; }
