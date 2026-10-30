@@ -132,7 +132,7 @@ body.ui-on[data-estado="cal"] .ui-bot { opacity: 1; pointer-events: auto; }
 /* god rays de sombra da marca (js/site.js raios) */
 .raios { position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; }
 .raios > div { position: absolute; inset: 0; will-change: transform; }
-.raios svg * { fill: #000 !important; }
+.raios svg * { fill: currentColor !important; }
 body.intro .marca { visibility: hidden; }
 .menu { position: absolute; left: 0; top: calc(4vw + 128px); display: flex; flex-direction: column; gap: 8px;
   font: 300 17px/1.4 var(--display); text-transform: uppercase; letter-spacing: .08em; }

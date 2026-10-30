@@ -335,12 +335,17 @@
     const forca = Math.max(0, Math.min(1, 1 - (d - r.width * 0.5) / 380));   // so aparece chegando perto
     raiosEl.style.opacity = forca.toFixed(3);
     if (forca <= 0) return;
+    // cor em "multiply": o proprio fundo multiplicado por ele mesmo (mais escuro e saturado, no tom do fundo).
+    // Calculado aqui porque o cabecalho isola o blend e um mix-blend-mode nao alcancaria o fundo.
+    const bg = (B.style.backgroundColor.match(/\d+(\.\d+)?/g) || [0, 0, 0]).map(Number);
+    raiosEl.style.color = `rgb(${bg.slice(0, 3).map(v => Math.round(v * v / 255)).join(',')})`;
     const ox = (lx - r.left).toFixed(1), oy = (ly - r.top).toFixed(1);
     for (let i = 0; i < NR; i++) {
-      const c = raiosEl.children[i];
+      const c = raiosEl.children[i], t = i / (NR - 1);
       c.style.transformOrigin = `${ox}px ${oy}px`;
-      c.style.transform = `scale(${(1 + (i + 1) * 0.024).toFixed(4)})`;
-      c.style.opacity = (0.075 * (1 - i / NR)).toFixed(3);
+      c.style.transform = `scale(${(1 + (i + 1) * 0.017).toFixed(4)})`;
+      // colado na marca mais forte; no meio ja em ~20%; zera no fim (cai rapido, raio mais curto)
+      c.style.opacity = (0.16 * Math.pow(1 - t, 2.3)).toFixed(3);
     }
   }
 
