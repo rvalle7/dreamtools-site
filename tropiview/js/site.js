@@ -303,7 +303,7 @@
     for (let i = 0; i < NS; i++) {
       const c = sb.children[i], t = i / (NS - 1);
       c.style.transformOrigin = `${ox}px ${oy}px`;
-      c.style.transform = `scale(${(1 + (k - 1) * (i + 1) / NS).toFixed(4)})`;
+      c.style.transform = `scale(${(1 + (k - 1) * 2 * (i + 1) / NS).toFixed(4)})`;   // x2: projecao com o dobro da distancia
       c.style.opacity = (forca * Math.pow(1 - t, 2.3)).toFixed(3);   // colada na peca forte, no meio ~20%, zera no fim
     }
   }
