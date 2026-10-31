@@ -262,7 +262,7 @@
   const foco = $('#luz .foco');
   let lx = innerWidth * 0.6, ly = innerHeight * 0.4, mx = lx, my = ly;
   let sxl = lx, syl = ly;
-  const ALTO = 0.62, ENCOSTADA = 0.012, LEVANTADA = 0.045, FOTO = 0.03;   // alturas da sombra projetada (ver projetar)
+  const ALTO = 0.62, ENCOSTADA = 0.02, LEVANTADA = 0.06, FOTO = 0.05, NS = 16;   // alturas da sombra projetada (ver projetar)
   let temMouse = false;   // no celular (sem mouse) os raios da marca ficam desligados
   addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; if (e.pointerType === 'mouse' && matchMedia('(hover: hover)').matches) temMouse = true; }, { passive: true });
   (function luz() {
@@ -282,37 +282,57 @@
   // De cada canto da capa/foto traca-se uma linha a partir do mouse e projeta-se na mesa: a sombra e a propria
   // peca escalada em volta do ponto do mouse. Escala = 1 / (1 - altura): caindo de longe ela vem grandona e
   // transparente; encostada sobra so um filete seco, do lado oposto da luz, mais grosso quanto mais longe o mouse.
+  // a sombra e feita em camadas, como os raios da marca: varias copias da peca escaladas em volta do mouse,
+  // do tamanho dela ate a projecao inteira; perto da peca mais forte, apagando na distancia.
   function sombraDe(el, dentro) {
     let sb = el.__sombra;
-    if (!sb) { sb = el.__sombra = document.createElement('i'); sb.className = 'projecao'; (dentro ? el : el.parentNode).appendChild(sb); }
+    if (!sb) {
+      sb = el.__sombra = document.createElement('i'); sb.className = 'projecao';
+      sb.innerHTML = '<i></i>'.repeat(NS);
+      (dentro ? el : el.parentNode).appendChild(sb);
+    }
     return sb;
   }
+  // cor em "multiply": o fundo multiplicado por ele mesmo (mais escuro e saturado, no tom do fundo)
+  function corMult() {
+    const bg = (B.style.backgroundColor.match(/\d+(\.\d+)?/g) || [0, 0, 0]).map(Number);
+    return `rgb(${bg.slice(0, 3).map(v => Math.round(v * v / 255)).join(',')})`;
+  }
+  function camadas(sb, ox, oy, k, forca, cor) {
+    sb.style.color = cor;
+    for (let i = 0; i < NS; i++) {
+      const c = sb.children[i], t = i / (NS - 1);
+      c.style.transformOrigin = `${ox}px ${oy}px`;
+      c.style.transform = `scale(${(1 + (k - 1) * (i + 1) / NS).toFixed(4)})`;
+      c.style.opacity = (forca * Math.pow(1 - t, 2.3)).toFixed(3);   // colada na peca forte, no meio ~20%, zera no fim
+    }
+  }
   function projetar(lx, ly) {
-    const est0 = B.dataset.estado;
+    const est0 = B.dataset.estado, cor = corMult();
     if (est0 === 'mesa' || zoom) {
       $$('.capa').forEach(c => {
         const sb = sombraDe(c, true);
         if (c.classList.contains('escolhida')) { sb.style.opacity = 0; return; }
+        sb.style.opacity = 1;
         const r = c.getBoundingClientRect(); if (!r.width) return;
         const alt = parseFloat(getComputedStyle(c).getPropertyValue('--alt')) || 0;
         // mouse em cima: a capa sobe um pouco da mesa (suave) e a projecao abre em volta
-        const alvo = c.matches(':hover') && !c.classList.contains('escolhida') ? LEVANTADA : ENCOSTADA;
+        const alvo = c.matches(':hover') ? LEVANTADA : ENCOSTADA;
         c.__lev = c.__lev == null ? alvo : c.__lev + (alvo - c.__lev) * 0.12;
         const h = alt * ALTO + c.__lev;
         const k = 1 / (1 - h), e = c.offsetWidth / r.width;
-        sb.style.transformOrigin = `${((lx - r.left) * e).toFixed(1)}px ${((ly - r.top) * e).toFixed(1)}px`;
-        sb.style.transform = `scale(${k.toFixed(4)})`;
-        sb.style.opacity = (0.3 - alt * 0.2).toFixed(3);
+        camadas(sb, ((lx - r.left) * e).toFixed(1), ((ly - r.top) * e).toFixed(1), k, 0.4 + alt * 0.15, cor);
       });
     }
     const pg = document.getElementById(est0);
     if (pg && pg.classList.contains('pagina')) {
-      const f = pg.querySelector('.foto'); if (!f) return;
-      const sb = sombraDe(f, false), r = f.getBoundingClientRect(), rp = pg.getBoundingClientRect();
-      sb.style.left = (r.left - rp.left + pg.scrollLeft) + 'px'; sb.style.top = (r.top - rp.top + pg.scrollTop) + 'px';
-      sb.style.width = r.width + 'px'; sb.style.height = r.height + 'px';
-      sb.style.transformOrigin = `${(lx - r.left).toFixed(1)}px ${(ly - r.top).toFixed(1)}px`;
-      sb.style.transform = `scale(${(1 / (1 - FOTO)).toFixed(4)})`;
+      const f = pg.querySelector('.foto');
+      if (f) {
+        const sb = sombraDe(f, false), r = f.getBoundingClientRect(), rp = pg.getBoundingClientRect();
+        sb.style.left = (r.left - rp.left + pg.scrollLeft) + 'px'; sb.style.top = (r.top - rp.top + pg.scrollTop) + 'px';
+        sb.style.width = r.width + 'px'; sb.style.height = r.height + 'px';
+        camadas(sb, (lx - r.left).toFixed(1), (ly - r.top).toFixed(1), 1 / (1 - FOTO), 0.4, cor);
+      }
     }
     raios(lx, ly);
   }
@@ -338,8 +358,7 @@
     if (forca <= 0) return;
     // cor em "multiply": o proprio fundo multiplicado por ele mesmo (mais escuro e saturado, no tom do fundo).
     // Calculado aqui porque o cabecalho isola o blend e um mix-blend-mode nao alcancaria o fundo.
-    const bg = (B.style.backgroundColor.match(/\d+(\.\d+)?/g) || [0, 0, 0]).map(Number);
-    raiosEl.style.color = `rgb(${bg.slice(0, 3).map(v => Math.round(v * v / 255)).join(',')})`;
+    raiosEl.style.color = corMult();
     const ox = (lx - r.left).toFixed(1), oy = (ly - r.top).toFixed(1);
     for (let i = 0; i < NR; i++) {
       const c = raiosEl.children[i], t = i / (NR - 1);

@@ -60,7 +60,8 @@ body.cobre #mesa { opacity: 1; visibility: visible; z-index: 2; }
 /* sombra projetada (js/site.js projetar): borda seca, a peca escalada em volta do ponto do mouse.
    --alt = altura sobre a mesa (1 caindo, 0 encostada), animada junto com a queda */
 @property --alt { syntax: '<number>'; inherits: true; initial-value: 0; }
-.projecao { position: absolute; inset: 0; z-index: -1; background: #000; opacity: 0; pointer-events: none; will-change: transform; }
+.projecao { position: absolute; inset: 0; z-index: -1; opacity: 0; pointer-events: none; }
+.projecao > i { position: absolute; inset: 0; background: currentColor; will-change: transform; }
 .capa > img { position: relative; }
 .capas.coluna { flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 4vh; padding-top: 8vh; }
 .capa { position: relative; width: var(--c); height: var(--c); padding: 0;
@@ -194,7 +195,7 @@ body:not(.intro) #abertura { visibility: hidden; }
 .foto { margin: 0; height: 66vh; overflow: hidden; }
 /* fotos das telas: o mesmo filete de sombra seca das capas, seguindo a luz do mouse */
 .pagina .foto { position: relative; z-index: 1; }
-.pagina > .projecao { inset: auto; opacity: .3; z-index: 0; }
+.pagina > .projecao { inset: auto; opacity: 1; z-index: 0; }
 .foto img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); transition: transform 1.6s var(--lento); }
 .texto { max-width: 32em; }
 .texto p { font-size: 18px; line-height: 1.75; margin: 0 0 1.1em; }
