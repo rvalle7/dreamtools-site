@@ -146,7 +146,12 @@
   let atual = inicial, anterior = inicial, inicioTroca = -1e9;
   setInterval(() => { anterior = atual; atual = (atual + 1) % MODOS.length; inicioTroca = performance.now(); }, 26000);
 
+  // no celular (sem mouse) as sombras do vento rodam a 30 quadros: o balanco e lento, ninguem percebe, e a bateria agradece
+  const MIN_DT = matchMedia('(hover: hover)').matches ? 0 : 32;
+  let ultQ = 0;
   function quadro(t) {
+    if (t - ultQ < MIN_DT) { requestAnimationFrame(quadro); return; }
+    ultQ = t;
     const v = vento(t);
     ctx.clearRect(0, 0, W, H);
     const u = Math.min(1, (t - inicioTroca) / 7000), e = (1 - Math.cos(Math.PI * u)) / 2;

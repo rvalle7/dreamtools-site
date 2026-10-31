@@ -97,7 +97,7 @@
   let corAtual = null, rafCor;
   // no iPhone as barras de cima e de baixo do Safari seguem o theme-color e o fundo do <html>
   const tema = document.querySelector('meta[name="theme-color"]');
-  function aplicaCor(c) { B.style.backgroundColor = c; document.documentElement.style.backgroundColor = c; if (tema) tema.content = c; }
+  function aplicaCor(c) { B.__corMudou = true; B.style.backgroundColor = c; document.documentElement.style.backgroundColor = c; if (tema) tema.content = c; }
   function pintar(cor) {
     pararDeriva();
     const alvo = hsl(cor);
@@ -130,7 +130,8 @@
       const a = paradas[i], b = paradas[i + 1];
       let dh = b[0] - a[0]; if (dh > 180) dh -= 360; if (dh < -180) dh += 360;
       corAtual = [(a[0] + dh * f + 360) % 360, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
-      aplicaCor(`hsl(${corAtual[0].toFixed(1)} ${corAtual[1].toFixed(1)}% ${corAtual[2].toFixed(1)}%)`);
+      // a cor anda devagar (1 min a volta): 15 trocas por segundo bastam e poupam repintar a tela a cada quadro
+      if (t - (passo.ult || 0) > 66) { passo.ult = t; aplicaCor(`hsl(${corAtual[0].toFixed(1)} ${corAtual[1].toFixed(1)}% ${corAtual[2].toFixed(1)}%)`); }
       rafDeriva = requestAnimationFrame(passo);
     };
     rafDeriva = requestAnimationFrame(passo);
@@ -265,16 +266,25 @@
   const ALTO = 0.62, ENCOSTADA = 0.02, LEVANTADA = 0.06, FOTO = 0.05, NS = 16;   // alturas da sombra projetada (ver projetar)
   let temMouse = false;   // no celular (sem mouse) os raios da marca ficam desligados
   addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; if (e.pointerType === 'mouse' && matchMedia('(hover: hover)').matches) temMouse = true; }, { passive: true });
+  // so recalcula luz e sombras quando algo mexe: mouse, capas caindo/assentando, troca de tela, resize, rolagem.
+  // Parado (e no celular, sem mouse, quase sempre) o loop nao escreve nada no DOM: economiza bateria e quadros.
+  let acordadoAte = performance.now() + 9000;   // a abertura inteira
+  const acordar = (ms) => { acordadoAte = Math.max(acordadoAte, performance.now() + ms); };
+  new MutationObserver(() => acordar(2600)).observe(B, { attributes: true, attributeFilter: ['data-estado', 'class'] });
+  new MutationObserver((ms) => { if (ms.some(m => m.target === capas || m.target.classList.contains('capa'))) acordar(2600); }).observe(capas, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });   // capas caindo, zoom, volta
+  addEventListener('resize', () => acordar(600));
+  document.addEventListener('scroll', () => acordar(400), { capture: true, passive: true });
+  ['pointerover', 'pointerout', 'pointerdown'].forEach(ev => addEventListener(ev, () => acordar(1200), { passive: true }));
   (function luz() {
-    lx += (mx - lx) * 0.04; ly += (my - ly) * 0.04;
-    foco.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
-    // direcao da sombra: para o lado oposto da luz (sx ate 8, sy ate 6)
-    // (no body: vale para as capas, ate caindo, e para as fotos das outras telas)
-    // a sombra segue o mouse bem mais rapido que a luz, para a projecao girar ja durante a queda das capas
-    sxl += (mx - sxl) * 0.15; syl += (my - syl) * 0.15;
-    document.body.style.setProperty('--sx', ((innerWidth / 2 - sxl) / innerWidth * 16).toFixed(2));
-    document.body.style.setProperty('--sy', ((innerHeight / 2 - syl) / innerHeight * 12).toFixed(2));
-    projetar(sxl, syl);
+    const dl = Math.abs(mx - lx) + Math.abs(my - ly) + Math.abs(mx - sxl) + Math.abs(my - syl);
+    const corMudou = B.__corMudou; B.__corMudou = false;   // o fundo mudou (deriva do por do sol): a cor das sombras acompanha
+    if (dl > 0.1 || corMudou || performance.now() < acordadoAte) {
+      lx += (mx - lx) * 0.04; ly += (my - ly) * 0.04;
+      foco.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
+      // a sombra segue o mouse bem mais rapido que a luz, para a projecao girar ja durante a queda das capas
+      sxl += (mx - sxl) * 0.15; syl += (my - syl) * 0.15;
+      projetar(sxl, syl);
+    }
     requestAnimationFrame(luz);
   })();
 
