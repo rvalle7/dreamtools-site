@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Places with Photogrammetry in FS24</title>
+  <meta name="description" content="Free 3D globe of every Microsoft Flight Simulator photogrammetry place through World Update 23 + City Update 16. Tick where you've flown. / Globo 3D grátis com os lugares de fotogrametria do MSFS.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dreamtools.com.br/mapa/">
+  <meta property="og:title" content="MSFS Photogrammetry Map — 3D globe">
+  <meta property="og:description" content="2,833 photogrammetry places in Microsoft Flight Simulator on a 3D globe. Free, runs in the browser. / Mapa 3D grátis dos lugares com fotogrametria do Flight Simulator.">
+  <meta property="og:image" content="https://dreamtools.com.br/mapa/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://dreamtools.com.br/mapa/og.jpg">
+  <meta name="description" content="Free interactive world map of MSFS photogrammetry / TIN places (WU23 + CU16). Mark where you've flown. English / Portuguese." />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.15.0/dist/maplibre-gl.css" />
+  <script src="https://unpkg.com/maplibre-gl@5.15.0/dist/maplibre-gl.js"></script>
+  <style>
+    :root {
+      /* Track73 / VR Flights dark + red accent */
+      --bg: #0a0c10; --panel: #10141a; --panel2: #161b22; --border: #252b36;
+      --text: #e8eef7; --muted: #8b93a7; --accent: #ff2d55; --accent-soft: #ff4d6d;
+      --accent2: #2dd4a8; --visited: #2dd4a8; --unvisited: #9ea8b4;
+      --map-void: #0a0c10;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); }
+    body { height: 100vh; overflow: hidden; }
+    aside {
+      position: fixed; z-index: 1100;
+      left: 18px; top: 18px;
+      width: min(380px, calc(100vw - 36px));
+      max-height: calc(100vh - 120px);
+      display: flex; flex-direction: column;
+      background: rgba(10, 12, 16, 0.9);
+      -webkit-backdrop-filter: blur(16px) saturate(1.15);
+      backdrop-filter: blur(16px) saturate(1.15);
+      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      overflow: auto;
+    }
+    header {
+      padding: 14px 16px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: transparent;
+    }
+    .title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    header h1 { margin: 0 0 4px; font-size: 1.02rem; font-weight: 650; }
+    header p { margin: 0; font-size: 0.76rem; color: var(--muted); line-height: 1.35; }
+    .lang {
+      display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex-shrink: 0;
+    }
+    .lang button {
+      border: none; background: var(--panel2); color: var(--muted); padding: 6px 10px;
+      font-size: 0.72rem; font-weight: 650; cursor: pointer;
+    }
+    .lang button.active { background: var(--accent); color: #fff; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .stat {
+      background: var(--panel2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 8px; text-align: center;
+    }
+    .stat b { display: block; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+    .stat span { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .progress-wrap { margin-top: 8px; }
+    .progress-bar {
+      height: 8px; background: var(--panel2); border-radius: 99px; overflow: hidden; border: 1px solid var(--border);
+    }
+    .progress-bar > i {
+      display: block; height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft) 55%, var(--accent2));
+      transition: width 0.25s ease;
+    }
+    .progress-label { margin-top: 4px; font-size: 0.7rem; color: var(--muted); }
+    .controls {
+      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .search, .select {
+      width: 100%; padding: 8px 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      font-size: 0.86rem; outline: none;
+    }
+    .search:focus, .select:focus { border-color: var(--accent); }
+    .select { cursor: pointer; }
+    .geo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .field-label { font-size: 0.68rem; color: var(--muted); margin-bottom: 3px; display: block; }
+    .layers { display: flex; flex-direction: column; gap: 5px; }
+    .layer-row { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; user-select: none; }
+    .layer-row input { accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+    .layer-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(255,255,255,0.12); }
+    .layer-name-wrap { display: flex; align-items: baseline; gap: 5px; min-width: 0; flex: 1; }
+    .layer-name {
+      cursor: text;
+      border-radius: 4px;
+      padding: 1px 4px;
+      margin: -1px -4px;
+    }
+    .layer-name:hover {
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 0 1px var(--border);
+    }
+    .layer-name-input {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 1px 6px;
+      outline: none;
+    }
+    .layer-count { color: var(--muted); flex-shrink: 0; }
+    .filters-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip {
+      border: 1px solid var(--border); background: var(--panel2); color: var(--muted);
+      border-radius: 99px; padding: 5px 10px; font-size: 0.74rem; cursor: pointer;
+    }
+    .chip.active {
+      background: rgba(255, 45, 85, 0.16); color: var(--text);
+      border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255, 45, 85, 0.25);
+    }
+    .list-tools { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 16px; }
+    .btn {
+      border: 1px solid var(--border); background: var(--panel2); color: var(--text);
+      border-radius: 8px; padding: 6px 10px; font-size: 0.74rem; cursor: pointer;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+    .btn.primary:hover { background: var(--accent-soft); border-color: var(--accent-soft); }
+    .btn.danger { border-color: #7a3038; color: #ffb4b8; }
+    .list-wrap { display: none; }
+    .place {
+      display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: start;
+      padding: 8px; border-radius: 8px; cursor: pointer; border: 1px solid transparent;
+    }
+    .place:hover { background: var(--panel2); }
+    .place.active { background: rgba(255, 45, 85, 0.12); border-color: var(--accent); }
+    .place.visited .pname { color: var(--visited); }
+    .place input { margin-top: 3px; accent-color: var(--visited); cursor: pointer; width: 16px; height: 16px; }
+    .pname { font-size: 0.85rem; font-weight: 560; line-height: 1.25; }
+    .pmeta { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+    .goto { border: none; background: transparent; color: var(--accent); cursor: pointer; font-size: 0.72rem; padding: 2px 4px; }
+    #map-wrap { position: fixed; inset: 0; width: 100%; height: 100%; }
+    #map { width: 100%; height: 100%; background: var(--map-void); }
+    .maplibregl-popup-content {
+      background: rgba(10, 12, 16, 0.9); color: var(--text);
+      -webkit-backdrop-filter: blur(16px) saturate(1.15);
+      backdrop-filter: blur(16px) saturate(1.15);
+      border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .maplibregl-popup-anchor-bottom .maplibregl-popup-tip { border-top-color: rgba(10, 12, 16, 0.9); }
+    .maplibregl-popup-anchor-top .maplibregl-popup-tip { border-bottom-color: rgba(10, 12, 16, 0.9); }
+    .maplibregl-popup-anchor-left .maplibregl-popup-tip { border-right-color: rgba(10, 12, 16, 0.9); }
+    .maplibregl-popup-anchor-right .maplibregl-popup-tip { border-left-color: rgba(10, 12, 16, 0.9); }
+    .maplibregl-ctrl-attrib { background: rgba(10, 12, 16, 0.72); }
+    .maplibregl-ctrl-attrib a { color: var(--muted); }
+    .legend {
+      position: absolute; z-index: 1000; right: 12px; bottom: 36px;
+      background: rgba(10, 12, 16, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);
+      -webkit-backdrop-filter: blur(16px) saturate(1.15);
+      backdrop-filter: blur(16px) saturate(1.15);
+      border-radius: 10px; padding: 10px 12px 36px; font-size: 0.75rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .legend-row { display: flex; align-items: center; gap: 8px; margin: 3px 0; }
+    .legend-tools { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+    #chrome-btn {
+      position: absolute; left: 12px; right: 12px; bottom: 10px; margin: 0;
+      width: auto; z-index: 1;
+    }
+    body.chrome-off #chrome-label { display: none; }
+    body.chrome-off #chrome-btn { left: auto; right: 12px; bottom: 10px; width: auto; pointer-events: auto; }
+    body.chrome-off aside,
+    body.chrome-off .map-hint,
+    body.chrome-off .legend-body,
+    body.chrome-off .map-popup,
+    body.chrome-off .toast,
+    body.chrome-off .maplibregl-popup,
+    body.chrome-off .maplibregl-control-container,
+    body.chrome-off .cesium-viewer-bottom { display: none !important; }
+    body.chrome-off .legend {
+      background: transparent; border-color: transparent; box-shadow: none;
+      -webkit-backdrop-filter: none; backdrop-filter: none;
+      padding: 0; pointer-events: none;
+    }
+
+    .sw-toggle {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      width: 100%; padding: 1px 0; border: 0; background: transparent;
+      color: var(--muted); font: inherit; font-size: 0.72rem; cursor: pointer; text-align: left;
+    }
+    .sw-toggle.on { color: var(--text); }
+    .sw-toggle .switch {
+      position: relative; flex: 0 0 30px; width: 30px; height: 16px; box-sizing: border-box;
+      border-radius: 99px; border: 1.5px solid rgba(255,255,255,0.45); background: transparent;
+    }
+    .sw-toggle .switch::after {
+      content: ""; position: absolute; top: 1px; left: 1px;
+      width: 12px; height: 12px; border-radius: 50%; background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.45); transition: transform 0.16s ease;
+    }
+    .sw-toggle.on .switch { background: #3ad86a; border-color: #3ad86a; }
+    .sw-toggle.on .switch::after { transform: translateX(14px); }
+    .swatch { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff3; flex-shrink: 0; }
+    .visited-color-btns {
+      display: inline-flex; gap: 4px; margin-left: auto; align-items: center;
+    }
+    .visited-color-btns button {
+      width: 16px; height: 16px; border-radius: 50%; padding: 0; cursor: pointer;
+      border: 2px solid transparent; background: var(--c, #888);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
+    }
+    .visited-color-btns button:hover { transform: scale(1.08); }
+    .visited-color-btns button.active {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .map-hint {
+      position: absolute; z-index: 1000; left: 18px; bottom: 36px;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(10, 12, 16, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);
+      -webkit-backdrop-filter: blur(16px) saturate(1.15);
+      backdrop-filter: blur(16px) saturate(1.15);
+      border-radius: 8px; padding: 8px 10px; font-size: 0.72rem; color: var(--muted);
+      max-width: 440px; line-height: 1.35;
+    }
+    .map-hint b { color: var(--accent2); }
+    .sm-mark { width: calc(63px * 0.73); height: calc(52px * 0.73); flex: 0 0 auto; display: block; }
+    .maplibregl-popup-content img, .map-popup img {
+      display: block; width: 100%; max-height: 200px; object-fit: cover;
+      border-radius: 8px; margin: 6px 0 8px; background: #0a0c10;
+    }
+    .fs-btn {
+      position: absolute; z-index: 1002; top: 16px; right: 16px;
+      width: 38px; height: 38px; display: grid; place-items: center; padding: 0;
+      border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 12, 16, 0.9); color: var(--text); cursor: pointer;
+      -webkit-backdrop-filter: blur(16px) saturate(1.15);
+      backdrop-filter: blur(16px) saturate(1.15);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    .fs-btn:hover { border-color: rgba(255,255,255,0.35); }
+    .fs-btn svg { display: block; }
+    .fs-btn .fs-exit { display: none; }
+    .fs-btn.on .fs-enter { display: none; }
+    .fs-btn.on .fs-exit { display: block; }
+    .rose {
+      position: absolute; z-index: 1000; top: 56px; right: 56px;
+      width: 234px; height: 234px; perspective: 480px; pointer-events: auto; cursor: pointer;
+    }
+    .rose-tilt, .rose-disk { width: 100%; height: 100%; transform-style: preserve-3d; }
+    .rose-disk { position: relative; }
+    .rose-disk .n, .rose-disk .s { position: absolute; left: 50%; }
+    .rose-disk .n {
+      top: 16%; width: 14%; height: 34%; margin-left: -7%;
+      background: #ff2d55;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      filter: drop-shadow(0 0 9px rgba(255, 45, 85, 0.65));
+    }
+    .rose-disk .s {
+      bottom: 16%; width: 10%; height: 24%; margin-left: -5%;
+      background: #8b93a7;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+    .rose-disk b {
+      position: absolute; left: 0; right: 0; top: 5%;
+      text-align: center; font-size: 30px; font-weight: 700; line-height: 1;
+      color: #ff2d55; letter-spacing: 0.04em;
+    }
+    .rose-disk::after {
+      content: ""; position: absolute; left: 50%; top: 50%;
+      width: 21px; height: 21px; margin: -10.5px 0 0 -10.5px; border-radius: 50%;
+      background: #e8eef7; box-shadow: 0 0 0 5px rgba(16, 20, 26, 0.92);
+    }
+    .select-box {
+      position: absolute; border: 2px dashed var(--visited);
+      background: color-mix(in srgb, var(--visited) 18%, transparent);
+      pointer-events: none; z-index: 1000; display: none;
+    }
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+      background: rgba(10, 12, 16, 0.9); border: 1px solid var(--accent); color: var(--text);
+      -webkit-backdrop-filter: blur(16px) saturate(1.15);
+      backdrop-filter: blur(16px) saturate(1.15);
+      padding: 10px 16px; border-radius: 10px; font-size: 0.85rem;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 9999;
+    }
+    .toast.show { opacity: 1; }
+
+    .popup-actions { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+    .empty { color: var(--muted); padding: 24px 12px; text-align: center; font-size: 0.85rem; }
+    .credit {
+      padding: 8px 16px 12px; font-size: 0.68rem; color: var(--muted); border-top: 1px solid var(--border);
+      line-height: 1.35;
+    }
+    .credit a { color: var(--accent); }
+    .brand-foot {
+      position: absolute; z-index: 1004; left: 50%; bottom: 12px;
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: 26px;
+      pointer-events: none;
+    }
+    .brand-foot a {
+      pointer-events: auto;
+      display: flex; align-items: center; gap: 8px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      filter: drop-shadow(0 1px 1.5px rgba(0,0,0,0.6));
+    }
+    .brand-foot a:hover { color: rgba(255,255,255,0.88); }
+    .brand-foot span {
+      font-size: 8px; letter-spacing: 0.16em; font-weight: 300; white-space: nowrap;
+    }
+    .brand-foot img { height: 24px; width: auto; display: block; opacity: 0.78; }
+    .brand-foot a:hover img { opacity: 1; }
+    .brand-foot svg { height: 24px; width: auto; display: block; }
+    .brand-foot svg path { fill: currentColor; }
+    @media (max-width: 900px) {
+      aside { width: min(380px, calc(100vw - 28px)); left: 14px; top: 14px; max-height: calc(100vh - 100px); }
+      .map-hint { left: 14px; bottom: 36px; }
+      .fs-btn { top: 12px; right: 12px; }
+      .rose { top: 40px; right: 40px; width: 192px; height: 192px; perspective: 390px; }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <header>
+      <div class="title-row">
+        <div>
+          <h1 id="ui-title">Places with Photogrammetry in FS24</h1>
+          <p id="subtitle">Loading…</p>
+        </div>
+        <div class="lang" role="group" aria-label="Language">
+          <button type="button" id="lang-en" class="active" data-lang="en">EN</button>
+          <button type="button" id="lang-pt" data-lang="pt">PT</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="stat-total">—</b><span id="lbl-total">Total</span></div>
+        <div class="stat"><b id="stat-visited" style="color:var(--visited)">—</b><span id="lbl-visited">Visited</span></div>
+        <div class="stat"><b id="stat-left" style="color:var(--unvisited)">—</b><span id="lbl-left">To fly</span></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><i id="progress-fill"></i></div>
+        <div class="progress-label" id="progress-label">0%</div>
+      </div>
+    </header>
+
+    <div class="controls">
+      <div>
+        <label class="field-label" id="lbl-search" for="search">Search</label>
+        <input class="search" id="search" type="search" autocomplete="off" />
+      </div>
+      <div class="geo-row">
+        <div>
+          <label class="field-label" id="lbl-country" for="country">Country</label>
+          <select class="select" id="country"><option value="">All countries</option></select>
+        </div>
+        <div>
+          <label class="field-label" id="lbl-region" for="region">State / region</label>
+          <select class="select" id="region" disabled><option value="">All regions</option></select>
+        </div>
+      </div>
+      <div class="layers" id="layers"></div>
+      <div class="filters-row">
+        <button type="button" class="chip active" data-filter="all" id="chip-all">All</button>
+        <button type="button" class="chip" data-filter="unvisited" id="chip-unvisited">To fly</button>
+        <button type="button" class="chip" data-filter="visited" id="chip-visited">Visited</button>
+      </div>
+    </div>
+
+    <div class="list-tools">
+      <button type="button" class="btn primary" id="btn-export">Export progress</button>
+      <button type="button" class="btn" id="btn-import">Import JSON</button>
+      <button type="button" class="btn" id="btn-random">Surprise me</button>
+      <button type="button" class="btn danger" id="btn-reset">Clear ticks</button>
+      <input type="file" id="import-file" accept="application/json,.json" hidden />
+    </div>
+
+    <div class="list-wrap" id="list"></div>
+    <div class="credit" id="credit"></div>
+  </aside>
+
+  <div id="map-wrap">
+    <div id="map"></div>
+    <button type="button" class="fs-btn" id="fs-btn" title="Full screen" aria-label="Full screen" aria-pressed="false">
+      <svg class="fs-enter" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"/>
+      </svg>
+      <svg class="fs-exit" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 4v4a1 1 0 0 1-1 1H4M15 4v4a1 1 0 0 0 1 1h4M9 20v-4a1 1 0 0 0-1-1H4M15 20v-4a1 1 0 0 1 1-1h4"/>
+      </svg>
+    </button>
+    <div class="rose" id="rose" role="button" tabindex="0" title="North up, no tilt">
+      <div class="rose-tilt" id="rose-tilt">
+        <div class="rose-disk" id="rose-disk"><i class="n"></i><i class="s"></i><b>N</b></div>
+      </div>
+    </div>
+    <div class="map-hint" id="map-hint">
+      <div id="map-hint-text"></div>
+      <svg class="sm-mark" viewBox="0 0 244 200" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-label="SpaceMouse" role="img">
+        <path d="M51.8 22.4C51.8 14.4 83.2 8.0 122.0 8.0C160.8 8.0 192.2 14.4 192.2 22.4C191.8 25.5 189.7 34.3 189.5 41.1C189.3 47.9 189.6 57.1 190.9 63.2C192.1 69.3 193.5 73.7 196.8 77.9C200.1 82.2 207.0 85.4 210.5 88.6C213.9 91.8 215.3 93.5 217.3 97.2C219.4 101.0 220.9 106.0 222.8 111.0C224.7 116.1 226.9 122.1 228.7 127.6C230.5 133.1 232.5 138.8 233.7 144.2C234.9 149.5 236.8 154.7 236.0 159.8C235.2 164.9 232.9 170.5 228.7 174.5C224.5 178.5 220.3 181.2 210.9 183.7C201.5 186.2 184.7 188.1 172.2 189.4C159.6 190.7 144.0 191.2 135.7 191.6C127.3 192.1 126.6 192.0 122.0 192.0C117.4 192.0 116.7 192.1 108.3 191.6C100.0 191.2 84.4 190.7 71.8 189.4C59.3 188.1 42.5 186.2 33.1 183.7C23.7 181.2 19.5 178.5 15.3 174.5C11.1 170.5 8.8 164.9 8.0 159.8C7.2 154.7 9.1 149.5 10.3 144.2C11.5 138.8 13.5 133.1 15.3 127.6C17.1 122.1 19.3 116.1 21.2 111.0C23.1 106.0 24.6 101.0 26.7 97.2C28.7 93.5 30.1 91.8 33.5 88.6C37.0 85.4 43.9 82.2 47.2 77.9C50.5 73.7 51.9 69.3 53.1 63.2C54.4 57.1 54.7 47.9 54.5 41.1C54.3 34.3 52.2 25.5 51.8 22.4Z"/>
+        <path d="M61.6 22.4C61.6 29.6 88.6 35.6 122.0 35.6C155.4 35.6 182.4 29.6 182.4 22.4"/>
+        <path d="M33.5 88.6C39.9 89.8 57.1 94.1 71.8 96.0C86.6 97.8 105.3 99.6 122.0 99.6C138.7 99.6 157.4 97.8 172.2 96.0C186.9 94.1 204.1 89.8 210.5 88.6"/>
+        <path d="M42.2 91.1C47.9 92.5 63.1 97.2 76.4 99.2C89.7 101.2 106.8 102.9 122.0 102.9C137.2 102.9 154.3 101.2 167.6 99.2C180.9 97.2 196.1 92.5 201.8 91.1" stroke="#4ec3ff" stroke-width="8"/>
+        <path d="M122.0 44.8V81.6" stroke-width="4"/>
+        <path d="M15.8 128.5C24.0 129.7 47.3 133.7 65.0 135.3C82.7 137.0 103.0 138.3 122.0 138.3C141.0 138.3 161.3 137.0 179.0 135.3C196.7 133.7 220.0 129.7 228.2 128.5" stroke-width="4"/>
+        <rect x="112.4" y="113.2" width="28.3" height="14.0" rx="3" stroke-width="4"/>
+        <path d="M104.2 115.8V124.7" stroke="#b6ff4a" stroke-width="4"/>
+        <rect x="106.5" y="161.1" width="31.0" height="12.9" rx="4.5" stroke-width="4"/>
+        <rect x="113.3" y="165.1" width="17.3" height="5.2" rx="2.5" stroke-width="3.5"/>
+      </svg>
+    </div>
+    <div class="select-box" id="select-box"></div>
+    <div class="legend" id="legend">
+      <div class="legend-body">
+      <div class="legend-row">
+        <span class="swatch" style="background:var(--unvisited)"></span>
+        <span id="leg-tofly">To fly</span>
+      </div>
+      <div class="legend-row">
+        <span class="swatch" id="swatch-visited" style="background:var(--visited)"></span>
+        <span id="leg-visited">Visited</span>
+        <span class="visited-color-btns" id="visited-color-btns" title="Visited color">
+          <button type="button" data-visited-color="#2dd4a8" style="--c:#2dd4a8" title="Green" aria-label="Visited green"></button>
+          <button type="button" data-visited-color="#ff2d55" style="--c:#ff2d55" title="Brand red" aria-label="Visited brand red"></button>
+        </span>
+      </div>
+      <div class="legend-tools">
+        <button type="button" class="sw-toggle" id="poli-btn" aria-pressed="false" title="Political division">
+          <span id="poli-label">Political division</span>
+          <span class="switch" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="sw-toggle on" id="anim-btn" aria-pressed="true" title="Animations" aria-label="Animations">
+          <span id="anim-label">Animations</span>
+          <span class="switch" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div id="leg-help" style="color:var(--muted);margin-top:6px;max-width:200px;line-height:1.3"></div>
+      </div>
+      <button type="button" class="sw-toggle" id="chrome-btn" aria-pressed="false" title="Hide interface" aria-label="Hide interface">
+        <span id="chrome-label">Hide interface</span>
+        <span class="switch" aria-hidden="true"></span>
+      </button>
+    </div>
+    <nav class="brand-foot" aria-label="Credits">
+      <a href="https://dreamtools.com.br" target="_blank" rel="noopener" aria-label="created by Dreamtools">
+        <span>created by</span>
+        <img src="mark-dreamtools.svg" alt="">
+      </a>
+      <a href="https://track73.com.br" target="_blank" rel="noopener" aria-label="fly with Track">
+        <span>fly with</span>
+        <svg viewBox="-31.92 -214.79 803.51 246.93" aria-hidden="true">
+          <rect x="-27.07" y="-209.94" width="793.81" height="237.23" rx="19.75" fill="none" stroke="currentColor" stroke-width="9.7"/>
+          <path d="M98.0452734375 -110.84736328125H66.09208984375V6.14083984375H34.13890625V-110.84736328125H2.081640625V-142.800546875H98.0452734375Z M162.05572265625 -113.016640625V-139.66164062500002H140.71890625V-113.016640625ZM194.00890625 -22.6734375H162.05572265625V-81.06345703125H140.71890625V-22.6734375H108.76572265624999V-171.71890625H172.67208984374997L194.00890625 -150.38208984375V-111.9758203125L179.12517578125 -97.09208984375L194.00890625 -82.208359375Z M256.24996093749996 -73.6736328125 248.3397265625 -119.88605468749999 240.53357421875 -73.6736328125ZM297.36236328125 -20.591796875H265.4091796875L261.76630859375 -41.6163671875H234.91314453125L231.27027343749998 -20.591796875H199.52525390625L227.1069921875 -169.53318359375H269.67654296875Z M388.0178125 -58.6858203125 366.68099609374997 -37.34900390625H324.1114453125L302.77462890625 -58.6858203125V-165.2658203125L324.1114453125 -186.60263671875H366.68099609374997L388.0178125 -165.2658203125V-133.31263671875H356.06462890625V-154.64945312499998H334.72781249999997V-69.40626953124999H356.06462890625V-90.63900390625H388.0178125Z M490.33044921875 -39.5347265625H458.377265625L437.04044921875 -99.17373046875V-39.5347265625H405.087265625V-188.788359375H437.04044921875V-129.0452734375L458.377265625 -188.788359375H490.33044921875L463.68544921875 -114.16154296875Z M635.2834125 -112.92900390625 584.17913515625 4.05919921875H547.85450625L599.0628656250001 -112.92900390625H571.3770453125001V-102.31263671875H539.3197796875V-144.98626953125H635.2834125Z M737.5960492187501 -31.953183593749998 716.2592328125 -10.6163671875H673.5856000000001L650.1671429687501 -34.13890625V-53.29H684.3060492187501V-42.6736328125H705.53878359375V-69.3186328125H684.3060492187501V-101.27181640625H705.53878359375V-127.91681640624999H684.3060492187501V-117.1963671875H652.2487835937501V-138.53318359375L673.5856000000001 -159.87H716.2592328125L737.5960492187501 -138.53318359375V-100.23099609375L722.60823671875 -85.24318359375L737.5960492187501 -70.359453125Z"/>
+        </svg>
+      </a>
+    </nav>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="places-data.js"></script>
+  <script src="map3d.js?v=20261101-sats42"></script>
+  <script>
+    // v2 stores names so ticks survive place-list rebuilds (IDs change across updates)
+    const STORAGE_KEY = "msfs-pg-share-visited-v2";
+    const STORAGE_KEY_LEGACY = "msfs-pg-share-visited-v1";
+    const LANG_KEY = "msfs-pg-share-lang";
+    // UI prefs (layers on/off, chips, country/region) — separate from visited ticks
+    const STORAGE_UI_KEY = "msfs-pg-share-ui-v1";
+    // Share build: separate storage from personal build
+
+    const I18N = {
+      en: {
+        title: "Places with Photogrammetry in FS24",
+        docTitle: "Places with Photogrammetry in FS24",
+        loading: "Loading…",
+        missing: "Error: places-data.js missing.",
+        subtitle: (n, cov, gen) => `${n.toLocaleString("en")} places · coverage ${cov || "WU23+CU16"} · ${gen || ""}`,
+        total: "Total", visited: "Visited", left: "To fly",
+        search: "Search (name, WU, CU, country, state…)",
+        searchPh: "e.g. Brazil, California, CU #15, London…",
+        country: "Country", region: "State / region",
+        allCountries: "All countries", allRegions: "All regions",
+        all: "All", toFly: "To fly", visitedChip: "Visited",
+        export: "Export progress", import: "Import JSON", random: "Surprise me", reset: "Clear ticks",
+        map: "map",
+        mapHint: "<b>WASD</b> move · <b>Q</b> zoom in · <b>E</b> zoom out · hold Shift to speed up<br/>Right-drag = tilt<br/><b>Shift + drag</b> = box-select & mark visited",
+        roseTitle: "North up, no tilt",
+        fs: "Full screen",
+        fsExit: "Exit full screen",
+        poli: "Political division",
+        poliTitle: "Political division",
+        anim: "Animations",
+        hideUi: "Hide interface",
+        showUi: "Show interface",
+        legHelp: "Tick places you've flown. Progress saves in this browser only.",
+        credit: "Free community tool. Data: community map through World Update 22 + official City Updates 10–16. Not affiliated with Microsoft/Asobo.",
+        progress: (pct, v, t, shown) => `${pct}% · ${v}/${t} · filter: ${shown.toLocaleString("en")} visible`,
+        empty: "No places match these filters.",
+        showN: (max, total) => `Showing ${max} of ${total}. Refine search/filters.`,
+        markVisited: "Mark as visited",
+        unmark: "✓ Visited — unmark",
+        copyCoords: "Copy coords",
+        coordsCopied: "Coords copied",
+        exported: "Progress exported.",
+        imported: (a, t) => `Imported (+${a}) · total ${t} visited.`,
+        badFile: "Invalid file.",
+        surpriseNone: "Nothing left to fly with these filters.",
+        surprise: (n) => `Surprise: ${n}`,
+        resetConfirm: "Clear all visited ticks in this browser?",
+        resetDone: "Progress cleared.",
+        boxNone: "No (filtered) points in this box.",
+        boxMark: (u, h) => `Mark ${u} of ${h} points in the box as visited?`,
+        boxUnmark: (h) => `All ${h} points in the box are already visited. Unmark them all?`,
+        boxMarked: (n) => `${n} marked as visited.`,
+        boxUnmarked: (n) => `${n} unmarked.`,
+        layersShort: {
+          "Cidades Reais (c/ fotogrametria)": "Photogrammetry places",
+          "City Updates (TIN/PG)": "Photogrammetry places",
+          "World Updates": "World Update",
+          "Pontos de interesse (Original)": "POI",
+          "Aeroportos feitos a mão": "HC airport",
+          "Parques Nacionais EUA (WU22)": "Photogrammetry places",
+        },
+      },
+      pt: {
+        title: "Lugares com Fotogrametria no FS24",
+        docTitle: "Lugares com Fotogrametria no FS24",
+        loading: "A carregar…",
+        missing: "Erro: places-data.js em falta.",
+        subtitle: (n, cov, gen) => `${n.toLocaleString("pt")} lugares · cobertura ${cov || "WU23+CU16"} · ${gen || ""}`,
+        total: "Total", visited: "Visitados", left: "Por visitar",
+        search: "Pesquisar (nome, WU, CU, país, estado…)",
+        searchPh: "ex.: Brasil, California, CU #15, Londres…",
+        country: "País", region: "Estado / região",
+        allCountries: "Todos os países", allRegions: "Todas as regiões",
+        all: "Todos", toFly: "Por visitar", visitedChip: "Visitados",
+        export: "Exportar progresso", import: "Importar JSON", random: "Surpresa", reset: "Limpar tiques",
+        map: "mapa",
+        mapHint: "<b>WASD</b> move · <b>Q</b> aproxima · <b>E</b> afasta · Shift segurado acelera<br/>Botão direito + arrastar = inclinar<br/><b>Shift + arrastar</b> = marcar uma região",
+        roseTitle: "Norte para cima, sem inclinação",
+        fs: "Tela cheia",
+        fsExit: "Sair da tela cheia",
+        poli: "Divisão Política",
+        poliTitle: "Divisão Política",
+        anim: "Animations",
+        hideUi: "Esconder interface",
+        showUi: "Mostrar interface",
+        legHelp: "Tica os sítios onde já voaste. O progresso grava só neste browser.",
+        credit: "Ferramenta comunitária gratuita. Dados: mapa da comunidade até World Update 22 + City Updates oficiais 10–16. Não afiliado à Microsoft/Asobo.",
+        progress: (pct, v, t, shown) => `${pct}% · ${v}/${t} · filtro: ${shown.toLocaleString("pt")} visíveis`,
+        empty: "Nenhum lugar com estes filtros.",
+        showN: (max, total) => `A mostrar ${max} de ${total}. Afina pesquisa/filtros.`,
+        markVisited: "Marcar como visitado",
+        unmark: "✓ Visitado — desmarcar",
+        copyCoords: "Copiar coords",
+        coordsCopied: "Coords copiadas",
+        exported: "Progresso exportado.",
+        imported: (a, t) => `Importado (+${a}) · total ${t} visitados.`,
+        badFile: "Ficheiro inválido.",
+        surpriseNone: "Nada por visitar com estes filtros.",
+        surprise: (n) => `Surpresa: ${n}`,
+        resetConfirm: "Apagar todos os tiques neste browser?",
+        resetDone: "Progresso limpo.",
+        boxNone: "Nenhum ponto (filtrado) nesta caixa.",
+        boxMark: (u, h) => `Marcar ${u} de ${h} pontos na caixa como visitados?`,
+        boxUnmark: (h) => `Os ${h} pontos na caixa já estão visitados. Desmarcar todos?`,
+        boxMarked: (n) => `${n} marcados como visitados.`,
+        boxUnmarked: (n) => `${n} desmarcados.`,
+        layersShort: {
+          "Cidades Reais (c/ fotogrametria)": "Lugares c/ Fotogrametria",
+          "City Updates (TIN/PG)": "Lugares c/ Fotogrametria",
+          "World Updates": "World Update",
+          "Pontos de interesse (Original)": "POI",
+          "Aeroportos feitos a mão": "Airport HC",
+          "Parques Nacionais EUA (WU22)": "Lugares c/ Fotogrametria",
+        },
+      },
+    };
+
+    // Linear gray ramp top→bottom in the layer list (even RGB steps).
+    // Darkest still a bit lighter than map void so dots stay visible.
+    const DOT = "#9ea8b4";
+    const LAYER_COLORS = {
+      "Aeroportos feitos a mão": "#c8d2de", // 1 lightest
+      "Cidades Reais (c/ fotogrametria)": "#9ea8b4", // 2
+      "City Updates (TIN/PG)": "#9ea8b4", // same as PG (merged)
+      "Parques Nacionais EUA (WU22)": "#9ea8b4", // same list as PG places
+      "Pontos de interesse (Original)": "#4a5460", // 4
+      "World Updates": "#202a36", // 5 darkest (linear; still > map void)
+    };
+    const FALLBACK = DOT;
+    const PG_LAYER = "Cidades Reais (c/ fotogrametria)";
+    const LAYER_ALIAS = {
+      "City Updates (TIN/PG)": PG_LAYER,
+      "Parques Nacionais EUA (WU22)": PG_LAYER,
+    };
+    function canonLayer(layer) {
+      return LAYER_ALIAS[layer] || layer;
+    }
+    const LAYER_ORDER = [
+      "Aeroportos feitos a mão",
+      PG_LAYER,
+      "Pontos de interesse (Original)",
+      "World Updates",
+    ];
+
+    const urlLang = new URLSearchParams(location.search).get("lang");
+    let savedLang = null;
+    try { savedLang = localStorage.getItem(LANG_KEY); } catch (_) { /* ignore */ }
+    let lang = urlLang || savedLang || (/^pt/i.test(navigator.language || "") ? "pt" : "en");
+    if (lang !== "en" && lang !== "pt") lang = "en";
+    const t = () => I18N[lang];
+
+    const data = window.MSFS_PG_DATA;
+    if (!data?.places) {
+      document.getElementById("subtitle").textContent = t().missing;
+      throw new Error("MSFS_PG_DATA missing");
+    }
+
+    const places = data.places;
+    const datasetFingerprint = `${data.coverage || ""}|${data.count || places.length}|${data.generated || ""}`;
+    /** Names shared by 2+ places — saved as "name · region" so each one persists on its own. */
+    const DUP_NAMES = (() => {
+      const c = new Map();
+      places.forEach((p) => { const k = String(p.name).toLowerCase(); c.set(k, (c.get(k) || 0) + 1); });
+      return new Set([...c].filter(([, n]) => n > 1).map(([k]) => k));
+    })();
+    function placeKey(p) {
+      return DUP_NAMES.has(String(p.name).toLowerCase())
+        ? `${p.name} · ${p.region || p.country || p.id}`
+        : p.name;
+    }
+
+    function buildNameIndex() {
+      const map = new Map();
+      places.forEach((p) => {
+        map.set(String(p.name).toLowerCase(), p.id);
+        // Duplicate names (Concord CA/NH, Richmond CA/VA…) also get a unique "name · region" key
+        if (DUP_NAMES.has(String(p.name).toLowerCase())) map.set(placeKey(p).toLowerCase(), p.id);
+        (p.aliases || []).forEach((a) => {
+          if (a) map.set(String(a).toLowerCase(), p.id);
+        });
+      });
+      return map;
+    }
+    const nameIndex = buildNameIndex();
+    function resolveVisitedName(name) {
+      return nameIndex.get(String(name).toLowerCase());
+    }
+    const layersFromData = [...new Set(places.map((p) => canonLayer(p.layer)))];
+    const layers = [
+      ...LAYER_ORDER.filter((l) => layersFromData.includes(l)),
+      ...layersFromData.filter((l) => !LAYER_ORDER.includes(l)).sort((a, b) => a.localeCompare(b, "en")),
+    ];
+    const countries = [...new Set(places.map((p) => p.country || "Unknown"))].sort((a, b) =>
+      a.localeCompare(b, "en")
+    );
+
+    let visited = {};
+    let activeFilter = "all";
+    let enabledLayers = Object.fromEntries(layers.map((l) => [l, true]));
+    let countryFilter = "";
+    let regionFilter = "";
+    let activeId = null;
+
+    let searchQuery = "";
+    const VISITED_COLOR_PRESETS = ["#2dd4a8", "#ff2d55"];
+    let visitedColor = VISITED_COLOR_PRESETS[0];
+    let layerLabels = {};
+
+    function defaultLayerLabel(layer) {
+      const key = canonLayer(layer);
+      return t().layersShort[key] || t().layersShort[layer] || key;
+    }
+    function displayLayerName(layer) {
+      const key = canonLayer(layer);
+      const custom = layerLabels[key];
+      return typeof custom === "string" && custom.trim() ? custom.trim() : defaultLayerLabel(key);
+    }
+
+    function applyVisitedColor(color, { renderMap = false } = {}) {
+      const c = VISITED_COLOR_PRESETS.includes(color) ? color : VISITED_COLOR_PRESETS[0];
+      visitedColor = c;
+      document.documentElement.style.setProperty("--visited", c);
+      document.getElementById("swatch-visited")?.style.setProperty("background", c);
+      document.querySelectorAll("#visited-color-btns button").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.visitedColor === c);
+      });
+      if (renderMap) {
+        renderMarkers();
+        renderList();
+        updateStats();
+      }
+    }
+
+    let political = false;
+    let anims = true;
+    let chromeOn = true;
+
+    function saveUiPrefs() {
+      try {
+        const payload = {
+          version: 1,
+          updatedAt: new Date().toISOString(),
+          enabledLayers,
+          activeFilter,
+          countryFilter,
+          regionFilter,
+          visitedColor,
+          layerLabels,
+          political,
+          anims,
+          chrome: chromeOn,
+        };
+        localStorage.setItem(STORAGE_UI_KEY, JSON.stringify(payload));
+      } catch (err) {
+        console.warn("saveUiPrefs failed", err);
+      }
+    }
+
+    function loadUiPrefs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_UI_KEY);
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (!d || typeof d !== "object") return;
+        if (d.enabledLayers && typeof d.enabledLayers === "object") {
+          layers.forEach((l) => {
+            if (typeof d.enabledLayers[l] === "boolean") enabledLayers[l] = d.enabledLayers[l];
+          });
+          const cuKey = "City Updates (TIN/PG)";
+          const parkKey = "Parques Nacionais EUA (WU22)";
+          const pgKey = PG_LAYER;
+          const fold = (extra) => {
+            if (typeof d.enabledLayers[extra] !== "boolean") return;
+            const pg = typeof d.enabledLayers[pgKey] === "boolean" ? d.enabledLayers[pgKey] : enabledLayers[pgKey];
+            enabledLayers[pgKey] = pg || d.enabledLayers[extra];
+          };
+          fold(cuKey);
+          fold(parkKey);
+        }
+        if (d.activeFilter === "all" || d.activeFilter === "visited" || d.activeFilter === "unvisited") {
+          activeFilter = d.activeFilter;
+        }
+        if (typeof d.countryFilter === "string") countryFilter = d.countryFilter;
+        if (typeof d.regionFilter === "string") regionFilter = d.regionFilter;
+        if (typeof d.visitedColor === "string" && VISITED_COLOR_PRESETS.includes(d.visitedColor)) {
+          visitedColor = d.visitedColor;
+        }
+        if (d.political === true) political = true;
+        if (d.anims === false) anims = false;
+        if (d.chrome === false) chromeOn = false;
+        if (d.layerLabels && typeof d.layerLabels === "object") {
+          layers.forEach((l) => {
+            if (typeof d.layerLabels[l] === "string" && d.layerLabels[l].trim()) {
+              layerLabels[l] = d.layerLabels[l].trim();
+            }
+          });
+          const oldPg = layerLabels[PG_LAYER];
+          if (oldPg === "PG cities" || oldPg === "Cidade PG" || oldPg === "Cidades c/ Fotogrametria" || oldPg === "Cidades Reais (c/ fotogrametria)") {
+            delete layerLabels[PG_LAYER];
+          }
+        }
+      } catch (err) {
+        console.warn("loadUiPrefs failed", err);
+      }
+    }
+
+    loadUiPrefs();
+    applyVisitedColor(visitedColor);
+
+    document.getElementById("visited-color-btns")?.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-visited-color]");
+      if (!btn) return;
+      applyVisitedColor(btn.dataset.visitedColor, { renderMap: true });
+      saveUiPrefs();
+    });
+
+    function paintAnims(on) {
+      anims = on !== false;
+      const btn = document.getElementById("anim-btn");
+      if (btn) {
+        btn.classList.toggle("on", anims);
+        btn.setAttribute("aria-pressed", anims ? "true" : "false");
+        const label = t().anim;
+        btn.title = label;
+        btn.setAttribute("aria-label", label);
+      }
+      if (mapApi && mapApi.setMotion) mapApi.setMotion(anims);
+    }
+
+    function paintChrome(on) {
+      chromeOn = on !== false;
+      document.body.classList.toggle("chrome-off", !chromeOn);
+      const btn = document.getElementById("chrome-btn");
+      if (btn) {
+        const hidden = !chromeOn;
+        const label = t().hideUi;
+        btn.classList.toggle("on", hidden);
+        btn.title = label;
+        btn.setAttribute("aria-label", label);
+        btn.setAttribute("aria-pressed", hidden ? "true" : "false");
+        const span = document.getElementById("chrome-label");
+        if (span) span.textContent = label;
+      }
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    function paintPolitical(on) {
+      political = !!on;
+      const btn = document.getElementById("poli-btn");
+      if (btn) {
+        btn.classList.toggle("on", political);
+        btn.setAttribute("aria-pressed", political ? "true" : "false");
+      }
+      if (mapApi && mapApi.setPolitical) mapApi.setPolitical(political);
+    }
+
+    const mapApi = window.createMsfsMap({
+      container: "map",
+      popupId: "map-popup",
+      style: window.msfsEfbStyle(lang),
+      onPick(id) {
+        const p = places.find((x) => x.id === id);
+        if (!p) return;
+        activeId = id;
+        renderList();
+        mapApi.showPopup(p, popupHtml(p));
+        document.querySelector(`.place[data-id="${id}"]`)?.scrollIntoView({ block: "nearest" });
+      },
+    });
+    paintPolitical(political);
+    paintAnims(anims);
+    // Phones: open on the globe, not on the panel (until the viewer picks for themselves).
+    let hasUiPrefs = false;
+    try { hasUiPrefs = !!localStorage.getItem(STORAGE_UI_KEY); } catch (_) { /* ignore */ }
+    if (!hasUiPrefs && window.matchMedia && window.matchMedia("(max-width: 760px)").matches) chromeOn = false;
+    paintChrome(chromeOn);
+    document.getElementById("chrome-btn")?.addEventListener("click", () => {
+      paintChrome(!chromeOn);
+      saveUiPrefs();
+    });
+    document.getElementById("poli-btn")?.addEventListener("click", () => {
+      paintPolitical(!political);
+      saveUiPrefs();
+    });
+    document.getElementById("anim-btn")?.addEventListener("click", () => {
+      paintAnims(!anims);
+      saveUiPrefs();
+    });
+
+    const selectBox = document.getElementById("select-box");
+    const mapEl = document.getElementById("map");
+    let boxSelecting = false;
+    let boxStart = null;
+
+    mapEl.addEventListener(
+      "mousedown",
+      (e) => {
+        if (!e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        boxSelecting = true;
+        mapApi.setDrag(false);
+        const rect = mapEl.getBoundingClientRect();
+        boxStart = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        selectBox.style.display = "block";
+        selectBox.style.left = boxStart.x + "px";
+        selectBox.style.top = boxStart.y + "px";
+        selectBox.style.width = "0px";
+        selectBox.style.height = "0px";
+      },
+      true
+    );
+
+    window.addEventListener("mousemove", (e) => {
+      if (!boxSelecting || !boxStart) return;
+      const rect = mapEl.getBoundingClientRect();
+      const cur = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      const x = Math.min(boxStart.x, cur.x);
+      const y = Math.min(boxStart.y, cur.y);
+      selectBox.style.left = x + "px";
+      selectBox.style.top = y + "px";
+      selectBox.style.width = Math.abs(cur.x - boxStart.x) + "px";
+      selectBox.style.height = Math.abs(cur.y - boxStart.y) + "px";
+    });
+
+    window.addEventListener("mouseup", (e) => {
+      if (!boxSelecting || !boxStart) return;
+      const rect = mapEl.getBoundingClientRect();
+      const cur = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      boxSelecting = false;
+      selectBox.style.display = "none";
+      mapApi.setDrag(true);
+      const x1 = Math.min(boxStart.x, cur.x);
+      const y1 = Math.min(boxStart.y, cur.y);
+      const x2 = Math.max(boxStart.x, cur.x);
+      const y2 = Math.max(boxStart.y, cur.y);
+      boxStart = null;
+      if (x2 - x1 < 8 || y2 - y1 < 8) return;
+      const hits = mapApi.hits(filteredPlaces(), x1, y1, x2, y2);
+      if (!hits.length) {
+        toast(t().boxNone);
+        return;
+      }
+      const unvis = hits.filter((p) => !visited[p.id]);
+      const msg = unvis.length ? t().boxMark(unvis.length, hits.length) : t().boxUnmark(hits.length);
+      if (!confirm(msg)) return;
+      if (unvis.length) {
+        unvis.forEach((p) => (visited[p.id] = true));
+        toast(t().boxMarked(unvis.length));
+      } else {
+        hits.forEach((p) => delete visited[p.id]);
+        toast(t().boxUnmarked(hits.length));
+      }
+      saveVisited();
+      render();
+    });
+
+    function applyI18n() {
+      const i = t();
+      document.documentElement.lang = lang;
+      document.title = i.docTitle;
+      document.getElementById("ui-title").textContent = i.title;
+      document.getElementById("lbl-total").textContent = i.total;
+      document.getElementById("lbl-visited").textContent = i.visited;
+      document.getElementById("lbl-left").textContent = i.left;
+      document.getElementById("lbl-search").textContent = i.search;
+      document.getElementById("search").placeholder = i.searchPh;
+      document.getElementById("lbl-country").textContent = i.country;
+      document.getElementById("lbl-region").textContent = i.region;
+      document.getElementById("chip-all").textContent = i.all;
+      document.getElementById("chip-unvisited").textContent = i.toFly;
+      document.getElementById("chip-visited").textContent = i.visitedChip;
+      document.getElementById("btn-export").textContent = i.export;
+      document.getElementById("btn-import").textContent = i.import;
+      document.getElementById("btn-random").textContent = i.random;
+      document.getElementById("btn-reset").textContent = i.reset;
+      document.getElementById("map-hint-text").innerHTML = i.mapHint;
+      document.getElementById("rose").title = i.roseTitle;
+      paintFs();
+      document.getElementById("leg-tofly").textContent = i.toFly;
+      document.getElementById("leg-visited").textContent = i.visited;
+      document.getElementById("leg-help").textContent = i.legHelp;
+      document.getElementById("poli-label").textContent = i.poli;
+      document.getElementById("poli-btn").title = i.poliTitle;
+      const animBtn = document.getElementById("anim-btn");
+      if (animBtn) {
+        animBtn.title = i.anim;
+        animBtn.setAttribute("aria-label", i.anim);
+        const animLabel = document.getElementById("anim-label");
+        if (animLabel) animLabel.textContent = i.anim;
+      }
+      document.getElementById("credit").textContent = i.credit;
+      paintChrome(chromeOn);
+      document.getElementById("lang-en").classList.toggle("active", lang === "en");
+      document.getElementById("lang-pt").classList.toggle("active", lang === "pt");
+      // country first option
+      const cs = document.getElementById("country");
+      if (cs.options[0]) cs.options[0].textContent = i.allCountries;
+      const rs = document.getElementById("region");
+      if (rs.options[0]) rs.options[0].textContent = i.allRegions;
+      document.getElementById("subtitle").textContent = i.subtitle(
+        data.count,
+        data.coverage,
+        data.generated
+      );
+    }
+
+    function paintFs() {
+      const btn = document.getElementById("fs-btn");
+      if (!btn) return;
+      const on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const i = t();
+      btn.classList.toggle("on", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      const label = on ? i.fsExit : i.fs;
+      btn.title = label;
+      btn.setAttribute("aria-label", label);
+    }
+    (function () {
+      const btn = document.getElementById("fs-btn");
+      const root = document.documentElement;
+      if (!btn || !(root.requestFullscreen || root.webkitRequestFullscreen)) {
+        if (btn) btn.hidden = true;
+        return;
+      }
+      btn.addEventListener("click", () => {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          const exit = document.exitFullscreen || document.webkitExitFullscreen;
+          if (exit) exit.call(document);
+        } else {
+          const req = root.requestFullscreen || root.webkitRequestFullscreen;
+          if (req) req.call(root);
+        }
+      });
+      document.addEventListener("fullscreenchange", paintFs);
+      document.addEventListener("webkitfullscreenchange", paintFs);
+    })();
+
+    document.getElementById("lang-en").addEventListener("click", () => setLang("en"));
+    document.getElementById("lang-pt").addEventListener("click", () => setLang("pt"));
+    function setLang(l) {
+      lang = l;
+      localStorage.setItem(LANG_KEY, lang);
+      if (mapApi && mapApi.setPlaceLang) mapApi.setPlaceLang(lang);
+      applyI18n();
+      rebuildCountryOptions();
+      rebuildRegionOptions();
+      buildLayers();
+      render();
+    }
+
+    function rebuildCountryOptions() {
+      const countrySel = document.getElementById("country");
+      const cur = countryFilter;
+      countrySel.innerHTML = "";
+      const o0 = document.createElement("option");
+      o0.value = "";
+      o0.textContent = t().allCountries;
+      countrySel.appendChild(o0);
+      countries.forEach((c) => {
+        const n = places.filter((p) => (p.country || "Unknown") === c).length;
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = `${c} (${n})`;
+        countrySel.appendChild(opt);
+      });
+      countrySel.value = cur;
+    }
+
+    function rebuildRegionOptions() {
+      const regionSel = document.getElementById("region");
+      regionSel.innerHTML = "";
+      const o0 = document.createElement("option");
+      o0.value = "";
+      o0.textContent = t().allRegions;
+      regionSel.appendChild(o0);
+      regionFilter = regionFilter || "";
+      if (!countryFilter) {
+        regionSel.disabled = true;
+        return;
+      }
+      const regions = [
+        ...new Set(
+          places
+            .filter((p) => (p.country || "") === countryFilter && (p.region || "").trim())
+            .map((p) => p.region)
+        ),
+      ].sort((a, b) => a.localeCompare(b, lang === "pt" ? "pt" : "en"));
+      if (!regions.length) {
+        regionSel.disabled = true;
+        return;
+      }
+      regionSel.disabled = false;
+      regions.forEach((r) => {
+        const n = places.filter((p) => p.country === countryFilter && p.region === r).length;
+        const opt = document.createElement("option");
+        opt.value = r;
+        opt.textContent = `${r} (${n})`;
+        regionSel.appendChild(opt);
+      });
+      if ([...regionSel.options].some((o) => o.value === regionFilter)) regionSel.value = regionFilter;
+      else regionFilter = "";
+    }
+
+    function beginRenameLayer(layer, nameEl) {
+      if (!nameEl || nameEl.dataset.editing === "1") return;
+      nameEl.dataset.editing = "1";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "layer-name-input";
+      input.value = displayLayerName(layer);
+      input.maxLength = 80;
+      input.setAttribute("aria-label", lang === "pt" ? "Nome da categoria" : "Category name");
+      nameEl.replaceWith(input);
+      input.focus();
+      input.select();
+      let done = false;
+      const finish = (save) => {
+        if (done) return;
+        done = true;
+        if (save) {
+          const next = input.value.trim();
+          const key = canonLayer(layer);
+          if (!next || next === defaultLayerLabel(key)) delete layerLabels[key];
+          else layerLabels[key] = next;
+          saveUiPrefs();
+        }
+        const span = document.createElement("span");
+        span.className = "layer-name";
+        span.title = lang === "pt" ? "Clica para renomear" : "Click to rename";
+        span.textContent = displayLayerName(layer);
+        span.addEventListener("click", (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          beginRenameLayer(layer, span);
+        });
+        if (input.parentNode) input.replaceWith(span);
+        if (save) {
+          renderList();
+          renderMarkers();
+        }
+      };
+      input.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") {
+          ev.preventDefault();
+          input.blur();
+        } else if (ev.key === "Escape") {
+          ev.preventDefault();
+          finish(false);
+        }
+      });
+      input.addEventListener("blur", () => finish(true));
+      input.addEventListener("mousedown", (ev) => ev.stopPropagation());
+    }
+
+    function buildLayers() {
+      const layersEl = document.getElementById("layers");
+      layersEl.innerHTML = "";
+      layers.forEach((layer) => {
+        const count = places.filter((p) => canonLayer(p.layer) === layer).length;
+        const color = LAYER_COLORS[layer] || FALLBACK;
+        const row = document.createElement("div");
+        row.className = "layer-row";
+        row.innerHTML = `
+          <input type="checkbox" ${enabledLayers[layer] ? "checked" : ""} data-layer="${escapeAttr(layer)}" />
+          <span class="layer-dot" style="background:${color}"></span>
+          <span class="layer-name-wrap">
+            <span class="layer-name" title="${lang === "pt" ? "Clica para renomear" : "Click to rename"}">${escapeHtml(displayLayerName(layer))}</span>
+            <span class="layer-count">(${count})</span>
+          </span>
+        `;
+        row.querySelector("input").addEventListener("change", (e) => {
+          enabledLayers[layer] = e.target.checked;
+          saveUiPrefs();
+          render();
+        });
+        row.querySelector(".layer-name").addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          beginRenameLayer(layer, e.currentTarget);
+        });
+        layersEl.appendChild(row);
+      });
+    }
+
+    rebuildCountryOptions();
+    // Restore country/region from saved UI prefs
+    if (countryFilter && countries.includes(countryFilter)) {
+      document.getElementById("country").value = countryFilter;
+      rebuildRegionOptions();
+    } else {
+      countryFilter = "";
+      regionFilter = "";
+    }
+    document.getElementById("country").addEventListener("change", (e) => {
+      countryFilter = e.target.value;
+      regionFilter = "";
+      rebuildRegionOptions();
+      saveUiPrefs();
+      render();
+      fitToFiltered();
+    });
+    document.getElementById("region").addEventListener("change", (e) => {
+      regionFilter = e.target.value;
+      saveUiPrefs();
+      render();
+      fitToFiltered();
+    });
+
+    document.querySelectorAll(".chip[data-filter]").forEach((chip) => {
+      chip.classList.toggle("active", chip.dataset.filter === activeFilter);
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".chip[data-filter]").forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        activeFilter = chip.dataset.filter;
+        saveUiPrefs();
+        renderList();
+      });
+    });
+
+    document.getElementById("search").addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      renderList();
+      renderMarkers();
+    });
+
+    function mergeVisitedPayload(json) {
+      let n = 0;
+      const names = json.visitedNames || json.names || [];
+      const ids = json.visitedIds || json.ids || [];
+      // Names (+ aliases) are the source of truth across rebuilds.
+      // Orphan ids from a pre-dedupe auto-progress would tick the wrong places.
+      names.forEach((name) => {
+        const id = resolveVisitedName(name);
+        if (id != null) {
+          if (!visited[id]) n++;
+          visited[id] = true;
+        }
+      });
+      if (!(names && names.length)) {
+        ids.forEach((id) => {
+          const nId = Number(id);
+          if (places.some((p) => p.id === nId)) {
+            if (!visited[nId]) n++;
+            visited[nId] = true;
+          }
+        });
+      }
+      saveVisited();
+      return n;
+    }
+
+    document.getElementById("btn-export").addEventListener("click", () => {
+      const payload = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        app: "msfs-pg-share",
+        coverage: data.coverage,
+        visitedIds: Object.keys(visited).filter((k) => visited[k]).map(Number),
+        visitedNames: places.filter((p) => visited[p.id]).map(placeKey),
+      };
+      downloadJson(payload, `msfs-pg-progress-${dateStamp()}.json`);
+      toast(t().exported);
+    });
+
+    document.getElementById("btn-import").addEventListener("click", () => {
+      document.getElementById("import-file").click();
+    });
+    document.getElementById("import-file").addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const json = JSON.parse(await file.text());
+        const added = mergeVisitedPayload(json);
+        render();
+        toast(t().imported(added, Object.keys(visited).length));
+      } catch (err) {
+        toast(t().badFile);
+        console.error(err);
+      }
+      e.target.value = "";
+    });
+
+    document.getElementById("btn-random").addEventListener("click", () => {
+      const pool = filteredPlaces().filter((p) => !visited[p.id]);
+      if (!pool.length) {
+        toast(t().surpriseNone);
+        return;
+      }
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      focusPlace(pick.id, true);
+      toast(t().surprise(pick.name));
+    });
+
+    document.getElementById("btn-reset").addEventListener("click", () => {
+      if (!confirm(t().resetConfirm)) return;
+      visited = {};
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_KEY_LEGACY);
+        sessionStorage.removeItem(STORAGE_KEY);
+      } catch (_) { /* ignore */ }
+      saveVisited();
+      render();
+      toast(t().resetDone);
+    });
+
+    function loadVisited() {
+      const out = {};
+      const applyIds = (ids) => {
+        (ids || []).forEach((id) => {
+          const n = Number(id);
+          if (places.some((p) => p.id === n)) out[n] = true;
+        });
+      };
+      const applyNames = (names) => {
+        (names || []).forEach((name) => {
+          const id = resolveVisitedName(name);
+          if (id != null) out[id] = true;
+        });
+      };
+      try {
+        const rawV2 = localStorage.getItem(STORAGE_KEY);
+        if (rawV2) {
+          const data = JSON.parse(rawV2);
+          if (data && typeof data === "object") {
+            if (Array.isArray(data.visitedNames) || Array.isArray(data.visitedIds)) {
+              applyNames(data.visitedNames);
+              // Ids only when there is no name list (names survive rebuilds; orphan ids do not)
+              if (!(data.visitedNames && data.visitedNames.length)) applyIds(data.visitedIds);
+            } else {
+              Object.keys(data).forEach((k) => {
+                if (data[k] && k !== "version") {
+                  const n = Number(k);
+                  if (!Number.isNaN(n) && places.some((p) => p.id === n)) out[n] = true;
+                }
+              });
+            }
+          }
+        }
+        const rawV1 = localStorage.getItem(STORAGE_KEY_LEGACY);
+        if (rawV1) {
+          try {
+            const legacy = JSON.parse(rawV1);
+            if (legacy && typeof legacy === "object" && !Array.isArray(legacy)) {
+              if (Array.isArray(legacy.visitedNames)) applyNames(legacy.visitedNames);
+              if (Array.isArray(legacy.visitedIds)) applyIds(legacy.visitedIds);
+              Object.keys(legacy).forEach((k) => {
+                if (k === "version" || k === "visitedNames" || k === "visitedIds" || k === "exportedAt") return;
+                if (legacy[k]) {
+                  const n = Number(k);
+                  if (!Number.isNaN(n) && places.some((p) => p.id === n)) out[n] = true;
+                }
+              });
+            }
+          } catch (_) { /* ignore */ }
+        }
+        // Session backup (same tab recovery)
+        try {
+          const rawS = sessionStorage.getItem(STORAGE_KEY);
+          if (rawS) {
+            const s = JSON.parse(rawS);
+            if (s && Array.isArray(s.visitedNames)) applyNames(s.visitedNames);
+            if (s && Array.isArray(s.visitedIds)) applyIds(s.visitedIds);
+          }
+        } catch (_) { /* ignore */ }
+      } catch (err) {
+        console.warn("loadVisited failed", err);
+      }
+      return out;
+    }
+
+    function saveVisited() {
+      try {
+        const visitedIds = places.filter((p) => visited[p.id]).map((p) => p.id);
+        const visitedNames = places.filter((p) => visited[p.id]).map(placeKey);
+        const payload = {
+          version: 2,
+          updatedAt: new Date().toISOString(),
+          visitedIds,
+          visitedNames,
+        };
+        const json = JSON.stringify(payload);
+        localStorage.setItem(STORAGE_KEY, json);
+        localStorage.setItem(STORAGE_KEY_LEGACY, json);
+        try {
+          sessionStorage.setItem(STORAGE_KEY, json);
+        } catch (_) { /* private mode */ }
+      } catch (err) {
+        console.error("saveVisited failed", err);
+        toast(lang === "pt" ? "Aviso: não consegui gravar o progresso no browser." : "Warning: could not save progress in this browser.");
+      }
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") saveVisited();
+    });
+    window.addEventListener("pagehide", () => saveVisited());
+    window.addEventListener("beforeunload", () => saveVisited());
+
+    function filteredPlaces() {
+      return places.filter((p) => {
+        if (!enabledLayers[canonLayer(p.layer)]) return false;
+        if (countryFilter && (p.country || "") !== countryFilter) return false;
+        if (regionFilter && (p.region || "") !== regionFilter) return false;
+        if (activeFilter === "visited" && !visited[p.id]) return false;
+        if (activeFilter === "unvisited" && visited[p.id]) return false;
+        if (searchQuery) {
+          const hay = [p.name, p.desc || "", p.layer, p.country || "", p.region || ""]
+            .join(" ")
+            .toLowerCase();
+          const tokens = searchQuery.split(/\s+/).filter(Boolean);
+          if (!tokens.every((tok) => hay.includes(tok))) return false;
+        }
+        return true;
+      });
+    }
+
+    function updateStats() {
+      const total = places.length;
+      const v = places.filter((p) => visited[p.id]).length;
+      const left = total - v;
+      const pct = total ? Math.round((v / total) * 100) : 0;
+      const shown = filteredPlaces().length;
+      document.getElementById("stat-total").textContent = total.toLocaleString(lang === "pt" ? "pt" : "en");
+      document.getElementById("stat-visited").textContent = v.toLocaleString(lang === "pt" ? "pt" : "en");
+      document.getElementById("stat-left").textContent = left.toLocaleString(lang === "pt" ? "pt" : "en");
+      document.getElementById("progress-fill").style.width = pct + "%";
+      document.getElementById("progress-label").textContent = t().progress(pct, v, total, shown);
+      document.getElementById("subtitle").textContent = t().subtitle(
+        data.count,
+        data.coverage,
+        data.generated
+      );
+    }
+
+    function markerColor(p) {
+      return visited[p.id] ? visitedColor : LAYER_COLORS[canonLayer(p.layer)] || DOT;
+    }
+    function renderMarkers() {
+      mapApi.refresh(filteredPlaces(), markerColor);
+    }
+
+    function popupHtml(p) {
+      const isV = !!visited[p.id];
+      const color = LAYER_COLORS[canonLayer(p.layer)] || FALLBACK;
+      const geo = [p.region, p.country].filter(Boolean).join(", ");
+      const short = displayLayerName(p.layer);
+      return `
+        <div>
+          <div style="font-weight:650;margin-bottom:4px">${escapeHtml(p.name)}</div>
+          <div style="font-size:0.78rem;color:#8b9bb4;margin-bottom:4px">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:4px"></span>
+            ${escapeHtml(short)}
+          </div>
+          ${geo ? `<div style="font-size:0.8rem;margin-bottom:4px">${escapeHtml(geo)}</div>` : ""}
+          ${popupDesc(p.desc)}
+          <div style="font-size:0.72rem;color:#8b9bb4;font-variant-numeric:tabular-nums">
+            ${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}
+          </div>
+          <div class="popup-actions">
+            <button type="button" class="btn primary" onclick="window.__toggleVisited(${p.id})">
+              ${isV ? t().unmark : t().markVisited}
+            </button>
+            <button type="button" class="btn" onclick="navigator.clipboard.writeText('${p.lat}, ${p.lon}');window.__toast(window.__t().coordsCopied)">
+              ${t().copyCoords}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    window.__toggleVisited = (id) => {
+      toggleVisited(id);
+      const p = places.find((x) => x.id === id);
+      if (p) mapApi.showPopup(p, popupHtml(p));
+    };
+    window.__toast = toast;
+    window.__t = t;
+
+    function toggleVisited(id, force) {
+      if (typeof force === "boolean") visited[id] = force;
+      else visited[id] = !visited[id];
+      if (!visited[id]) delete visited[id];
+      saveVisited();
+      updateStats();
+      renderList();
+      renderMarkers();
+    }
+
+    function renderList() {
+      const listEl = document.getElementById("list");
+      const list = filteredPlaces()
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name, lang === "pt" ? "pt" : "en"));
+      if (!list.length) {
+        listEl.innerHTML = `<div class="empty">${escapeHtml(t().empty)}</div>`;
+        return;
+      }
+      const max = 400;
+      const slice = list.slice(0, max);
+      listEl.innerHTML = slice
+        .map((p) => {
+          const isV = !!visited[p.id];
+          const color = LAYER_COLORS[canonLayer(p.layer)] || FALLBACK;
+          const geo = [p.region, p.country].filter(Boolean).join(" · ");
+          const short = displayLayerName(p.layer);
+          return `
+            <div class="place ${isV ? "visited" : ""} ${activeId === p.id ? "active" : ""}" data-id="${p.id}">
+              <input type="checkbox" ${isV ? "checked" : ""} data-check="${p.id}" />
+              <div>
+                <div class="pname">${escapeHtml(p.name)}</div>
+                <div class="pmeta">
+                  <span style="color:${color}">●</span> ${escapeHtml(short)}
+                  ${geo ? " · " + escapeHtml(geo) : ""}
+                </div>
+              </div>
+              <button type="button" class="goto" data-goto="${p.id}">${escapeHtml(t().map)}</button>
+            </div>
+          `;
+        })
+        .join("");
+      if (list.length > max) {
+        listEl.innerHTML += `<div class="empty">${escapeHtml(t().showN(max, list.length))}</div>`;
+      }
+      listEl.querySelectorAll(".place").forEach((row) => {
+        const id = Number(row.dataset.id);
+        row.addEventListener("click", (e) => {
+          if (e.target.matches("input") || e.target.matches("button")) return;
+          focusPlace(id, true);
+        });
+      });
+      listEl.querySelectorAll("input[data-check]").forEach((cb) => {
+        cb.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleVisited(Number(cb.dataset.check), cb.checked);
+        });
+      });
+      listEl.querySelectorAll("button[data-goto]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          focusPlace(Number(btn.dataset.goto), true);
+        });
+      });
+    }
+
+    function focusPlace(id, openPopup) {
+      const p = places.find((x) => x.id === id);
+      if (!p) return;
+      activeId = id;
+      const layerKey = canonLayer(p.layer);
+      if (!enabledLayers[layerKey]) {
+        enabledLayers[layerKey] = true;
+        saveUiPrefs();
+        buildLayers();
+      }
+      renderMarkers();
+      mapApi.flyTo(p);
+      if (openPopup) mapApi.showPopup(p, popupHtml(p));
+      renderList();
+      document.querySelector(`.place[data-id="${id}"]`)?.scrollIntoView({ block: "nearest" });
+    }
+
+    function fitToFiltered() {
+      mapApi.fit(filteredPlaces());
+    }
+
+    function render() {
+      updateStats();
+      renderMarkers();
+      renderList();
+    }
+
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove("show"), 2200);
+    }
+
+    function downloadJson(obj, filename) {
+      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    function dateStamp() {
+      return new Date().toISOString().slice(0, 10);
+    }
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function escapeAttr(s) {
+      return escapeHtml(s).replace(/'/g, "&#39;");
+    }
+    function descParts(desc) {
+      const raw = String(desc || "");
+      const imgs = [];
+      const stripped = raw.replace(/<img\b[^>]*?\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)')[^>]*>/gi, (_, a, b) => {
+        const src = String(a || b || "").trim();
+        if (/^https?:\/\//i.test(src)) imgs.push(src);
+        return "";
+      });
+      const text = stripped
+        .replace(/<br\s*\/?>/gi, "\n")
+        .replace(/<[^>]*>/g, "")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&lt;/gi, "<")
+        .replace(/&gt;/gi, ">")
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&amp;/gi, "&")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+      return { imgs, text };
+    }
+    function popupDesc(desc) {
+      const parts = descParts(desc);
+      if (!parts.imgs.length && !parts.text) return "";
+      const pics = parts.imgs.map((src) => `<img src="${escapeHtml(src)}" alt="">`).join("");
+      const body = parts.text
+        ? `<div style="font-size:0.8rem;margin-bottom:6px;white-space:pre-wrap">${escapeHtml(parts.text)}</div>`
+        : "";
+      return pics + body;
+    }
+
+    applyI18n();
+    buildLayers();
+    visited = loadVisited();
+    if (Object.keys(visited).length) saveVisited(); // migrate to v2 (names)
+    render();
+  </script>
+</body>
+</html>
