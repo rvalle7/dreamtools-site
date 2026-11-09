@@ -27,7 +27,7 @@ const cssScene = new THREE.Scene();    // HTML em 3D
 // ---------- fundo: Terra em órbita + sol ----------
 const bg = new THREE.Scene();
 const bgCam = new THREE.PerspectiveCamera(40, 1, 0.1, 2000);
-const SUN = new THREE.Vector3(0.62, 0.16, -1).normalize();   // sol atrás da Terra, à direita
+const SUN = new THREE.Vector3();   // calculado depois de pôr a Terra: logo atrás da borda dela
 {
   // estrelas
   const n = 2600, p = new Float32Array(n * 3), c = new Float32Array(n * 3);
@@ -44,7 +44,7 @@ const SUN = new THREE.Vector3(0.62, 0.16, -1).normalize();   // sol atrás da Te
 const tl = new THREE.TextureLoader();
 const earthMat = new THREE.ShaderMaterial({
   uniforms: {
-    dayT: { value: null }, nightT: { value: null }, sun: { value: SUN.clone() },
+    dayT: { value: null }, nightT: { value: null }, sun: { value: SUN },
   },
   vertexShader: `varying vec2 vUv; varying vec3 vN; varying vec3 vV;
     void main(){ vUv=uv; vec4 w=modelMatrix*vec4(position,1.); vN=normalize(mat3(modelMatrix)*normal);
@@ -71,9 +71,17 @@ const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 128, 96), earthMat);
 earth.position.set(-38, -66, -150);
 earth.rotation.set(0.35, -1.2, 0.41);   // Brasil virado para nós
 bg.add(earth);
+{ // sol: um pouco além da borda da Terra, em cima à direita (o flare encosta no horizonte)
+  const c = earth.position.clone().normalize();
+  const ang = Math.asin(R / earth.position.length()) * 1.06;
+  const want = new THREE.Vector3(0.55, 1, 0).normalize();
+  const axis = new THREE.Vector3().crossVectors(c, want).normalize();
+  SUN.copy(c).applyAxisAngle(axis, ang);
+  earthMat.uniforms.sun.value.copy(SUN);
+}
 // halo da atmosfera
 const halo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.035, 96, 64), new THREE.ShaderMaterial({
-  uniforms: { sun: { value: SUN.clone() } }, side: THREE.BackSide, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  uniforms: { sun: { value: SUN } }, side: THREE.BackSide, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
   vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 w=modelMatrix*vec4(position,1.); vN=normalize(mat3(modelMatrix)*normal); vV=normalize(cameraPosition-w.xyz); gl_Position=projectionMatrix*viewMatrix*w; }`,
   fragmentShader: `uniform vec3 sun; varying vec3 vN; varying vec3 vV;
     void main(){ float f=pow(clamp(1.0+dot(vN,vV)*1.0,0.,1.),0.0); float e=pow(1.-abs(dot(vN,vV)),6.);
@@ -133,7 +141,7 @@ function harvest(sec) {
     else stuff.push(c);
   });
   sections.push({ id: sec.id, z0: z + 6, head });
-  const small = [], step = mobile ? 3.4 : 3.0;
+  const small = [], step = mobile ? 3.8 : 3.6;
   const flushSmall = () => {
     small.splice(0).forEach((el, i) => {
       const s = lane(), w = (el.classList.contains('big') ? 6.4 : el.classList.contains('card') ? 4.6 : 3.8);
@@ -163,7 +171,7 @@ function build() {
   [...ct.children].forEach((c) => box.appendChild(c));
   const ft = $('footer .wrap'); if (ft) { const f = document.createElement('div'); f.className = 'footIt'; [...ft.children].forEach((c) => f.appendChild(c)); box.appendChild(f); }
   z -= 4; place(box, 0, 0.3, z, 0, true);
-  z -= 6;
+  z += 7;   // a câmera para na frente do contato
   document.documentElement.classList.add('v2ready');
 }
 
@@ -248,7 +256,7 @@ function frame() {
   for (const it of items) {
     const d = cz - it.o.position.z;            // distância à frente
     const near = it.wide ? sm(1.2, 6.5, d) : sm(0.4, 2.6, d);
-    const far = 1 - sm(38, 62, d);
+    const far = it.wide ? 1 - sm(30, 46, d) : 1 - sm(20, 32, d);
     const a = Math.min(near, far);
     if (a < 0.01) { if (it.el.style.display !== 'none') it.el.style.display = 'none'; continue; }
     if (it.el.style.display === 'none') it.el.style.display = '';

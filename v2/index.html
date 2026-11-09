@@ -40,12 +40,12 @@ nav ul a:hover{color:var(--tx)}
 .lang:hover{border-color:var(--acc)}
 /* hero */
 .hero{position:relative;min-height:100svh;background:#0b0b0e url(media/img/hero.jpg) center 35%/cover;display:flex;align-items:flex-end;overflow:hidden}
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s}
-.hero video.on{opacity:.6}
+:is(.hero,.heroIt) video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s}
+:is(.hero,.heroIt) video.on{opacity:.6}
 .hero:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#0b0b0eb8 0%,#0b0b0e40 60%,#0b0b0e00 100%)}
 .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0b0b0e55 0%,#0b0b0e00 40%,#0b0b0e 100%)}
-.hero video{z-index:1}.hero:after{z-index:1}
-.hero .wrap{position:relative;z-index:2;padding-bottom:9vh;width:100%}
+:is(.hero,.heroIt) video{z-index:1}.hero:after{z-index:1}
+:is(.hero,.heroIt) .wrap{position:relative;z-index:2;padding-bottom:9vh;width:100%}
 /* capa: postais em Ken Burns com crossfade (~5 s cada) */
 .kb{position:absolute;inset:0;z-index:0;overflow:hidden;will-change:transform}
 .kb i{position:absolute;inset:-4%;background:center/cover no-repeat;opacity:0;transition:opacity 1.8s ease-in-out;will-change:transform,opacity}
@@ -53,29 +53,29 @@ nav ul a:hover{color:var(--tx)}
 .kb i.go{animation:kb 7.5s linear forwards}
 @keyframes kb{from{transform:scale(var(--s0,1.02)) translate(var(--x0,0),var(--y0,0))}to{transform:scale(var(--s1,1.12)) translate(var(--x1,0),var(--y1,0))}}
 /* capa: fonte manuscrita. A pesada original (Space Grotesk 700) fica guardada em ?f=0 */
-.hero h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
-.hero h1.txt,.hero h1.svg{font-family:"Great Vibes",cursive;font-weight:400;font-size:clamp(76px,14vw,210px);letter-spacing:0;line-height:1.1;text-shadow:0 4px 30px #0008}
-.hero h1.f0{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
-.hero h1.f1{font-family:"Pinyon Script"}.hero h1.f3{font-family:"Monsieur La Doulaise"}.hero h1.f4{font-family:"Alex Brush"}.hero h1.f5{font-family:"Parisienne"}.hero h1.f6{font-family:"Italianno";font-size:clamp(90px,17vw,250px)}
-.hero h1 b{color:var(--acc);font-weight:inherit}
+:is(.hero,.heroIt) h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
+:is(.hero,.heroIt) h1.txt,:is(.hero,.heroIt) h1.svg{font-family:"Great Vibes",cursive;font-weight:400;font-size:clamp(76px,14vw,210px);letter-spacing:0;line-height:1.1;text-shadow:0 4px 30px #0008}
+:is(.hero,.heroIt) h1.f0{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
+:is(.hero,.heroIt) h1.f1{font-family:"Pinyon Script"}:is(.hero,.heroIt) h1.f3{font-family:"Monsieur La Doulaise"}:is(.hero,.heroIt) h1.f4{font-family:"Alex Brush"}:is(.hero,.heroIt) h1.f5{font-family:"Parisienne"}:is(.hero,.heroIt) h1.f6{font-family:"Italianno";font-size:clamp(90px,17vw,250px)}
+:is(.hero,.heroIt) h1 b{color:var(--acc);font-weight:inherit}
 .hlogo{width:min(880px,88vw);height:auto;filter:drop-shadow(0 4px 24px #0009) saturate(.17) brightness(1.18);transition:filter 1.8s ease-in-out}
-.hero h1 .hlogo{display:none}.hero h1.svg .hlogo{display:block}.hero h1.svg .htxt{display:none}
+:is(.hero,.heroIt) h1 .hlogo{display:none}:is(.hero,.heroIt) h1.svg .hlogo{display:block}:is(.hero,.heroIt) h1.svg .htxt{display:none}
 /* cromado: quase branco, com a luz a passar; sem bevel */
-.hero h1 .htxt{font-family:"Space Grotesk",sans-serif;font-weight:700;font-style:normal;letter-spacing:-.02em;
+:is(.hero,.heroIt) h1 .htxt{font-family:"Space Grotesk",sans-serif;font-weight:700;font-style:normal;letter-spacing:-.02em;
  background:linear-gradient(100deg,#dfe3ec 0%,#fff 18%,#c9cfdb 30%,#fff 42%,#eef2f8 58%,#c4cbd8 72%,#fff 86%,#e6eaf2 100%);
  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
  animation:sheen 7s linear infinite;filter:drop-shadow(0 6px 26px #0008)}
 /* avatar ClimberFX colado à direita da caixa, mesma altura (1em de linha + padding da caixa = 1.14em) */
 #ttl{display:flex;align-items:flex-start;flex-wrap:nowrap}
-.hero h1 .havatar{position:static;inset:auto;opacity:1;z-index:auto;height:1.14em;width:1.14em;object-fit:cover;flex:none;box-shadow:0 18px 50px -18px #000c}
+:is(.hero,.heroIt) h1 .havatar{position:static;inset:auto;opacity:1;z-index:auto;height:1.14em;width:1.14em;object-fit:cover;flex:none;box-shadow:0 18px 50px -18px #000c}
 #ttl:not(.svg):not(.txt){font-size:max(36px,min(176px,calc((100vw - 48px)/6.8)))}
-.hero h1.svg,.hero h1.txt{display:block}.hero h1.svg .havatar,.hero h1.txt .havatar{display:none}
+:is(.hero,.heroIt) h1.svg,:is(.hero,.heroIt) h1.txt{display:block}:is(.hero,.heroIt) h1.svg .havatar,:is(.hero,.heroIt) h1.txt .havatar{display:none}
 /* caixa no vermelho da marca atrás do lettering principal */
-.hero h1 .hbox{display:inline-block;background:#e10435;padding:.04em .16em .1em;line-height:1;box-shadow:0 18px 50px -18px #000c}
-.hero h1.svg .hbox,.hero h1.txt .hbox{background:none;padding:0;box-shadow:none;display:inline}
+:is(.hero,.heroIt) h1 .hbox{display:inline-block;background:#e10435;padding:.04em .16em .1em;line-height:1;box-shadow:0 18px 50px -18px #000c}
+:is(.hero,.heroIt) h1.svg .hbox,:is(.hero,.heroIt) h1.txt .hbox{background:none;padding:0;box-shadow:none;display:inline}
 @keyframes sheen{from{background-position:140% 0}to{background-position:-140% 0}}
-.hero h1.txt .htxt{animation:none;background:none;-webkit-text-fill-color:currentColor;color:var(--tx);filter:none}
-.hero p{font-size:clamp(18px,2.2vw,26px);max-width:min(880px,88vw);color:#d9d5ce;margin-top:18px}
+:is(.hero,.heroIt) h1.txt .htxt{animation:none;background:none;-webkit-text-fill-color:currentColor;color:var(--tx);filter:none}
+:is(.hero,.heroIt) p{font-size:clamp(18px,2.2vw,26px);max-width:min(880px,88vw);color:#d9d5ce;margin-top:18px}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
 .tags span{border:1px solid #ffffff2a;border-radius:99px;padding:6px 14px;font-size:13px;background:#0b0b0e66}
 /* sections */
@@ -183,7 +183,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .modal .x{position:absolute;top:18px;right:22px;font-size:34px;background:none;border:0;color:#fff;cursor:pointer}
 .modal .t{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#ddd}
 @media(max-width:760px){nav ul{display:none}.lang{margin-left:auto}section{padding:80px 0 30px}}
-@media(prefers-reduced-motion:reduce){.hero > video{display:none}}
+@media(prefers-reduced-motion:reduce){:is(.hero,.heroIt) > video{display:none}}
 /* ===== v2: túnel em órbita (three.js + HTML em 3D) ===== */
 html{scroll-behavior:auto}
 body{background:#04050a}
@@ -580,6 +580,6 @@ document.getElementById('yr').textContent=new Date().getFullYear();
 </script>
 <script>window.DT_PCS=["/v2/pc/01.webp", "/v2/pc/02.webp", "/v2/pc/03.webp", "/v2/pc/04.webp", "/v2/pc/05.webp", "/v2/pc/06.webp", "/v2/pc/07.webp", "/v2/pc/08.webp", "/v2/pc/09.webp", "/v2/pc/10.webp", "/v2/pc/11.webp", "/v2/pc/12.webp", "/v2/pc/13.webp", "/v2/pc/15.webp", "/v2/pc/16.webp", "/v2/pc/17.webp", "/v2/pc/18.webp", "/v2/pc/19.webp", "/v2/pc/20.webp", "/v2/pc/21.webp", "/v2/pc/22.webp", "/v2/pc/23.webp", "/v2/pc/24.webp", "/v2/pc/25.webp", "/v2/pc/26.webp", "/v2/pc/27.webp", "/v2/pc/28.webp", "/v2/pc/29.webp", "/v2/pc/30.webp", "/v2/pc/31.webp", "/v2/pc/32.webp", "/v2/pc/33.webp", "/v2/pc/34.webp", "/v2/pc/35.webp", "/v2/pc/36.webp", "/v2/pc/37.webp", "/v2/pc/38.webp", "/v2/pc/39.webp", "/v2/pc/40.webp", "/v2/pc/41.webp", "/v2/pc/43.webp", "/v2/pc/45.webp", "/v2/pc/46.webp", "/v2/pc/47.webp", "/v2/pc/48.webp", "/v2/pc/49.webp", "/v2/pc/50.webp", "/v2/pc/51.webp", "/v2/pc/52.webp", "/v2/pc/53.webp", "/v2/pc/54.webp", "/v2/pc/55.webp", "/v2/pc/56.webp", "/v2/pc/57.webp", "/v2/pc/58.webp", "/v2/pc/59.webp"];</script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<script type="module" src="/v2/space.js?v=202611090619"></script>
+<script type="module" src="/v2/space.js?v=202611090621"></script>
 </body>
 </html>
