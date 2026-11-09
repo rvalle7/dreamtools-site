@@ -242,7 +242,7 @@ function build() {
   const box2 = document.createElement('div'); box2.className = 'contactIt';
   [...ct.children].forEach((c) => box2.appendChild(c));
   const ft = $('footer .wrap'); if (ft) { const f = document.createElement('div'); f.className = 'footIt'; [...ft.children].forEach((c) => f.appendChild(c)); box2.appendChild(f); }
-  add(box2, 'end', 0.02, 0.0, 170);
+  add(box2, 'end', 0.02, -0.05, 110);
   document.documentElement.classList.add('v2ready');
 }
 function laneItems() { for (const it of items) { ndcPoint(it.nx, it.ny, it.d, it.S); horizon(it.hs, it.H); } }
