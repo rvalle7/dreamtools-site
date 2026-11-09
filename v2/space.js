@@ -1,25 +1,21 @@
-// Dreamtools v2 — em órbita. A Terra grande em arco, o sol na borda, postais orbitando e vindo
-// na nossa direção (sempre, mesmo parado); a rolagem leva a câmera pelos trabalhos e ferramentas.
+// Dreamtools v2 — em órbita. Uma perspectiva só: a da Terra. Postais e conteúdo correm numa órbita
+// que vai de perto da câmera até o horizonte, junto do sol. A Terra gira sozinha, como fundo.
 import * as THREE from 'three';
 import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 import { craftIcon } from './crafts.js';
 
 const PCS = window.DT_PCS || [];
 const mobile = matchMedia('(max-width: 760px)').matches;
-const PX = 0.01;              // 1 px do HTML = 0,01 unidade
-const PXU = mobile ? 70 : 85; // px de rolagem por unidade de profundidade
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const sm = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
-// ---------- renderizadores ----------
 const gl = new THREE.WebGLRenderer({ canvas: $('#space'), antialias: !mobile, powerPreference: 'high-performance' });
 gl.setPixelRatio(Math.min(devicePixelRatio || 1, mobile ? 1.5 : 1.75));
 gl.outputColorSpace = THREE.SRGBColorSpace;
 const css = new CSS3DRenderer();
 css.domElement.id = 'css3d';
 document.body.appendChild(css.domElement);
-const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 600);
 const cssScene = new THREE.Scene();
 
 // ---------- fundo: céu, Terra, sol, postais e naves em órbita ----------
@@ -142,49 +138,6 @@ function placeEarth() {
   const k = 3000 / 700; sunGroup.scale.setScalar(k);
 }
 
-// postais em órbita: anéis em volta da Terra que passam pela câmera — vêm de trás do horizonte até nós
-const orbit = [];
-const pgeo = new THREE.PlaneGeometry(1, 1);
-let pNext = 0, pBusy = 0;
-function pickAng() { let a; do { a = Math.random() * Math.PI * 2; } while (Math.sin(a) > 0.45); return a; }
-function buildOrbit() {
-  const n = PCS.length;
-  PCS.forEach((url, i) => {
-    const mat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide });
-    const m = new THREE.Mesh(pgeo, mat);
-    const w = mobile ? 26 : 34;
-    m.scale.set(w, w / 1.75, 1);
-    m.userData = {
-      url, loaded: false,
-      dist: 40 + (i / n) * 1400,               // distância ao longo do caminho (só os mais perto aparecem)
-      ang: pickAng(),                          // ângulo em volta do centro do redemoinho (evita o topo)
-      rr: 0.6 + Math.random() * 0.8,           // abertura
-      rz: (Math.random() - 0.5) * 0.25,
-    };
-    bg.add(m); orbit.push(m);
-  });
-}
-function pump() {
-  while (pBusy < 3 && pNext < orbit.length) {
-    const m = orbit[pNext++]; pBusy++;
-    tl.load(m.userData.url, (t) => {
-      t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
-      m.scale.y = m.scale.x / (t.image.width / t.image.height);
-      m.material.map = t; m.material.needsUpdate = true; m.userData.loaded = true; pBusy--; pump();
-    }, undefined, () => { pBusy--; pump(); });
-  }
-}
-const _ax = new THREE.Vector3(), _e1 = new THREE.Vector3(), _e2 = new THREE.Vector3();
-const SWIRL = new THREE.Vector2(0.05, -0.12);   // centro do redemoinho na tela: perto do sol
-function swirlAxes() {
-  bgCam.rotation.set(0, 0, 0); bgCam.updateMatrixWorld();
-  _ax.copy(ndcDir(SWIRL)); _e1.set(0, 1, 0).sub(_e2.copy(_ax).multiplyScalar(_ax.y)).normalize(); _e2.crossVectors(_ax, _e1);
-}
-function orbitPos(u, out) {
-  const r = (18 + Math.max(0, 480 - u.dist) * 0.24) * u.rr;   // abre conforme chega perto
-  return out.copy(_ax).multiplyScalar(u.dist).addScaledVector(_e1, Math.sin(u.ang) * r).addScaledVector(_e2, Math.cos(u.ang) * r * 1.5);
-}
-
 // naves e satélites (os mesmos ícones do mapa) em órbita baixa
 const crafts = [];
 {
@@ -198,25 +151,63 @@ const crafts = [];
   });
 }
 
-// ---------- conteúdo: capa e seções viram objetos 3D ----------
+// ---------- a órbita: de perto (S) até o horizonte (H), contornando a Terra ----------
+const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _q = new THREE.Quaternion(), _c = new THREE.Vector3();
+function ndcPoint(nx, ny, dist, out = new THREE.Vector3()) { return out.copy(ndcDir(new THREE.Vector2(nx, ny))).multiplyScalar(dist); }
+function orbitAt(S, H, t, out) {
+  const E = earth.position;
+  _a.copy(S).sub(E); _b.copy(H).sub(E);
+  const la = _a.length(), lb = _b.length();
+  _a.normalize(); _b.normalize();
+  _q.setFromUnitVectors(_a, _b);
+  const q = new THREE.Quaternion().slerp(_q, t);   // identidade → rotação total
+  _c.copy(_a).applyQuaternion(q).multiplyScalar(la + (lb - la) * t);
+  return out.copy(E).add(_c);
+}
+function horizon(spread, out) {           // um ponto logo além da borda da Terra, perto do sol
+  const n = new THREE.Vector2(LIMB.x + spread * 0.55, LIMB.y - spread * 0.2);
+  return ndcPoint(n.x, n.y, earth.position.length() * 1.02, out);
+}
+
+// ---------- postais: sempre correndo pela órbita (a rolagem acelera) ----------
+const orbit = [];
+const pgeo = new THREE.PlaneGeometry(1, 1);
+let pNext = 0, pBusy = 0;
+function buildOrbit() {
+  const n = PCS.length;
+  PCS.forEach((url, i) => {
+    const m = new THREE.Mesh(pgeo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
+    const w = mobile ? 22 : 30;
+    m.scale.set(w, w / 1.75, 1);
+    let nx, ny; do { nx = Math.random() * 2.2 - 1.1; ny = Math.random() * 1.6 - 1.1; } while (ny > 0.25 && Math.abs(nx) < 0.55);
+    m.userData = { url, loaded: false, t: i / n, sp: 0.75 + Math.random() * 0.5, nx, ny, d: 150 + Math.random() * 170, hs: Math.random() * 2 - 1, rz: (Math.random() - 0.5) * 0.2, S: new THREE.Vector3(), H: new THREE.Vector3() };
+    bg.add(m); orbit.push(m);
+  });
+}
+function laneOrbit() { for (const m of orbit) { const u = m.userData; ndcPoint(u.nx, u.ny, u.d, u.S); horizon(u.hs, u.H); } }
+function pump() {
+  while (pBusy < 3 && pNext < orbit.length) {
+    const m = orbit[pNext++]; pBusy++;
+    tl.load(m.userData.url, (t) => {
+      t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+      m.scale.y = m.scale.x / (t.image.width / t.image.height);
+      m.material.map = t; m.material.needsUpdate = true; m.userData.loaded = true; pBusy--; pump();
+    }, undefined, () => { pBusy--; pump(); });
+  }
+}
+
+// ---------- conteúdo: entra perto e vai para o horizonte conforme a rolagem ----------
+const PX = mobile ? 0.07 : 0.1;
 const items = [], sections = [];
-function place(el, x, y, z, ry = 0, wide = false) {
+let slot = 0;
+function add(el, kind, nx, ny, d) {
   el.classList.add('it');
-  const o = new CSS3DObject(el);
-  o.position.set(x, y, z); o.rotation.y = ry; o.scale.setScalar(PX);
-  cssScene.add(o); items.push({ o, el, z, wide });
-  return o;
+  const o = new CSS3DObject(el); o.scale.setScalar(PX); cssScene.add(o);
+  const it = { o, el, kind, k: slot, nx, ny, d, S: new THREE.Vector3(), H: new THREE.Vector3(), hs: nx * 0.7 };
+  items.push(it); return it;
 }
-let z = 0;
-{
-  const hero = $('header.hero .wrap');
-  const box = document.createElement('div'); box.className = 'heroIt';
-  [...hero.children].forEach((c) => box.appendChild(c));
-  place(box, 0, 1.25, -10, 0, true);
-}
-// leque em volta do caminho, sem usar o topo (é do título)
-const FAN = [-150, -28, -95, 168, 12, -125, -58, 192, -8, -112, -70, 158, 22, -140, -40];
-let fi = 0;
+const LANES = [[-0.5, -0.38], [0.5, -0.5], [0.05, -0.72], [-0.62, 0.02], [0.62, -0.02], [-0.25, -0.55], [0.3, -0.25]];
+let li = 0;
 function harvest(sec) {
   const wrap = $('.wrap', sec);
   const head = document.createElement('div'); head.className = 'hudBlock';
@@ -225,155 +216,59 @@ function harvest(sec) {
     if (c.matches('.kick,h2,.lead') || (c.tagName === 'A' && c.querySelector('h2'))) head.appendChild(c);
     else stuff.push(c);
   });
-  sections.push({ id: sec.id, z0: z + 18, head });
+  sections.push({ id: sec.id, k: slot - 0.15, head });
   const small = [];
-  const flushSmall = () => {
-    small.splice(0).forEach((el) => {
-      const a = FAN[fi++ % FAN.length] * Math.PI / 180;
-      const big = el.classList.contains('big');
-      const rx = (mobile ? 2.2 : 4.9) * (big ? 1.1 : 1), ry = mobile ? 2.6 : 2.15;
-      const x = Math.cos(a) * rx, y = Math.sin(a) * ry - 0.35;
-      place(el, x, y, z, -Math.sign(x) * 0.16);
-      z -= mobile ? 3.4 : 2.7;
-    });
-  };
-  const wideIt = (el) => { flushSmall(); z -= 4; place(el, 0, -0.3, z, 0, true); z -= 12; };
+  const flush = () => small.splice(0).forEach((el) => {
+    const [nx, ny] = LANES[li++ % LANES.length];
+    add(el, 'small', nx, ny, el.classList.contains('big') ? 150 : 125);
+    slot += 0.34;
+  });
   stuff.forEach((c) => {
     if (c.matches('#grid,.tools')) [...c.children].forEach((k) => small.push(k));
-    else if (c.matches('.feat,.about,.more')) wideIt(c);
+    else if (c.matches('.feat,.about,.more')) { flush(); slot += 0.2; add(c, 'wide', 0.05, -0.12, c.matches('.more') ? 160 : 175); slot += 0.75; }
     else small.push(c);
   });
-  flushSmall();
-  z -= 10;
+  flush();
+  slot += 0.5;
 }
 function build() {
-  z = -44;   // os trabalhos só aparecem depois de sair da capa
+  const hero = $('header.hero .wrap');
+  const box = document.createElement('div'); box.className = 'heroIt';
+  [...hero.children].forEach((c) => box.appendChild(c));
+  slot = 0; add(box, 'hero', -0.02, 0.28, 175);
+  slot = 0.85;   // os trabalhos só começam depois da capa
   ['work', 'tools', '3d', 'lab', 'about'].forEach((id) => harvest(document.getElementById(id)));
   const ct = $('#contact .wrap');
-  const head = document.createElement('div'); head.className = 'hudBlock';
-  sections.push({ id: 'contact', z0: z + 12, head });
-  const box = document.createElement('div'); box.className = 'contactIt';
-  [...ct.children].forEach((c) => box.appendChild(c));
-  const ft = $('footer .wrap'); if (ft) { const f = document.createElement('div'); f.className = 'footIt'; [...ft.children].forEach((c) => f.appendChild(c)); box.appendChild(f); }
-  z -= 4; place(box, 0, 0.3, z, 0, true);
-  z += 7;
+  sections.push({ id: 'contact', k: slot - 0.15, head: document.createElement('div') });
+  const box2 = document.createElement('div'); box2.className = 'contactIt';
+  [...ct.children].forEach((c) => box2.appendChild(c));
+  const ft = $('footer .wrap'); if (ft) { const f = document.createElement('div'); f.className = 'footIt'; [...ft.children].forEach((c) => f.appendChild(c)); box2.appendChild(f); }
+  add(box2, 'end', 0.02, 0.0, 170);
   document.documentElement.classList.add('v2ready');
 }
+function laneItems() { for (const it of items) { ndcPoint(it.nx, it.ny, it.d, it.S); horizon(it.hs, it.H); } }
 
-// ---------- HUD (título da seção parado no topo, entra com zoom) ----------
+// ---------- HUD (título parado no topo, entra com zoom) ----------
 const hud = document.createElement('div'); hud.id = 'hud'; document.body.appendChild(hud);
 let curSec;
 function setHud(s) {
   if (s === curSec) return; curSec = s;
   hud.classList.remove('on');
-  setTimeout(() => { hud.innerHTML = ''; if (s) { hud.appendChild(s.head); requestAnimationFrame(() => hud.classList.add('on')); } }, 280);
-}
-
-// ---------- som: ambiente espacial + vídeo do card com som 3D ----------
-const audio = { ctx: null, on: true, master: null, amb: null, cur: null };
-try { audio.on = localStorage.getItem('dt-sound') !== '0'; } catch {}
-const sndBtn = $('#snd-btn');
-function paintSnd() { if (sndBtn) { sndBtn.classList.toggle('off', !audio.on); sndBtn.setAttribute('aria-pressed', audio.on ? 'true' : 'false'); } }
-paintSnd();
-function startAudio() {
-  if (audio.ctx || !audio.on) return;
-  const C = new (window.AudioContext || window.webkitAudioContext)(); audio.ctx = C; sndBtn && sndBtn.classList.add('live');
-  const master = C.createGain(); master.gain.value = 0; master.connect(C.destination); audio.master = master;
-  master.gain.linearRampToValueAtTime(1, C.currentTime + 2.5);
-  const amb = C.createGain(); amb.gain.value = 0.9; amb.connect(master); audio.amb = amb;
-  // zumbido grave que respira
-  const lp = C.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 380; lp.Q.value = 0.6; lp.connect(amb);
-  [[55, 0.05], [82.6, 0.035], [110.4, 0.015]].forEach(([f, g]) => { const o = C.createOscillator(); o.frequency.value = f; o.detune.value = (Math.random() - 0.5) * 12; const gg = C.createGain(); gg.gain.value = g; o.connect(gg).connect(lp); o.start(); });
-  const lfo = C.createOscillator(); lfo.frequency.value = 0.05; const lg = C.createGain(); lg.gain.value = 160; lfo.connect(lg).connect(lp.frequency); lfo.start();
-  // vento de ruído filtrado
-  const buf = C.createBuffer(1, C.sampleRate * 3, C.sampleRate), d = buf.getChannelData(0);
-  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-  const ns = C.createBufferSource(); ns.buffer = buf; ns.loop = true;
-  const bp = C.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 520; bp.Q.value = 0.8;
-  const ng = C.createGain(); ng.gain.value = 0.012; ns.connect(bp).connect(ng).connect(amb); ns.start();
-  const l2 = C.createOscillator(); l2.frequency.value = 0.07; const l2g = C.createGain(); l2g.gain.value = 260; l2.connect(l2g).connect(bp.frequency); l2.start();
-  // eco para os pings (sonar de satélite)
-  const dl = C.createDelay(2); dl.delayTime.value = 0.42; const fb = C.createGain(); fb.gain.value = 0.42; const dlp = C.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 2200;
-  dl.connect(dlp).connect(fb).connect(dl); const pan = C.createStereoPanner(); dlp.connect(pan).connect(amb);
-  function ping() {
-    if (!audio.ctx) return;
-    const t = C.currentTime, o = C.createOscillator(), g = C.createGain();
-    o.type = 'sine'; o.frequency.setValueAtTime([1318, 1568, 987.8, 2093][Math.floor(Math.random() * 4)], t);
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.05, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0008, t + 1.4);
-    pan.pan.value = Math.random() * 1.6 - 0.8;
-    o.connect(g); g.connect(dl); g.connect(amb); o.start(t); o.stop(t + 1.6);
-    setTimeout(ping, 5000 + Math.random() * 9000);
-  }
-  setTimeout(ping, 2500);
-}
-function setSound(on) {
-  audio.on = on; paintSnd();
-  try { localStorage.setItem('dt-sound', on ? '1' : '0'); } catch {}
-  if (on) { startAudio(); if (audio.ctx) { audio.ctx.resume(); audio.master.gain.setTargetAtTime(1, audio.ctx.currentTime, 0.4); } }
-  else if (audio.ctx) { audio.master.gain.setTargetAtTime(0, audio.ctx.currentTime, 0.2); if (audio.cur) stopCard(audio.cur, true); }
-}
-sndBtn && sndBtn.addEventListener('click', (e) => { e.stopPropagation(); setSound(!audio.on); });
-['pointerdown', 'keydown', 'touchstart'].forEach((ev) => addEventListener(ev, () => { if (audio.on) { startAudio(); audio.ctx && audio.ctx.resume(); } }, { passive: true }));
-
-// vídeo do card: parar o mouse em cima toca o filme completo com som; o som acompanha a posição do card
-let FULL = {};
-audio.cors = false;
-fetch('/works.json', { cache: 'no-cache' }).then((r) => r.json()).then((w) => {
-  w.forEach((x) => { if (x.full) FULL[x.id] = x.full; });
-  // o Dropbox não manda CORS no redirecionamento: o som vai pelo volume do próprio vídeo
-}).catch(() => {});
-function cardSound(card) {
-  const v = card.querySelector('video'); if (!v || !audio.ctx || !audio.on) return null;
-  if (!card._snd) {
-    const C = audio.ctx, g = C.createGain(), p = C.createStereoPanner(); g.gain.value = 0; p.connect(audio.master); g.connect(p);
-    card._snd = { g, p, src: null, cors: true };
-  }
-  return card._snd;
-}
-function playCard(card) {
-  const full = FULL[card.dataset.id]; const s = cardSound(card); if (!full || !s) return;
-  if (audio.cur && audio.cur !== card) stopCard(audio.cur);
-  audio.cur = card;
-  const v = card.querySelector('video');
-  card._loop = card._loop || v.dataset.src;
-  v.pause();
-  s.volOnly = !audio.cors;
-  if (audio.cors) { v.crossOrigin = 'anonymous'; if (!s.src) { try { s.src = audio.ctx.createMediaElementSource(v); s.src.connect(s.g); } catch { s.volOnly = true; } } }
-  v.muted = false; v.volume = s.volOnly ? 0 : 1; v.loop = true; v.src = full;
-  v.play().then(() => card.classList.add('play')).catch(() => {});
-  const C = audio.ctx;
-  s.g.gain.cancelScheduledValues(C.currentTime); s.g.gain.setTargetAtTime(0.9, C.currentTime, 0.35);
-  audio.amb.gain.setTargetAtTime(0.25, C.currentTime, 0.5);   // o ambiente abaixa
-  card.classList.add('snd');
-}
-function stopCard(card, now) {
-  const s = card._snd; const v = card.querySelector('video'); if (!s || !v) return;
-  const C = audio.ctx;
-  s.g.gain.setTargetAtTime(0, C.currentTime, now ? 0.05 : 0.3);
-  if (audio.cur === card) { audio.cur = null; audio.amb.gain.setTargetAtTime(0.9, C.currentTime, 0.8); }
-  card.classList.remove('snd');
-  clearTimeout(card._back);
-  card._back = setTimeout(() => { if (audio.cur === card) return; v.pause(); v.muted = true; v.src = card._loop; v.loop = true; v.load(); card.classList.remove('play'); }, now ? 60 : 1100);
-}
-function wireCards() {
-  $$('.card.it').forEach((card) => {
-    let tm;
-    card.addEventListener('mouseenter', () => { clearTimeout(tm); tm = setTimeout(() => playCard(card), 380); });
-    card.addEventListener('mouseleave', () => { clearTimeout(tm); if (audio.cur === card) stopCard(card); });
-  });
+  setTimeout(() => { hud.innerHTML = ''; if (s && s.head.childNodes.length) { hud.appendChild(s.head); requestAnimationFrame(() => hud.classList.add('on')); } }, 280);
 }
 
 // ---------- rolagem, mouse, tela cheia ----------
-let DEPTH = 1;
+const SPAN = 1.15;               // quanto de rolagem leva para um item ir de perto ao horizonte
+const PXS = mobile ? 900 : 1100; // px de rolagem por unidade de "slot"
 const spacer = document.createElement('div'); spacer.id = 'spacer'; document.body.appendChild(spacer);
-const camZ = () => -scrollY / PXU;
-let cz = 0, lastZ = 0, vel = 0;
+let P = 0, lastP = 0, vel = 0;
+const scrollP = () => scrollY / PXS;
 addEventListener('click', (e) => {
   const a = e.target.closest('a[href^="/v2/#"]'); if (!a) return;
   const id = a.getAttribute('href').slice(5); e.preventDefault();
   if (!id || id === 'top') return scrollTo({ top: 0, behavior: 'smooth' });
   const s = sections.find((x) => x.id === id);
-  if (s) scrollTo({ top: Math.max(0, -(s.z0 - 10) * PXU), behavior: 'smooth' });
+  if (s) scrollTo({ top: Math.max(0, (s.k + 0.2) * PXS), behavior: 'smooth' });
 });
 let mx = 0, my = 0, tx = 0, ty = 0;
 addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth) * 2 - 1; ty = (e.clientY / innerHeight) * 2 - 1; }, { passive: true });
@@ -385,93 +280,82 @@ addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth) * 2 - 1; 
 function size() {
   const w = innerWidth, h = innerHeight;
   gl.setSize(w, h, false); css.setSize(w, h);
-  camera.aspect = bgCam.aspect = w / h;
-  camera.fov = (w / h < 1) ? 72 : 55;
-  camera.updateProjectionMatrix(); bgCam.updateProjectionMatrix();
-  placeEarth(); swirlAxes();
+  bgCam.aspect = w / h; bgCam.fov = (w / h < 1) ? 60 : 40; bgCam.updateProjectionMatrix();
+  placeEarth(); laneOrbit(); laneItems();
 }
 addEventListener('resize', size);
 
+// vídeos dos cards tocam (mudos) enquanto estão passando
+function setPlaying(it, on) {
+  const v = it.el.querySelector('video'); if (!v) return;
+  if (on) { if (!v.src && v.dataset.src) v.src = v.dataset.src; if (v.paused) v.play().then(() => it.el.classList.add('play')).catch(() => {}); }
+  else if (!v.paused) { v.pause(); }
+}
+
 const clock = new THREE.Clock();
-const _q = new THREE.Vector3(), _q2 = new THREE.Vector3();
+const _x = new THREE.Vector3(), _y = new THREE.Vector3();
 function frame() {
   requestAnimationFrame(frame);
   if (document.hidden) return;
   const dt = Math.min(0.05, clock.getDelta()), t = clock.elapsedTime;
   mx += (tx - mx) * 0.05; my += (ty - my) * 0.05;
-  cz += (camZ() - cz) * 0.09;
-  vel += (Math.abs(cz - lastZ) / Math.max(dt, 0.001) - vel) * 0.1; lastZ = cz;
-  camera.position.set(mx * 0.9, -my * 0.55, cz);
-  camera.lookAt(mx * 0.25, -my * 0.15, cz - 30);
+  P += (scrollP() - P) * 0.08;
+  vel += (Math.abs(P - lastP) / Math.max(dt, 0.001) - vel) * 0.1; lastP = P;
 
-  // fundo: a câmera do fundo só olha de leve com o mouse
-  bgCam.rotation.set(-my * 0.035, -mx * 0.05, 0);
+  bgCam.rotation.set(-my * 0.03, -mx * 0.045, 0);
   earth.rotation.y += dt * 0.006; halo.rotation.y = earth.rotation.y;
   sky.rotation.y += dt * 0.0035; sky.rotation.x = 0.25;
   sky.userData.mat.uniforms.t.value = t;
   for (const s of sky.userData.big) { const u = s.userData, k = u.k * (0.78 + 0.22 * Math.sin(t * 0.85 + u.ph)); s.scale.set(k, k, 1); }
 
-  // postais: giram sempre; a rolagem acelera
-  const w = 16 + Math.min(220, vel * 9);   // unidades/s: sempre andando; a rolagem acelera
+  // postais: vão para o horizonte o tempo todo; a rolagem acelera
+  const w = 0.016 + Math.min(0.5, vel * 0.25);
   for (const m of orbit) {
     const u = m.userData;
-    u.dist -= w * dt; u.ang += dt * (0.05 + w * 0.0006);
-    if (u.dist < 30) { u.dist += 1400; u.ang = pickAng(); m.material.opacity = 0; }
-    orbitPos(u, m.position);
+    u.t += w * u.sp * dt; if (u.t >= 1) u.t -= 1;
+    orbitAt(u.S, u.H, u.t, m.position);
     m.lookAt(bgCam.position); m.rotateZ(u.rz);
-    const dc = m.position.length();
-    const target = u.loaded ? Math.min(sm(30, 90, dc), 1 - sm(380, 470, u.dist)) : 0;
-    m.material.opacity += (target - m.material.opacity) * 0.06;
+    const target = u.loaded ? Math.min(sm(0, 0.12, u.t), 1 - sm(0.82, 1, u.t)) : 0;
+    m.material.opacity += (target - m.material.opacity) * 0.08;
     m.visible = m.material.opacity > 0.01;
   }
   // naves
   for (const s of crafts) {
     const u = s.userData; u.ph += u.sp * dt;
     const r = R * u.sh, a = u.ph;
-    _q.set(Math.cos(a) * r, Math.sin(a) * Math.sin(u.inc) * r, Math.sin(a) * Math.cos(u.inc) * r).add(earth.position);
-    _q2.set(-Math.sin(a) * r, Math.cos(a) * Math.sin(u.inc) * r, Math.cos(a) * Math.cos(u.inc) * r).add(earth.position);
-    s.position.copy(_q);
+    _x.set(Math.cos(a) * r, Math.sin(a) * Math.sin(u.inc) * r, Math.sin(a) * Math.cos(u.inc) * r).add(earth.position);
+    _y.set(-Math.sin(a), Math.cos(a) * Math.sin(u.inc), Math.cos(a) * Math.cos(u.inc)).multiplyScalar(8).add(_x);
+    s.position.copy(_x);
     const k = u.sz * (s.position.length() / 600) * 0.26; s.scale.set(k, k, 1);
-    const p1 = _q.clone().project(bgCam), p2 = _q2.clone().multiplyScalar(0.0).add(_q).addScaledVector(_q2.sub(earth.position).normalize(), 5).project(bgCam);
-    s.material.rotation = Math.atan2((p2.y - p1.y), (p2.x - p1.x) * bgCam.aspect);
+    const p1 = _x.clone().project(bgCam), p2 = _y.clone().project(bgCam);
+    s.material.rotation = Math.atan2(p2.y - p1.y, (p2.x - p1.x) * bgCam.aspect);
   }
-
-  // conteúdo: aparece ao longe, passa por você e some
+  // conteúdo
   for (const it of items) {
-    const d = cz - it.o.position.z;
-    const near = it.wide ? sm(1.2, 6.5, d) : sm(0.6, 2.8, d);
-    const far = it.wide ? 1 - sm(28, 44, d) : 1 - sm(17, 27, d);
-    const a = Math.min(near, far);
-    it.o.visible = a >= 0.01;
+    const tt = (P - it.k) / SPAN;
+    const pre = it.kind === 'hero' ? 1 : sm(-0.06, 0.04, tt);           // entra com fade, já perto
+    const a = Math.min(pre, 1 - sm(0.62, 0.95, tt));
+    it.o.visible = a > 0.01 && tt < 1;
+    setPlaying(it, it.o.visible);
     if (!it.o.visible) continue;
+    orbitAt(it.S, it.H, Math.max(0, tt), it.o.position);
+    it.o.lookAt(bgCam.position);
     it.el.style.opacity = a.toFixed(3);
   }
-  // som do card acompanha a posição dele na tela e a distância
-  if (audio.cur && audio.cur._snd) {
-    const r = audio.cur.getBoundingClientRect(), C = audio.ctx;
-    const px = Math.max(-1, Math.min(1, ((r.left + r.width / 2) / innerWidth) * 2 - 1));
-    audio.cur._snd.p.pan.setTargetAtTime(px * 0.85, C.currentTime, 0.1);
-    const op = +audio.cur.style.opacity || 1;
-    const vol = Math.min(1, Math.max(0, r.width / (innerWidth * 0.45))) * op;
-    if (audio.cur._snd.volOnly) audio.cur.querySelector('video').volume = Math.min(1, vol);
-    else audio.cur._snd.g.gain.setTargetAtTime(0.9 * Math.min(1, vol), C.currentTime, 0.15);
-    if (op < 0.05) stopCard(audio.cur);
-  }
-  let s = null; for (const x of sections) if (cz <= x.z0) s = x;
+  let s = null; for (const x of sections) if (P >= x.k) s = x;
   setHud(s);
 
   gl.render(bg, bgCam);
-  css.render(cssScene, camera);
+  css.render(cssScene, bgCam);
 }
 
 function start() {
   build();
-  DEPTH = -z;
-  spacer.style.height = Math.round(DEPTH * PXU + innerHeight) + 'px';
+  buildOrbit();
   size();
-  buildOrbit(); pump();
-  wireCards();
-  cz = lastZ = camZ();
+  spacer.style.height = Math.round((slot + SPAN * 0.45) * PXS + innerHeight) + 'px';
+  pump();
+  P = lastP = scrollP();
   frame();
 }
 (function wait(n) { if ($$('#grid .card').length || n > 60) start(); else setTimeout(() => wait(n + 1), 100); })(0);

@@ -26,7 +26,6 @@ nav{z-index:50}
 .it{will-change:transform,opacity}
 .card.it{width:460px;aspect-ratio:16/10;box-shadow:0 30px 80px -30px #000}
 .card.big.it{width:620px;aspect-ratio:16/9}
-.card.it.snd{outline:2px solid #ffb23f;outline-offset:3px}
 .tool.it{width:380px;min-height:300px;box-shadow:0 30px 80px -30px #000;background:#13131ae8}
 .feat.it,.about.it,.more.it,.contactIt.it{width:1120px;padding:38px 42px;border:1px solid #ffffff17;border-radius:26px;
   background:linear-gradient(160deg,#16161cd9,#0b0b10cc);box-shadow:0 50px 140px -50px #000,inset 0 1px 0 #ffffff14}
@@ -38,13 +37,11 @@ nav{z-index:50}
 .contactIt h2{font-size:110px}
 .contactIt .footIt{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--mut);font-size:13px;text-align:left}
 /* botões (tela cheia, som) e assinatura, como no mapa */
-.v2btns{position:fixed;right:16px;bottom:14px;z-index:60;display:flex;gap:8px}
+.v2btns{position:fixed;right:14px;top:14px;z-index:60;display:flex;gap:8px}
+@media(max-width:1420px){nav .wrap{padding-right:72px}}
 .v2btns button{width:38px;height:38px;display:grid;place-items:center;padding:0;border-radius:10px;border:1px solid #ffffff1a;background:#0a0c10e6;color:#f1eee8;cursor:pointer;backdrop-filter:blur(16px);box-shadow:0 8px 24px #0006,inset 0 1px 0 #ffffff0f}
 .v2btns button:hover{border-color:#ffffff59}
 #fs-btn .fs-exit{display:none}#fs-btn.on .fs-enter{display:none}#fs-btn.on .fs-exit{display:block}
-#snd-btn .s-off{display:none}#snd-btn.off .s-on{display:none}#snd-btn.off .s-off{display:block}
-#snd-btn:not(.live):not(.off){animation:sndp 1.6s ease-in-out infinite}
-@keyframes sndp{50%{border-color:#ffb23f;box-shadow:0 0 0 4px #ffb23f33}}
 .brand-foot{position:fixed;z-index:60;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;gap:26px}
 .brand-foot a{display:flex;align-items:center;gap:8px;color:#ffffff80;text-decoration:none;filter:drop-shadow(0 1px 1.5px #0009)}
 .brand-foot a:hover{color:#ffffffe0}
