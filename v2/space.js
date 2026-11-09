@@ -92,8 +92,8 @@ const earthMat = new THREE.ShaderMaterial({
       vec3 N=normalize(vN); float l=dot(N,sun);
       float day=smoothstep(-0.10,0.28,l);
       vec3 d=texture2D(dayT,vUv).rgb*1.12;
-      vec3 n=texture2D(nightT,vUv).rgb; n=pow(n,vec3(1.25))*vec3(2.4,1.9,1.3);
-      vec3 col=mix(n+d*0.012, d*(0.25+0.9*max(l,0.)), day);
+      vec3 n=texture2D(nightT,vUv).rgb; n=pow(n,vec3(2.1))*vec3(2.6,2.0,1.3);
+      vec3 col=mix(n+d*0.02, d*(0.25+0.9*max(l,0.)), day);
       float rim=pow(1.-max(dot(N,vV),0.),5.0);
       float lit=smoothstep(-0.35,0.5,l);
       float s=pow(max(dot(-vV,sun),0.),60.);
@@ -120,10 +120,10 @@ tl.load('/v2/tex/earth-night.jpg', (t) => { t.colorSpace = THREE.SRGBColorSpace;
 // sol dourado/laranja com risco anamórfico
 const sunGroup = new THREE.Group(); bg.add(sunGroup);
 const addSun = (map, s, sx = 1) => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending })); m.scale.set(s * sx, s, 1); sunGroup.add(m); return m; };
-addSun(radial([[0, 'rgba(255,180,90,.55)'], [0.25, 'rgba(255,110,30,.22)'], [1, 'rgba(255,80,20,0)']]), 900);
-addSun(radial([[0, 'rgba(255,240,210,1)'], [0.18, 'rgba(255,195,110,.9)'], [0.45, 'rgba(255,125,35,.35)'], [1, 'rgba(255,100,30,0)']]), 240);
-addSun(radial([[0, 'rgba(255,255,245,1)'], [0.4, 'rgba(255,232,185,.9)'], [1, 'rgba(255,200,120,0)']]), 52);
-addSun(radial([[0, 'rgba(255,185,110,.55)'], [1, 'rgba(255,140,50,0)']]), 30, 40);
+addSun(radial([[0, 'rgba(255,180,90,.5)'], [0.25, 'rgba(255,110,30,.18)'], [1, 'rgba(255,80,20,0)']]), 300);
+addSun(radial([[0, 'rgba(255,240,210,1)'], [0.18, 'rgba(255,195,110,.9)'], [0.45, 'rgba(255,125,35,.35)'], [1, 'rgba(255,100,30,0)']]), 80);
+addSun(radial([[0, 'rgba(255,255,245,1)'], [0.4, 'rgba(255,232,185,.9)'], [1, 'rgba(255,200,120,0)']]), 18);
+addSun(radial([[0, 'rgba(255,185,110,.55)'], [1, 'rgba(255,140,50,0)']]), 10, 36);
 
 // posição da Terra pela tela: centro fora do quadro, embaixo à esquerda; a borda passa por LIMB; o sol fica logo além
 const EARTH_C = new THREE.Vector2(-1.55, -1.75), LIMB = new THREE.Vector2(-0.12, -0.18), DIST = 600;
@@ -325,9 +325,7 @@ let FULL = {};
 audio.cors = false;
 fetch('/works.json', { cache: 'no-cache' }).then((r) => r.json()).then((w) => {
   w.forEach((x) => { if (x.full) FULL[x.id] = x.full; });
-  // o Dropbox deixa ler o som pelo WebAudio (CORS)? Se não, o som vai só pelo volume do vídeo
-  const u = Object.values(FULL)[0];
-  if (u) fetch(u, { mode: 'cors', headers: { Range: 'bytes=0-1' } }).then((r) => { audio.cors = r.ok; }).catch(() => { audio.cors = false; });
+  // o Dropbox não manda CORS no redirecionamento: o som vai pelo volume do próprio vídeo
 }).catch(() => {});
 function cardSound(card) {
   const v = card.querySelector('video'); if (!v || !audio.ctx || !audio.on) return null;
