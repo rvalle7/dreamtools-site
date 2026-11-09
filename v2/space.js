@@ -1,7 +1,7 @@
 // Dreamtools v2 — túnel em órbita. A rolagem leva a câmera para a frente; capa, trabalhos e
 // ferramentas flutuam no caminho e passam por você. Postais ao longe; a Terra e o sol ao fundo.
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
-import { CSS3DRenderer, CSS3DObject } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/renderers/CSS3DRenderer.js';
+import * as THREE from 'three';
+import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
 const PCS = window.DT_PCS || [];
 const mobile = matchMedia('(max-width: 760px)').matches;
