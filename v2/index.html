@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="pt-BR" data-l="pt">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dreamtools — Rafael Valle · Motion Design, 3D & Tools · v2</title>
+<meta name="description" content="Dreamtools — estúdio de Rafael Valle, motion designer e artista 3D em Curitiba há mais de 30 anos. Motion design, 3D, ferramentas para After Effects, Premiere e DaVinci.">
+<meta property="og:title" content="Dreamtools — Rafael Valle">
+<meta property="og:description" content="Motion design, 3D & tools. Curitiba, Brasil — trabalhando para o mundo.">
+<meta property="og:image" content="https://dreamtools.com.br/media/img/hero.jpg">
+<meta property="og:url" content="https://dreamtools.com.br/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b0e'/%3E%3Ctext x='32' y='44' font-family='Arial Black,Arial' font-weight='900' font-size='34' text-anchor='middle' fill='%23ffb23f'%3EDT%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Barlow:wght@400;500;600&family=Great+Vibes&family=Pinyon+Script&family=Monsieur+La+Doulaise&family=Alex+Brush&family=Parisienne&family=Italianno&family=Economica:ital,wght@1,700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0e;--bg2:#131318;--line:#24242c;--tx:#f1eee8;--mut:#9a97a3;--acc:#ffb23f;--acc2:#ff5b3a;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font:17px/1.6 Barlow,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img,video{display:block;max-width:100%}
+/* títulos: Economica Bold Italic (a mesma do track73.com.br) */
+h1,h2,h3{font-family:"Economica","Arial Narrow",sans-serif;font-weight:700;font-style:italic;line-height:1.02;letter-spacing:0}
+html[data-l=pt] .en,html[data-l=en] .pt{display:none!important}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+/* nav */
+nav{position:fixed;inset:0 0 auto;z-index:50;isolation:isolate}
+nav::before{content:"";position:absolute;inset:0 0 -56px;z-index:-1;pointer-events:none;background:linear-gradient(#0b0b0ee6 0%,#0b0b0eb3 40%,#0b0b0e4d 72%,#0b0b0e00 100%)}
+.nblur{position:absolute;inset:0 0 -56px;z-index:-2;pointer-events:none}
+.nblur i{position:absolute;inset:0;backdrop-filter:blur(var(--b));-webkit-backdrop-filter:blur(var(--b));-webkit-mask-image:linear-gradient(#000 var(--s),#0000 var(--e));mask-image:linear-gradient(#000 var(--s),#0000 var(--e))}
+nav .wrap{display:flex;align-items:center;gap:28px;height:68px}
+.logo{font:700 20px "Space Grotesk";text-decoration:none;letter-spacing:-.03em}
+.logo b{color:var(--acc)}
+nav ul{display:flex;gap:22px;list-style:none;margin-left:auto;font-size:14px}
+nav ul a{text-decoration:none;color:var(--mut);transition:.2s}
+nav ul a:hover{color:var(--tx)}
+.lang{font-family:Barlow,sans-serif;border:1px solid var(--line);background:none;color:var(--tx);border-radius:99px;padding:5px 12px;font:600 12px Barlow;cursor:pointer}
+.lang:hover{border-color:var(--acc)}
+/* hero */
+.hero{position:relative;min-height:100svh;background:#0b0b0e url(media/img/hero.jpg) center 35%/cover;display:flex;align-items:flex-end;overflow:hidden}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s}
+.hero video.on{opacity:.6}
+.hero:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#0b0b0eb8 0%,#0b0b0e40 60%,#0b0b0e00 100%)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0b0b0e55 0%,#0b0b0e00 40%,#0b0b0e 100%)}
+.hero video{z-index:1}.hero:after{z-index:1}
+.hero .wrap{position:relative;z-index:2;padding-bottom:9vh;width:100%}
+/* capa: postais em Ken Burns com crossfade (~5 s cada) */
+.kb{position:absolute;inset:0;z-index:0;overflow:hidden;will-change:transform}
+.kb i{position:absolute;inset:-4%;background:center/cover no-repeat;opacity:0;transition:opacity 1.8s ease-in-out;will-change:transform,opacity}
+.kb i.on{opacity:1}
+.kb i.go{animation:kb 7.5s linear forwards}
+@keyframes kb{from{transform:scale(var(--s0,1.02)) translate(var(--x0,0),var(--y0,0))}to{transform:scale(var(--s1,1.12)) translate(var(--x1,0),var(--y1,0))}}
+/* capa: fonte manuscrita. A pesada original (Space Grotesk 700) fica guardada em ?f=0 */
+.hero h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
+.hero h1.txt,.hero h1.svg{font-family:"Great Vibes",cursive;font-weight:400;font-size:clamp(76px,14vw,210px);letter-spacing:0;line-height:1.1;text-shadow:0 4px 30px #0008}
+.hero h1.f0{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(56px,12vw,176px);letter-spacing:-.02em;line-height:1.05}
+.hero h1.f1{font-family:"Pinyon Script"}.hero h1.f3{font-family:"Monsieur La Doulaise"}.hero h1.f4{font-family:"Alex Brush"}.hero h1.f5{font-family:"Parisienne"}.hero h1.f6{font-family:"Italianno";font-size:clamp(90px,17vw,250px)}
+.hero h1 b{color:var(--acc);font-weight:inherit}
+.hlogo{width:min(880px,88vw);height:auto;filter:drop-shadow(0 4px 24px #0009) saturate(.17) brightness(1.18);transition:filter 1.8s ease-in-out}
+.hero h1 .hlogo{display:none}.hero h1.svg .hlogo{display:block}.hero h1.svg .htxt{display:none}
+/* cromado: quase branco, com a luz a passar; sem bevel */
+.hero h1 .htxt{font-family:"Space Grotesk",sans-serif;font-weight:700;font-style:normal;letter-spacing:-.02em;
+ background:linear-gradient(100deg,#dfe3ec 0%,#fff 18%,#c9cfdb 30%,#fff 42%,#eef2f8 58%,#c4cbd8 72%,#fff 86%,#e6eaf2 100%);
+ background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+ animation:sheen 7s linear infinite;filter:drop-shadow(0 6px 26px #0008)}
+/* avatar ClimberFX colado à direita da caixa, mesma altura (1em de linha + padding da caixa = 1.14em) */
+#ttl{display:flex;align-items:flex-start;flex-wrap:nowrap}
+.hero h1 .havatar{position:static;inset:auto;opacity:1;z-index:auto;height:1.14em;width:1.14em;object-fit:cover;flex:none;box-shadow:0 18px 50px -18px #000c}
+#ttl:not(.svg):not(.txt){font-size:max(36px,min(176px,calc((100vw - 48px)/6.8)))}
+.hero h1.svg,.hero h1.txt{display:block}.hero h1.svg .havatar,.hero h1.txt .havatar{display:none}
+/* caixa no vermelho da marca atrás do lettering principal */
+.hero h1 .hbox{display:inline-block;background:#e10435;padding:.04em .16em .1em;line-height:1;box-shadow:0 18px 50px -18px #000c}
+.hero h1.svg .hbox,.hero h1.txt .hbox{background:none;padding:0;box-shadow:none;display:inline}
+@keyframes sheen{from{background-position:140% 0}to{background-position:-140% 0}}
+.hero h1.txt .htxt{animation:none;background:none;-webkit-text-fill-color:currentColor;color:var(--tx);filter:none}
+.hero p{font-size:clamp(18px,2.2vw,26px);max-width:min(880px,88vw);color:#d9d5ce;margin-top:18px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.tags span{border:1px solid #ffffff2a;border-radius:99px;padding:6px 14px;font-size:13px;background:#0b0b0e66}
+/* sections */
+section{padding:110px 0 40px}
+.kick{font:600 12px Barlow;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+h2{font-size:clamp(46px,7.2vw,88px);margin-bottom:18px}
+.lead{color:var(--mut);max-width:720px;font-size:18px;margin-bottom:44px}
+/* work grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{position:relative;border-radius:var(--r);overflow:hidden;background:var(--bg2);cursor:pointer;aspect-ratio:16/10;border:1px solid var(--line)}
+.card img,.card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s,opacity .4s}
+.card video{opacity:0}
+.card.play video{opacity:1}
+.card:hover img{transform:scale(1.04)}
+.card .cap{position:absolute;inset:auto 0 0;padding:40px 16px 14px;background:linear-gradient(#0000,#000c);z-index:2}
+.card h3{font-size:22px;letter-spacing:0}
+.card small{color:var(--acc);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.card.big{grid-column:span 2;aspect-ratio:auto}
+@media(max-width:700px){.card.big{grid-column:auto;aspect-ratio:16/10}}
+.more{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
+.btn{font-family:Barlow,system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:99px;padding:11px 20px;text-decoration:none;font-weight:500;font-size:15px;transition:.2s;background:var(--bg2)}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.pri{background:var(--acc);color:#111;border-color:var(--acc)}
+.btn.pri:hover{background:#ffc566;color:#111}
+/* feature rows */
+.feat{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center;padding:34px 0;border-top:1px solid var(--line)}
+.feat:nth-of-type(even){grid-template-columns:1fr 1.25fr}
+.feat:nth-of-type(even) .media{order:2}
+@media(max-width:860px){.feat,.feat:nth-of-type(even){grid-template-columns:1fr}.feat:nth-of-type(even) .media{order:0}}
+.feat h3{font-size:40px;margin-bottom:10px}
+.feat p{color:#c9c5bd;margin-bottom:14px}
+.feat .meta{color:var(--mut);font-size:14px;margin-bottom:18px}
+.media{border-radius:var(--r);overflow:hidden;background:var(--bg2);border:1px solid var(--line);position:relative;aspect-ratio:16/9}
+.media>img,.media>video{width:100%;height:100%;object-fit:cover}
+.yt{position:relative;width:100%;height:100%;cursor:pointer;background:#000}
+.yt img{width:100%;height:100%;object-fit:cover;opacity:.85;transition:.3s}
+.yt:hover img{opacity:1}
+.yt:after{content:"";position:absolute;left:50%;top:50%;width:68px;height:48px;margin:-24px 0 0 -34px;border-radius:12px;background:#ff0033 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center/28px no-repeat}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* tools */
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.tool{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:10px;transition:.2s}
+.tool:hover{border-color:#3a3a45}
+.tool .ic{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;font:700 15px "Space Grotesk";color:#111;background:var(--acc)}
+.tool h3{font-size:28px}
+.tool p{color:var(--mut);font-size:15px;flex:1}
+.tool a{font-size:14px;color:var(--acc);text-decoration:none;font-weight:600}
+.tool .tnote{font:600 14px Barlow,system-ui,sans-serif;color:var(--acc)}
+.tool .st{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7fd1a8;font-weight:600}
+.mapcard{position:relative;padding:0;overflow:hidden;gap:0;background:#08090c url(media/img/mapa-bg.jpg) center top/cover no-repeat}
+.mapcard::before{content:"";position:absolute;inset:0;background:linear-gradient(#08090c99 0%,#08090c00 30%,#08090c00 50%,#08090cb3 66%,#08090ce0 100%);pointer-events:none;transition:opacity .3s}
+.mapcard:hover::before{opacity:.75}
+.mapcard a{position:relative;z-index:1;text-decoration:none}
+.mapcard .mc-open{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:110px;padding:26px 26px 22px;color:inherit}
+.mapcard .mc-top,.mapcard .mc-bot{display:flex;flex-direction:column;gap:10px}
+.mapcard .mc-open p{color:#c9c9d2;text-shadow:0 1px 3px #000}
+.mapcard .mc-go{font-size:14px;color:var(--acc);font-weight:600}
+.mapcard .mc-open:hover .mc-go{text-decoration:underline}
+.mapcard .mc-dl{display:block;padding:16px 26px 20px;border-top:1px solid #ffffff14;background:#08090c99;backdrop-filter:blur(4px)}
+.mapcard .mc-dl:hover{background:#08090cdd}
+/* personal */
+/* postais: fita rolando (igual ao track73.com.br) */
+.pcfeat{display:block}
+.pchead{max-width:720px}
+.reel{width:100vw;margin:34px 0 0 calc(50% - 50vw);overflow:hidden;padding:18px 0 26px;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.reel ul{list-style:none;margin:0;padding:0;display:flex;gap:22px;width:max-content;animation:reel 160s linear infinite}
+.reel:hover ul{animation-play-state:paused}
+@keyframes reel{to{transform:translateX(-50%)}}
+.pc{width:clamp(260px,30vw,380px);background:#f4efe4;color:#2b2a27;padding:10px 10px 12px;border-radius:4px;box-shadow:0 18px 40px -18px rgba(0,0,0,.9);transform:rotate(var(--r,0deg));margin:0;transition:transform .4s}
+.pc:hover{transform:rotate(0) scale(1.03)}
+.pc img{aspect-ratio:16/9;width:100%;object-fit:cover;border-radius:2px}
+.pc figcaption{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:10px 4px 0}
+.pc b{font:700 italic 22px/1 "Economica","Arial Narrow",sans-serif}
+.pc span{font:500 10.5px/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.08em;color:#8a8375;white-space:nowrap}
+.stats{display:flex;gap:30px;margin:6px 0 18px;flex-wrap:wrap}
+.stats b{display:block;font:700 30px "Space Grotesk";color:var(--acc)}
+.stats span{color:var(--mut);font-size:13px}
+/* about */
+.aname{font-size:clamp(34px,4.8vw,68px);white-space:nowrap}
+.about{align-items:start;display:grid;grid-template-columns:1fr 1fr;gap:60px}
+@media(max-width:860px){.about{grid-template-columns:1fr}}
+.about p{color:#cfcbc3;margin-bottom:16px;font-size:17px}
+.aboutR{display:flex;flex-direction:column;min-height:0}
+.jscroll{position:relative;overflow:hidden;height:420px;padding-left:8px;margin-left:-8px;mask-image:linear-gradient(transparent,#000 7%,#000 93%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 7%,#000 93%,transparent)}
+.jscroll .tl{padding-top:0}
+.tl li .jp{color:var(--mut)}
+.tl li.jsp{height:110px;padding:0}.tl li.jsp:before{display:none}
+.tl{list-style:none;border-left:1px solid var(--line);padding-left:22px}
+.tl li{position:relative;padding-bottom:18px;color:#cfcbc3}
+.tl li:before{content:"";position:absolute;left:-27px;top:9px;width:9px;height:9px;border-radius:50%;background:var(--acc)}
+.tl b{display:block;font:500 13px Barlow;color:var(--mut)}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.skills span{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:5px 11px;font-size:13px}
+/* contact */
+.contact{text-align:center;padding:130px 0 90px}
+.contact h2{font-size:clamp(56px,10vw,140px)}
+.contact .mail{font:500 clamp(20px,3vw,32px) "Space Grotesk";color:var(--acc);text-decoration:none;display:inline-block;margin:10px 0 30px}
+.social{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;background:#000e;display:none;align-items:center;justify-content:center;padding:24px}
+.modal.on{display:flex}
+.modal video{max-width:min(1400px,100%);max-height:80vh;border-radius:10px}
+.modal .x{position:absolute;top:18px;right:22px;font-size:34px;background:none;border:0;color:#fff;cursor:pointer}
+.modal .t{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#ddd}
+@media(max-width:760px){nav ul{display:none}.lang{margin-left:auto}section{padding:80px 0 30px}}
+@media(prefers-reduced-motion:reduce){.hero > video{display:none}}
+/* ===== v2: espaço 3D + janelas dimensionais ===== */
+body{background:transparent}
+#space{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block}
+body>header,body>section,body>footer{position:relative;z-index:1}
+.hero{background:none!important}.hero .kb{display:none!important}
+.hero:before{background:linear-gradient(90deg,#0b0b0e99 0%,#0b0b0e22 60%,#0b0b0e00 100%)}
+.hero:after{background:linear-gradient(180deg,#0b0b0e33 0%,#0b0b0e00 55%,#0b0b0e00 100%)}
+section{perspective:1600px;padding:80px 0 30px}
+.wrap.win{max-width:min(1240px,calc(100% - 32px));padding:52px 44px;border-radius:28px;
+  background:linear-gradient(160deg,#16161ccc,#0b0b10c2);border:1px solid #ffffff17;
+  backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);
+  box-shadow:0 50px 140px -50px #000,inset 0 1px 0 #ffffff14;
+  transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(var(--tz,0px));
+  opacity:0;translate:0 90px;scale:.93;
+  transition:opacity 1s ease,translate 1.2s cubic-bezier(.2,.8,.2,1),scale 1.2s cubic-bezier(.2,.8,.2,1)}
+.wrap.win.in{opacity:1;translate:0 0;scale:1}
+.contact .wrap.win{text-align:inherit}
+footer{background:#0b0b0ee6}
+.v2tag{position:fixed;left:16px;bottom:14px;z-index:60;font:600 11px Barlow,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#ffb23f;background:#0b0b0ecc;border:1px solid #ffb23f55;border-radius:99px;padding:5px 11px;text-decoration:none}
+@media(max-width:760px){.wrap.win{padding:30px 18px;border-radius:20px;backdrop-filter:none;-webkit-backdrop-filter:none;background:#0e0e13eb}}
+
+</style>
+</head>
+<body>
+<canvas id="space" aria-hidden="true"></canvas>
+<a class="v2tag" href="/" title="Voltar ao site atual">v2 · prévia</a>
+
+<nav><div class="nblur" aria-hidden="true"><i style="--b:1px;--s:70%;--e:100%"></i><i style="--b:2px;--s:55%;--e:85%"></i><i style="--b:4px;--s:40%;--e:70%"></i><i style="--b:7px;--s:25%;--e:55%"></i></div><div class="wrap">
+  <a class="logo" href="/v2/#top"><img src="media/img/logo.svg" alt="DreamTools" style="height:34px;width:auto"></a>
+  <ul>
+    <li><a href="/v2/#work"><span class="pt">Motion</span><span class="en">Motion</span></a></li>
+    <li><a href="/v2/#tools"><span class="pt">Ferramentas</span><span class="en">Tools</span></a></li>
+    <li><a href="/v2/#3d">3D & VR</a></li>
+    <li><a href="/v2/#lab"><span class="pt">Pessoal</span><span class="en">Personal</span></a></li>
+    <li><a href="/v2/#about"><span class="pt">Sobre</span><span class="en">About</span></a></li>
+    <li><a href="/v2/#contact"><span class="pt">Contato</span><span class="en">Contact</span></a></li>
+  </ul>
+  <button class="lang" id="lang" aria-label="Language">EN</button>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="kb" aria-hidden="true"></div>
+  <div class="wrap">
+    <h1 id="ttl"><img class="hlogo" src="media/img/logo-gold.svg" alt="DreamTools"><span class="hbox"><span class="htxt">dreamtools</span></span><video class="havatar" src="media/img/climberfx.mp4?v=2" poster="media/img/climberfx.jpg?v=2" muted loop playsinline autoplay aria-label="ClimberFX"></video></h1>
+    <!-- capa: postal Ghibli, Cape Schanck (Melbourne) -->
+    <p class="pt">Estúdio de <strong>Rafael G Rebonato do Valle</strong> — motion designer e artista 3D há mais de 30 anos. De Curitiba para agências e marcas nos EUA, Europa, Oriente Médio e América Latina.</p>
+    <p class="en">The studio of <strong>Rafael G Rebonato do Valle</strong> — motion designer and 3D artist for 30+ years. From Curitiba, Brazil, to agencies and brands across the US, Europe, the Middle East and Latin America.</p>
+    <div class="tags"><span>Motion Design</span><span>3D / CGI</span><span class="pt">Ferramentas p/ Adobe & DaVinci</span><span class="en">Adobe & DaVinci tools</span><span>VR</span><span class="pt">IA aplicada</span><span class="en">Applied AI</span></div>
+  </div>
+</header>
+
+<section id="work"><div class="wrap win">
+  <div class="kick">Motion Design</div>
+  <h2 class="pt">Trabalho selecionado</h2><h2 class="en">Selected work</h2>
+  <p class="lead pt">Filmes de marca, explainers, 3D, ilustração animada e tipografia cinética. Passe o mouse para ver em movimento, clique para ampliar.</p>
+  <p class="lead en">Brand films, explainers, 3D, animated illustration and kinetic type. Hover to see it move, click to enlarge.</p>
+  <div class="grid" id="grid"></div>
+  <div class="more">
+    <a class="btn" href="https://www.youtube.com/@Climberfx/videos" target="_blank" rel="noopener"><span class="pt">+200 vídeos no YouTube</span><span class="en">200+ videos on YouTube</span> ↗</a>
+    <a class="btn" href="https://vimeo.com/climberfx" target="_blank" rel="noopener">Vimeo ↗</a>
+  </div>
+</div></section>
+
+<section id="tools"><div class="wrap win">
+  <div class="kick">Dreamtools</div>
+  <h2 class="pt">Ferramentas</h2><h2 class="en">Tools</h2>
+  <p class="lead pt">Nasceram da rotina de produção: quando algo se repete, vira ferramenta. Algumas são produtos, outras são o laboratório.</p>
+  <p class="lead en">Born from daily production: when something repeats, it becomes a tool. Some are products, some are the lab.</p>
+
+  <div class="feat">
+    <div class="media"><video src="media/img/labelcolors.mp4" poster="media/img/labelcolors.jpg" muted loop playsinline autoplay></video></div>
+    <div>
+      <div class="kick">Premiere Pro · CEP</div>
+      <h3>Easy Label Colors</h3>
+      <p class="pt">Selecione itens no painel Project, um clique, e todos ganham a cor de label. Pequeno, óbvio, e economiza horas em projetos grandes.</p>
+      <p class="en">Select items in the Project panel, one click, and they all get that label color. Small, obvious, and it saves hours on big projects.</p>
+      <div class="meta">Premiere Pro 2022+ · US$ 15</div>
+      <div class="more" style="margin-top:0"><a class="btn pri" href="https://aescripts.com/easy-label-colors/" target="_blank" rel="noopener"><span class="pt">Comprar na aescripts</span><span class="en">Get it on aescripts</span> ↗</a><a class="btn" href="https://www.youtube.com/watch?v=a28Rld7qbjg" target="_blank" rel="noopener"><span class="pt">Ver com áudio</span><span class="en">Watch with sound</span> ↗</a></div>
+    </div>
+  </div>
+
+  <div class="tools">
+    <div class="tool" style="background:linear-gradient(180deg,rgba(19,19,24,.05) 0%,rgba(19,19,24,.55) 45%,rgba(19,19,24,.94) 72%),url(media/img/tropiview-dog.jpg) center 22%/cover;padding-top:150px"><div class="ic" style="background:#FF723F;color:#fff">TV</div><div class="st">Web · WebGL</div><h3>TropiView</h3>
+      <p class="pt">Site dos calendários 2027 da TropiView: os calendários caem na mesa e as folhas viram para cima com o mouse, em 3D, como papel de verdade.</p>
+      <p class="en">Site for TropiView's 2027 calendars: they drop onto the table and the pages turn upward with the mouse, in 3D, like real paper.</p>
+      <a href="tropiview/" target="_blank" rel="noopener"><span class="pt">Ver a prévia</span><span class="en">See the preview</span> ↗</a></div>
+    <div class="tool"><div class="ic" style="background:none;padding:0;overflow:hidden"><img src="media/img/noteswin.svg" alt="Notes Win" style="width:44px;height:44px;display:block"></div><div class="st">Windows · iCloud</div><h3>Notes Win</h3>
+      <p class="pt">Suas notas do iPhone no Windows: o Apple Notes sincronizado pelo iCloud, com listas ticáveis e cor de fonte, do PC direto para a nuvem, sem servidor no meio.</p>
+      <p class="en">Your iPhone notes on Windows: Apple Notes synced through iCloud, with checklists and font colors, straight from your PC to the cloud, no server in between.</p>
+      <span class="tnote"><span class="pt">Em breve</span><span class="en">Coming soon</span></span></div>
+    <div class="tool"><div class="ic" style="background:#00005b;color:#9a9aff">Ae</div><div class="st">After Effects</div><h3>Shape Spring Deformer</h3>
+      <p class="pt">Painel que deforma um path como mola com dois nulls — esticar, comprimir, arquear. A versão Dynamic adiciona física: overshoot, falloff, massa e bake de keyframes.</p>
+      <p class="en">Panel that deforms a shape path like a spring with two nulls — stretch, compress, bend. The Dynamic version adds physics: overshoot, falloff, mass and keyframe baking.</p>
+      <span class="tnote"><span class="pt">Em breve</span><span class="en">To be released</span></span></div>
+    <div class="tool"><div class="ic" style="background:#e10435;color:#fff">73</div><div class="st">MSFS 2024 · VR</div><h3>Track73</h3>
+      <p class="pt">Copiloto de voz com IA que vê o que você vê no cockpit e conta sobre o mundo real lá embaixo — mapa no EFB, destinos, turismo. Lista de espera aberta.</p>
+      <p class="en">AI voice companion that sees what you see in the cockpit and talks about the real world below — EFB map, destinations, sightseeing. Waitlist open.</p>
+      <a href="https://track73.com.br" target="_blank" rel="noopener">track73.com.br ↗</a></div>
+    <div class="tool mapcard">
+      <a class="mc-open" href="/mapa/"><span class="mc-top"><div class="ic" style="background:#26262c;color:#e10435">PG</div><div class="st">MSFS · <span class="pt">grátis</span><span class="en">free</span></div><h3 class="pt">Mapa de Fotogrametria</h3><h3 class="en">Photogrammetry Map</h3></span>
+      <span class="mc-bot"><p class="pt">Globo 3D com todos os lugares em fotogrametria do Flight Simulator (até WU23 + CU16): dia e noite, relevo, divisão política. Marque onde já voou.</p>
+      <p class="en">3D globe of every photogrammetry place in Flight Simulator (through WU23 + CU16): day and night, terrain, borders. Tick where you've flown.</p>
+      <span class="mc-go"><span class="pt">Abrir o mapa online</span><span class="en">Open the map online</span> →</span></span></a>
+      <a class="mc-dl" href="https://flightsim.to/addon/113739/msfs-photogrammetry-map-interactive-visited-tracker-wu22-cu15" target="_blank" rel="noopener"><span class="pt">Baixar (flightsim.to)</span><span class="en">Download (flightsim.to)</span> ↓</a></div>
+    <div class="tool"><div style="display:flex;gap:8px"><div class="ic" style="background:#3b3b3b;color:#c9f24a">DR</div><div class="ic" style="background:#2a0634;color:#ea77ff">Pr</div></div><div class="st">DaVinci Resolve · Premiere</div><h3 class="pt">Automação de edição</h3><h3 class="en">Editing automation</h3>
+      <p class="pt">Scripts que montam shorts 9:16 com template, aplicam a cor e detectam tosses e ruídos no áudio do microfone para limpeza rápida. No Premiere, painéis e scripts próprios.</p>
+      <p class="en">Scripts that build 9:16 shorts from a template, apply the grade and detect coughs and noises in the mic track for quick cleanup. Plus my own panels and scripts for Premiere.</p>
+      <span class="tnote"><span class="pt">Uso interno</span><span class="en">Internal use</span></span></div>
+    <div class="tool"><div class="ic" style="background:#0b3b3a;color:#37c8b4">Ma</div><div class="st">Maya · MCP · AI</div><h3>Maya + MCP + Grok</h3>
+      <p class="pt">Integração que deixa uma IA conversar direto com o Maya — criar, modificar e consultar a cena por linguagem natural.</p>
+      <p class="en">Integration that lets an AI talk directly to Maya — create, edit and query the scene in plain language.</p>
+      <a href="https://www.youtube.com/watch?v=RdSPH5aZPxk" target="_blank" rel="noopener"><span class="pt">Ver demo</span><span class="en">Watch demo</span> ↗</a></div>
+    <div class="tool"><div class="ic" style="background:#300;color:#ff9a00">Ai</div><div class="st">Illustrator · ExtendScript</div><h3 class="pt">Scripts Adobe</h3><h3 class="en">Adobe scripts</h3>
+      <p class="pt">Uma coleção de scripts para After Effects e Illustrator que tiram o trabalho repetitivo do caminho.</p>
+      <p class="en">A collection of After Effects and Illustrator scripts that take repetitive work out of the way.</p>
+      <span class="tnote"><span class="pt">Uso interno</span><span class="en">Internal use</span></span></div>
+  </div>
+</div></section>
+
+<section id="3d"><div class="wrap win">
+  <div class="kick">3D · <span class="pt">Arquitetura</span><span class="en">Architecture</span> · VR</div>
+  <h2>3D & VR</h2>
+  <p class="lead pt">Maya desde a primeira versão, Unreal, Twinmotion e Unity. Arquitetura, visualização e mundos para explorar em VR.</p>
+  <p class="lead en">Maya since version one, Unreal, Twinmotion and Unity. Architecture, visualization and worlds to explore in VR.</p>
+
+  <div class="feat">
+    <div class="media"><video src="media/img/casatorre.mp4" poster="media/img/casatorre.jpg" muted loop playsinline autoplay></video></div>
+    <div>
+      <div class="kick">Maya · Twinmotion · Unreal 5</div>
+      <h3 class="pt">Casa Torre</h3><h3 class="en">Tower House</h3>
+      <p class="pt">Projeto autoral de uma casa-torre em meio à mata de araucárias — modelada no Maya, com renders em Twinmotion e Unreal, e agora também como cenário no Flight Simulator, com garagem para o carro voador.</p>
+      <p class="en">A personal project: a tower house among araucaria trees — modeled in Maya, rendered in Twinmotion and Unreal, and now a Flight Simulator scenery too, with a garage for the flying car.</p>
+      <a class="btn" href="https://www.youtube.com/watch?v=8Lw2N3q4uzg" target="_blank" rel="noopener">Tower House — Redesign The World ↗</a>
+    </div>
+  </div>
+
+  <div class="feat">
+    <div class="media"><video src="media/img/caustics.mp4" poster="media/img/caustics.jpg" muted loop playsinline autoplay></video></div>
+    <div>
+      <div class="kick">Unreal Engine 5 · RTX</div>
+      <h3 class="pt">Cáusticas em tempo real</h3><h3 class="en">Real-time caustics</h3>
+      <p class="pt">Estudos com o branch RTX Caustics do Unreal 5.2 — luz através de vidro, água e prismas em tempo real.</p>
+      <p class="en">Studies with Unreal 5.2's RTX Caustics branch — light through glass, water and prisms in real time.</p>
+      <div class="more" style="margin-top:0"><a class="btn" href="https://www.youtube.com/watch?v=hZfNzev9bkc" target="_blank" rel="noopener">RTX Caustics ↗</a><a class="btn" href="https://www.youtube.com/watch?v=XTP93zh3LjU" target="_blank" rel="noopener">Prismatic demo ↗</a></div>
+    </div>
+  </div>
+
+  <div class="tools">
+    <div class="tool" style="padding:0;overflow:hidden"><video src="media/img/irai.mp4?v=2" poster="media/img/irai.jpg?v=2" muted loop playsinline autoplay style="aspect-ratio:16/10;object-fit:cover;width:100%"></video><div style="padding:0 22px 22px;display:flex;flex-direction:column;gap:10px"><div class="st">Unity · VR</div><h3 class="pt">Parque do Iraí VR</h3><h3 class="en">Iraí Park VR</h3>
+      <p class="pt">Projeto 3D feito no Maya, renderizado com camera track sobre imagens de drone 4K e depois transformado em experiência VR no Unity.</p>
+      <p class="en">A Maya 3D project, rendered with camera tracking over 4K drone footage, then turned into a Unity VR experience.</p>
+      <a href="https://www.youtube.com/watch?v=lTo5tNP_ddI" target="_blank" rel="noopener">Video ↗</a> <a href="https://github.com/rvalle7/Parque-Irai-A-VR-Experience" target="_blank" rel="noopener">GitHub ↗</a></div></div>
+    <div class="tool" style="padding:0;overflow:hidden"><video src="media/img/notredame.mp4" poster="media/img/notredame.jpg" muted loop playsinline autoplay style="aspect-ratio:16/10;object-fit:cover;width:100%"></video><div style="padding:0 22px 22px;display:flex;flex-direction:column;gap:10px"><div class="st">3D</div><h3>Notre Dame</h3>
+      <p class="pt">Reconstrução 3D da catedral após o incêndio — estudo de recuperação.</p>
+      <p class="en">3D reconstruction of the cathedral after the fire — a recovery study.</p>
+      <a href="https://www.youtube.com/watch?v=cSUgJ6Ucaa8" target="_blank" rel="noopener">Recover ↗</a> <a href="https://www.youtube.com/watch?v=KMdoI7r0OTU" target="_blank" rel="noopener">Rebuild ↗</a></div></div>
+    <div class="tool" style="padding:0;overflow:hidden"><img src="media/img/chewe.jpg" alt="Chewe" loading="lazy" style="aspect-ratio:16/10;object-fit:cover;width:100%;display:block"><div style="padding:0 22px 22px;display:flex;flex-direction:column;gap:10px"><div class="st">Maya · MSFS 2024</div><h3 class="pt">Carro voador</h3><h3 class="en">Flying car</h3>
+      <p class="pt">Um eVTOL de 4 dutos e 8 motores coaxiais, pensado para pairar como drone e voar para frente — em desenvolvimento para o Flight Simulator.</p>
+      <p class="en">A 4-duct, 8-coaxial-motor eVTOL that hovers like a drone and cruises forward — in development for Flight Simulator.</p>
+      <a href="chewe/" target="_blank" rel="noopener"><span class="pt">Ver o plano</span><span class="en">See the plan</span> ↗</a></div></div>
+  </div>
+</div></section>
+
+<section id="lab"><div class="wrap win">
+  <div class="kick pt">Pessoal · Hobbies</div><div class="kick en">Personal · Hobbies</div>
+  <h2 class="pt">Fora do expediente</h2><h2 class="en">After hours</h2>
+  <p class="lead pt">O que eu faço por paixão — e que acaba virando ferramenta, produto ou filme.</p>
+  <p class="lead en">What I do for passion — and that ends up becoming a tool, a product or a film.</p>
+
+  <div class="feat">
+    <div class="media"><video src="media/img/vrflights.mp4" poster="media/img/vrflights.jpg" muted loop playsinline autoplay></video></div>
+    <div>
+      <div class="kick">YouTube · MSFS 2024 · Quest 3</div>
+      <h3>VR Flights 73</h3>
+      <p class="pt">Voos em realidade virtual no Flight Simulator, quase sem cortes, pela perspectiva do piloto — muitas vezes de helicóptero sobre cidades em fotogrametria. A série <em>Track On Air</em> mostra o Track73 em ação.</p>
+      <p class="en">Virtual reality flights in Flight Simulator, nearly uncut, from the pilot's seat — often by helicopter over photogrammetry cities. The <em>Track On Air</em> series shows Track73 in action.</p>
+      <div class="stats"><div><b>1.3k</b><span class="pt">inscritos</span><span class="en">subscribers</span></div><div><b>1.9k</b><span class="pt">vídeos</span><span class="en">videos</span></div></div>
+      <div class="more" style="margin-top:0"><a class="btn pri" href="https://www.youtube.com/@VRFlights73" target="_blank" rel="noopener">@VRFlights73 ↗</a><a class="btn" href="https://www.youtube.com/watch?v=yl_bDBWHKWQ" target="_blank" rel="noopener">Track On Air · Boston ↗</a></div>
+    </div>
+  </div>
+
+  <div class="feat pcfeat">
+    <div class="pchead">
+      <div class="kick pt">Voos → pinturas</div><div class="kick en">Flights → paintings</div>
+      <h3 class="pt">Postais dos voos</h3><h3 class="en">Flight postcards</h3>
+      <p class="pt">Cada voo vira uma série de postais pintados por IA a partir do que eu estava vendo, com o lugar e a data. Mais de mil até agora.</p>
+      <p class="en">Every flight becomes a set of AI-painted postcards of what I was looking at, with the place and the date. Over a thousand so far.</p>
+    </div>
+    <div class="reel" aria-label="Postcards"><ul id="reel"></ul></div>
+  </div>
+
+  <div class="feat">
+    <div class="media"><video src="media/img/omicron.mp4" poster="media/img/omicron-poster.jpg" muted loop playsinline autoplay></video></div>
+    <div>
+      <div class="kick">Kerbal Space Program · C# · Unity · Maya · Adobe</div>
+      <h3>Omicron — Flying Space Car</h3>
+      <p class="pt">Um carro voador espacial para o KSP, em desenvolvimento há mais de dez anos: modelagem, cockpit funcional com instrumentos, modo hover e piloto automático que segue o terreno.</p>
+      <p class="en">A space flying car for KSP, in development for over ten years: modeling, a working cockpit with instruments, hover mode and a terrain-following autopilot.</p>
+      <div class="more" style="margin-top:0">
+        <a class="btn" href="https://forum.kerbalspaceprogram.com/topic/154862-omicron-flying-space-car-070-release-ksp-1123/page/10/#findComment-4530102" target="_blank" rel="noopener"><span class="pt">Fórum KSP</span><span class="en">KSP Forum</span> ↗</a>
+        <a class="btn" href="https://spacedock.info/mod/2413/Omicron%20Flying%20Space%20Car" target="_blank" rel="noopener">SpaceDock ↗</a>
+        <a class="btn" href="https://www.curseforge.com/kerbal/ksp-mods/omicron-space-flying-car" target="_blank" rel="noopener">CurseForge ↗</a>
+        <a class="btn" href="https://github.com/rvalle7/Omicron" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn" href="https://www.youtube.com/@OmicronKSP" target="_blank" rel="noopener">@OmicronKSP ↗</a>
+        <a class="btn" href="https://www.youtube.com/watch?v=uokrS0k4cg4" target="_blank" rel="noopener">Hover System Test ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="tools">
+    <div class="tool" style="padding:0;overflow:hidden"><video src="media/img/salto.mp4?v=4" poster="media/img/salto.jpg?v=4" muted loop playsinline autoplay style="aspect-ratio:16/10;object-fit:cover;width:100%"></video>
+      <div style="padding:0 22px 22px"><div class="st pt">Céu</div><div class="st en">Sky</div><h3 class="pt">Paraquedismo</h3><h3 class="en">Skydiving</h3>
+      <p class="pt">Porque voar de verdade também conta.</p><p class="en">Because real flying counts too.</p></div></div>
+    <div class="tool"><div style="display:flex;gap:8px"><div class="ic" style="background:#d97757" title="Claude"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="#fff"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z"></path></svg></div><div class="ic" style="background:#000;border:1px solid #333" title="Grok"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="#fff"><path d="M9.27 15.29l7.978-5.897c.391-.29.95-.177 1.137.272.98 2.369.542 5.215-1.41 7.169-1.951 1.954-4.667 2.382-7.149 1.406l-2.711 1.257c3.889 2.661 8.611 2.003 11.562-.953 2.341-2.344 3.066-5.539 2.388-8.42l.006.007c-.983-4.232.242-5.924 2.75-9.383.06-.082.12-.164.179-.248l-3.301 3.305v-.01L9.267 15.292M7.623 16.723c-2.792-2.67-2.31-6.801.071-9.184 1.761-1.763 4.647-2.483 7.166-1.425l2.705-1.25a7.808 7.808 0 00-1.829-1A8.975 8.975 0 005.984 5.83c-2.533 2.536-3.33 6.436-1.962 9.764 1.022 2.487-.653 4.246-2.34 6.022-.599.63-1.199 1.259-1.682 1.925l7.62-6.815"></path></svg></div><div class="ic" style="background:#fff" title="Gemini"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="#3186FF"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-0-_R_0_)"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-1-_R_0_)"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#lobe-icons-gemini-2-_R_0_)"></path><defs><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-0-_R_0_" x1="7" x2="11" y1="15.5" y2="12"><stop stop-color="#08B962"></stop><stop offset="1" stop-color="#08B962" stop-opacity="0"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-1-_R_0_" x1="8" x2="11.5" y1="5.5" y2="11"><stop stop-color="#F94543"></stop><stop offset="1" stop-color="#F94543" stop-opacity="0"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="lobe-icons-gemini-2-_R_0_" x1="3.5" x2="17.5" y1="13.5" y2="12"><stop stop-color="#FABC12"></stop><stop offset=".46" stop-color="#FABC12" stop-opacity="0"></stop></linearGradient></defs></svg></div><div class="ic" style="background:#1d0b0b" title="Firefly"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20.098 22.227c.216 0 .39.173.39.387a.389.389 0 01-.39.386.389.389 0 01-.39-.386c0-.214.175-.387.39-.387zM5.367 9.53c.198 0 .376.088.497.226a.633.633 0 01.71.226.561.561 0 01.73.334.504.504 0 01.749.352.46.46 0 01.511.302.417.417 0 01.416-.363c.23 0 .418.185.418.414a.416.416 0 01-.418.414.418.418 0 01-.393-.271.459.459 0 01-.458.41.46.46 0 01-.447-.348.508.508 0 01-.584-.279.56.56 0 01-.72-.064.63.63 0 01-.762-.104.66.66 0 01-.444.02.67.67 0 01.164.125.633.633 0 01.72.196.561.561 0 01.717.262.518.518 0 01.815.243.463.463 0 01.559.221.417.417 0 01.414-.356c.231 0 .419.186.419.414a.42.42 0 01-.784.202.453.453 0 01-.166.303.42.42 0 01.587.379.41.41 0 01-.085.25.364.364 0 01.56.302.36.36 0 01-.363.359.36.36 0 01-.363-.36c0-.078.025-.15.069-.21a.42.42 0 01-.655-.341c0-.128.058-.241.15-.317a.463.463 0 01-.612-.23.519.519 0 01-.668-.205.56.56 0 01-.757-.004.63.63 0 01-.743-.06.673.673 0 01-.415.06.68.68 0 01.085.073.603.603 0 01.706.126.56.56 0 01.788.133.517.517 0 01.795.24.463.463 0 01.643.418.45.45 0 01-.08.257.416.416 0 01.509.58.364.364 0 01.548.309.36.36 0 01-.363.359.36.36 0 01-.33-.509.42.42 0 01-.647-.347c0-.082.024-.158.066-.223a.463.463 0 01-.579-.23.518.518 0 01-.656-.124.56.56 0 01-.74-.009.601.601 0 01-.53.129c.052.036.1.08.14.13a.601.601 0 01.815.034.518.518 0 01.766.201.462.462 0 01.663.41.45.45 0 01-.021.136.444.444 0 01.53.565.364.364 0 01.55.306.36.36 0 01-.362.359.36.36 0 01-.353-.442.447.447 0 01-.689-.484.464.464 0 01-.509-.203.518.518 0 01-.575-.014.6.6 0 01-.122.095c.18.008.337.11.422.256a.461.461 0 01.717.501.416.416 0 01.52.46.364.364 0 01.561.3.36.36 0 01-.363.359.36.36 0 01-.361-.387.42.42 0 01-.658-.435.464.464 0 01-.513-.17.517.517 0 01-.728-.026.609.609 0 01-.053.075c.171.049.311.169.386.326a.503.503 0 01.867.332v.014a.43.43 0 01.502.422.43.43 0 01-.432.429.43.43 0 01-.43-.38.507.507 0 01-.563-.206.615.615 0 01-.464.253h-.006c.031.03.06.062.084.097a.503.503 0 01.863.346.503.503 0 01-.863.346.615.615 0 01-.333.237.603.603 0 01-.063.977.569.569 0 01.683.695.574.574 0 01.854.472v.01l.004-.01a.572.572 0 01.52-.38.491.491 0 01-.105-.304.5.5 0 01.503-.497.5.5 0 01.502.497.499.499 0 01-.451.494.56.56 0 01.005.745.602.602 0 01.08.728.738.738 0 01.248.263.662.662 0 01.07-.106.563.563 0 01-.058-.86.534.534 0 01-.173-.395c0-.28.216-.51.493-.536a.492.492 0 01.076-.735.429.429 0 01-.318-.413.43.43 0 01.432-.427.43.43 0 01.433.427c0 .131-.06.249-.154.327.231.045.405.246.405.488 0 .251-.19.46-.435.492a.533.533 0 01.009.745.562.562 0 01.126.717.661.661 0 01.352.66l.007.004a.588.588 0 01.152-.463.54.54 0 01-.379-.513c0-.142.056-.271.147-.367a.508.508 0 01.3-.916.453.453 0 010-.746H9.19a.43.43 0 01-.433-.428.43.43 0 01.433-.427.426.426 0 01.255.774l.024-.002c.254 0 .46.204.46.456 0 .242-.19.44-.43.454a.509.509 0 01.112.76.536.536 0 01.116.777.595.595 0 01.45.646.69.69 0 01.422.634c0 .381-.312.69-.698.69a.698.698 0 01-.641-.42.767.767 0 01-.712.475.769.769 0 01-.6-.286.797.797 0 01-.655.341.797.797 0 01-.663-.35.825.825 0 01-.677.35.825.825 0 01-.655-.322.825.825 0 01-.656.322.824.824 0 01-.75-.477.839.839 0 01-.547.201.833.833 0 01-.836-.78.833.833 0 01-.95-.82c0-.163.048-.315.13-.443A.721.721 0 011 19.936c0-.298.183-.553.444-.662a.717.717 0 01.388-1.351.685.685 0 01-.246-.527.694.694 0 01.749-.688.685.685 0 01-.247-.526.694.694 0 01.745-.689.685.685 0 01-.215-.498.694.694 0 01.86-.671.66.66 0 01.413-1.23.672.672 0 01-.24-.514.68.68 0 01.804-.666.66.66 0 01-.274-.535.666.666 0 01.87-.633.647.647 0 01.316-1.217zm13.63 12.588c.207 0 .376.167.376.372a.375.375 0 01-.377.373.375.375 0 01-.376-.373c0-.205.168-.372.376-.372zm-8.483-3.644c.247 0 .447.198.447.442a.443.443 0 01-.38.436.468.468 0 01.077.72.511.511 0 01.264.78.526.526 0 01.428.691c.3.04.531.295.531.602a.61.61 0 01-.613.608.61.61 0 01-.553-.873.526.526 0 01-.294-.817.513.513 0 01-.437-.505c0-.148.064-.282.167-.375a.47.47 0 01-.306-.44c0-.238.18-.436.414-.465a.44.44 0 01.255-.804zm10.645 3.506c.184 0 .334.148.334.33 0 .184-.15.332-.334.332a.333.333 0 01-.335-.331c0-.183.15-.331.335-.331zM15.732 2.71c.308 0 .558.248.558.552a.555.555 0 01-.681.54.541.541 0 01-.681.628.541.541 0 01-.6.755.532.532 0 01.092.3.541.541 0 01-.657.526.504.504 0 01-.003.607.546.546 0 01.335-.067.527.527 0 01.59-.738.527.527 0 01.573-.748.527.527 0 01.635-.63.51.51 0 01.508-.593c.285 0 .517.229.517.51a.513.513 0 01-.623.5.527.527 0 01-.62.61.527.527 0 01-.627.632c.036.07.056.15.056.232a.527.527 0 01-.586.522.53.53 0 01.056.227.545.545 0 01.554-.244.541.541 0 01.591-.693.513.513 0 011.212-1.054c.286 0 .517.229.517.511a.513.513 0 01-.698.478v.019a.513.513 0 01-.563.508.537.537 0 01-.539.61.553.553 0 01-.094-.008.541.541 0 01-.51.698h-.005l.003.016a.537.537 0 01.005.114.545.545 0 01.509-.208.536.536 0 01.538-.612c.044 0 .086.005.126.014a.513.513 0 01.699-.478.514.514 0 01.515-.475c.285 0 .516.229.516.51a.513.513 0 01-.699.479.514.514 0 01-.613.465v.023a.541.541 0 01-.618.533.536.536 0 01-.302.559.576.576 0 01.253-.025.556.556 0 01.78-.455.514.514 0 01.705-.452.487.487 0 01.48-.395c.27 0 .488.217.488.483a.486.486 0 01-.646.458.514.514 0 01-.693.407v.005a.555.555 0 01-.615.55.564.564 0 01-.246.426.564.564 0 01.278.016.528.528 0 01.756-.416.487.487 0 01.753-.33.487.487 0 01.483-.412c.27 0 .488.217.488.483a.49.49 0 01-.759.402.487.487 0 01-.666.377.528.528 0 01-.669.459.556.556 0 01-.64.51.588.588 0 01-.157.392h.003a.55.55 0 01.132.016.542.542 0 01.752-.415.5.5 0 01.763-.354.501.501 0 01.791-.278.474.474 0 01.45-.322c.262 0 .475.21.475.47a.476.476 0 01-.745.386.502.502 0 01-.749.284.501.501 0 01-.656.35.542.542 0 01-.675.482.534.534 0 01-.146.293.587.587 0 01.204.052.516.516 0 01.764-.281.49.49 0 01.795-.295.474.474 0 01.805-.18.474.474 0 01.458-.346c.262 0 .475.21.475.469a.475.475 0 01-.825.316.474.474 0 01-.756.243.488.488 0 01-.71.29.514.514 0 01-.678.422.578.578 0 01-.195.33h.01a.56.56 0 01.32.1.487.487 0 01.75-.292.49.49 0 01.845-.223.46.46 0 01.854-.078.445.445 0 01.44-.363c.247 0 .447.198.447.442s-.2.442-.447.442a.447.447 0 01-.397-.24.461.461 0 01-.79.234.487.487 0 01-.747.28.487.487 0 01-.721.325.556.556 0 01-.553.477c.025.034.047.07.064.109a.517.517 0 01.712-.132.488.488 0 01.783-.22.46.46 0 01.848-.057.445.445 0 01.439-.362c.193 0 .358.121.42.292a.445.445 0 01.445-.403c.246 0 .446.198.446.442s-.2.442-.446.442a.446.446 0 01-.42-.293.447.447 0 01-.842.163.46.46 0 01-.74.28.488.488 0 01-.723.275.516.516 0 01-.603.364.577.577 0 01-.312.61.492.492 0 01.326.018.472.472 0 01.44-.644c.149 0 .282.067.369.174a.447.447 0 01.836-.13.445.445 0 01.441-.376c.196 0 .363.125.423.3a.445.445 0 01.442-.383c.244 0 .442.193.446.433v.006-.007a.416.416 0 01.419-.404c.231 0 .418.185.418.414a.416.416 0 01-.418.414.417.417 0 01-.418-.397v-.016.009a.444.444 0 01-.447.432.446.446 0 01-.423-.3.447.447 0 01-.838.145.447.447 0 01-.78.22.473.473 0 01-.647.37.482.482 0 01-.208.605.479.479 0 01.374.045.444.444 0 01.43-.561c.17 0 .317.094.392.232a.445.445 0 01.444-.397c.193 0 .358.12.42.29l.003.009.002-.009a.417.417 0 01.412-.346c.232 0 .419.186.419.414a.416.416 0 01-.419.414.418.418 0 01-.394-.274.447.447 0 01-.836.153.445.445 0 01-.66.342.472.472 0 01-.453.607.475.475 0 01-.394-.208.525.525 0 01-.142.21.474.474 0 01.49.338.431.431 0 01.704-.237.43.43 0 01.416-.545c.187 0 .345.118.406.281a.43.43 0 01.431-.39.43.43 0 01.432.427.43.43 0 01-.432.428.432.432 0 01-.406-.28.434.434 0 01-.712.288.43.43 0 01-.416.545.432.432 0 01-.413-.3.468.468 0 01-.164.274.46.46 0 01.507.453.461.461 0 01-.758.347.53.53 0 01-.057.177.545.545 0 01.289.17.433.433 0 01.4-.266.43.43 0 01.433.428.434.434 0 01-.714.325.531.531 0 01-.061.144.5.5 0 01.275.3.39.39 0 01.388-.341c.216 0 .39.173.39.386a.389.389 0 01-.39.387.39.39 0 01-.364-.246.49.49 0 01-.087.251.486.486 0 01.529.655.421.421 0 01.564.388.416.416 0 01-.419.415.416.416 0 01-.399-.54.49.49 0 01-.689-.44c0-.1.03-.192.083-.27a.5.5 0 01-.53-.715.539.539 0 01-.301-.754.54.54 0 01-.354-.788.58.58 0 01-.383-.708.58.58 0 01-.265-.844.54.54 0 01-.39-.785.54.54 0 01-.33-.78.539.539 0 01-.308-.773.539.539 0 01-.307-.773.539.539 0 01-.31-.768.538.538 0 01-.248-.75.539.539 0 01-.25-.856.54.54 0 01-.27-.83.416.416 0 01-.385-.413.42.42 0 01.777-.214.541.541 0 01.152-.192l.01-.008a.474.474 0 01-.439-.316l-.003-.009v.006a.39.39 0 01-.385.319.389.389 0 01-.39-.387.39.39 0 01.756-.136.464.464 0 01.092-.229.464.464 0 01-.011-.08.471.471 0 01-.42-.466c0-.132.057-.252.146-.338a.448.448 0 01-.62-.407c0-.244.2-.442.447-.442.246 0 .446.198.446.442a.438.438 0 01-.133.315.476.476 0 01.291-.028.531.531 0 01.06-.538.513.513 0 01-.529-.701.475.475 0 01-.847-.29c0-.26.213-.47.475-.47a.472.472 0 01.44.642.517.517 0 01.665-.133c.01-.1.05-.193.108-.27a.518.518 0 01-.767-.445.513.513 0 01.614-.502.532.532 0 01-.112-.326.541.541 0 01.65-.528.532.532 0 01-.092-.3.541.541 0 01.693-.519.541.541 0 01.605-.754.555.555 0 01.544-.674zM11.63 19.936a.472.472 0 01.403.718h.016c.25 0 .455.191.473.434a.54.54 0 01.462.532.541.541 0 01-.545.538.541.541 0 01-.541-.59.47.47 0 01-.251-.694h-.017a.472.472 0 01-.474-.469c0-.259.212-.469.474-.469zm7.66 1.463c.184 0 .334.148.334.331 0 .183-.15.331-.335.331a.333.333 0 01-.335-.33c0-.184.15-.332.335-.332zm1.506-.11c.185 0 .335.148.335.33 0 .184-.15.332-.335.332a.333.333 0 01-.335-.331c0-.183.15-.331.335-.331zm1.27-.249c.192 0 .348.155.348.345 0 .19-.156.345-.349.345a.347.347 0 01-.348-.345c0-.19.156-.345.348-.345zm-2.024.028c.185 0 .335.148.335.331 0 .183-.15.331-.335.331a.333.333 0 01-.334-.331c0-.183.15-.331.334-.331zm-1.506-.166c.216 0 .39.173.39.387a.389.389 0 01-.39.386.389.389 0 01-.39-.386c0-.214.174-.387.39-.387zm2.943-.359c.193 0 .35.155.35.345 0 .19-.157.345-.35.345a.347.347 0 01-.348-.345c0-.19.156-.345.348-.345zm-15.133.17a.6.6 0 01-.08.204c.069.053.128.118.175.192a.734.734 0 01.076-.1.605.605 0 01-.171-.296zm12.748-.39c.216 0 .39.172.39.386a.389.389 0 01-.39.386.389.389 0 01-.39-.386c0-.214.174-.387.39-.387zm-6.64-1.243c.207 0 .376.167.376.373a.37.37 0 01-.14.29.389.389 0 01.374.5.434.434 0 01.673.355.43.43 0 01-.433.428.43.43 0 01-.408-.568.392.392 0 01-.596-.329c0-.123.058-.233.149-.303a.375.375 0 01-.372-.373c0-.206.168-.373.376-.373zm-7.321 1.456l-.002.002a.683.683 0 01-.183.188c.13.064.236.168.302.296a.738.738 0 01.026-.03.6.6 0 01-.143-.456zm15.593-.241c.193 0 .349.154.349.345 0 .19-.156.345-.349.345a.347.347 0 01-.349-.345c0-.19.156-.345.35-.345zm-.767-.138c.216 0 .39.173.39.386a.389.389 0 01-.39.387.389.389 0 01-.39-.387c0-.213.174-.386.39-.386zm1.98-.58a.36.36 0 01.361.399.391.391 0 01.7.236.389.389 0 01-.39.386.389.389 0 01-.388-.437.363.363 0 01-.645-.225.36.36 0 01.363-.359zm-15.554.216a.569.569 0 01-.27.322c.11.084.192.203.225.341a.604.604 0 01.171-.317.56.56 0 01-.126-.329v-.017zm12.15-.299c.217 0 .391.173.391.387a.389.389 0 01-.39.386.389.389 0 01-.39-.386c0-.214.174-.387.39-.387zM4.544 19.32v.001a.681.681 0 01-.017.175h.031a.68.68 0 01.678.762.614.614 0 01.239-.204.562.562 0 01-.187-.578.574.574 0 01-.744-.156zm16.56.01c.215 0 .39.173.39.386a.389.389 0 01-.39.387.389.389 0 01-.39-.387c0-.213.174-.386.39-.386zm-.893-.11c.216 0 .39.172.39.386a.389.389 0 01-.39.386.389.389 0 01-.39-.386c0-.214.174-.387.39-.387zm-.92-.056c.215 0 .39.173.39.387a.389.389 0 01-.39.386.389.389 0 01-.391-.386c0-.214.174-.387.39-.387zm-7.827-.11c.246 0 .446.197.446.441s-.2.442-.446.442a.444.444 0 01-.447-.442c0-.244.2-.441.447-.441zm2.148.055a.32.32 0 01.321.317.32.32 0 01-.32.318.32.32 0 01-.322-.318.32.32 0 01.321-.317zm5.274-.883c.223 0 .404.179.404.4a.405.405 0 01-.708.265.43.43 0 01-.422.522.43.43 0 01-.432-.428.433.433 0 01.762-.277.402.402 0 01.396-.482zm3.683.303c.208 0 .376.167.376.373a.375.375 0 01-.376.373.375.375 0 01-.377-.373c0-.206.169-.373.377-.373zM6.329 18.17a.5.5 0 01.502.497.5.5 0 01-.502.497.5.5 0 01-.502-.497.5.5 0 01.502-.497zm6.543.332a.32.32 0 01.32.317.32.32 0 01-.32.318.32.32 0 01-.321-.318.32.32 0 01.32-.317zm8.747-.166c.208 0 .377.167.377.373a.375.375 0 01-.377.372.375.375 0 01-.377-.372c0-.206.169-.373.377-.373zm-9.793-.11c.215 0 .39.173.39.386a.389.389 0 01-.39.386.389.389 0 01-.391-.386c0-.213.175-.386.39-.386zm-7.61.21a.678.678 0 01-.181.254.684.684 0 01.397.283.564.564 0 01.257-.461.62.62 0 01-.473-.077zm16.454-.21c.208 0 .377.166.377.372a.375.375 0 01-.377.373.375.375 0 01-.376-.373c0-.206.168-.372.376-.372zm-.92-.056c.223 0 .404.18.404.4 0 .222-.181.4-.404.4a.402.402 0 01-.405-.4c0-.22.181-.4.405-.4zm-3.046.392l-.001.006a.574.574 0 01-.074.164c.072.028.136.07.188.124a.454.454 0 01.152-.247.48.48 0 01-.265-.047zm-3.218-.364c.17 0 .307.136.307.304a.305.305 0 01-.307.303.305.305 0 01-.307-.303c0-.168.137-.304.307-.304zm-3.32-.497c.223 0 .404.18.404.4 0 .221-.181.4-.404.4a.402.402 0 01-.405-.4c0-.22.181-.4.405-.4zm.99.028c.216 0 .39.173.39.386a.389.389 0 01-.39.387.389.389 0 01-.39-.387c0-.213.174-.386.39-.386zm1.283-.055c.2 0 .363.16.363.358a.36.36 0 01-.363.36.36.36 0 01-.362-.36.36.36 0 01.362-.358zm-5.175-.138a.43.43 0 01.432.427.43.43 0 01-.432.428.43.43 0 01-.433-.428.43.43 0 01.433-.427zm-1.577-.139a.5.5 0 01.503.497.5.5 0 01-.503.497.5.5 0 01-.502-.497.5.5 0 01.502-.497zm16.406-.11c.224 0 .405.18.405.4 0 .221-.181.4-.405.4a.402.402 0 01-.404-.4c0-.22.18-.4.404-.4zm-8.97.193c.154 0 .279.124.279.276a.278.278 0 01-.279.276.278.278 0 01-.279-.276c0-.152.125-.276.279-.276zm8.022-.276c.223 0 .404.18.404.4 0 .222-.181.4-.404.4a.402.402 0 01-.405-.4c0-.22.181-.4.405-.4zm-4.761.588a.569.569 0 01-.018.093c.042.018.082.04.118.067a.47.47 0 01.1-.144.535.535 0 01-.2-.016zm3.84-.67c.223 0 .404.179.404.4 0 .22-.18.4-.404.4a.402.402 0 01-.405-.4c0-.221.181-.4.405-.4zm-8.343 0c.2 0 .363.16.363.358a.36.36 0 01-.363.36.36.36 0 01-.362-.36.36.36 0 01.362-.359zm-5.259-.277a.43.43 0 01.433.428.43.43 0 01-.433.428.43.43 0 01-.432-.428.43.43 0 01.432-.428zm4.394.083c.2 0 .363.16.363.36a.36.36 0 01-.363.358.36.36 0 01-.362-.359.36.36 0 01.362-.359zm-.948-.027c.2 0 .363.16.363.358a.36.36 0 01-.363.36.36.36 0 01-.363-.36.36.36 0 01.363-.358zm-.893 0c.2 0 .363.16.363.358a.36.36 0 01-.363.36.36.36 0 01-.363-.36.36.36 0 01.363-.358zm-.92-.028c.2 0 .362.16.362.359a.36.36 0 01-.363.359.36.36 0 01-.362-.36.36.36 0 01.362-.358zm4.31-.028c.154 0 .279.124.279.276a.278.278 0 01-.279.276.278.278 0 01-.279-.276c0-.152.125-.276.279-.276zm-4.98-.524c.2 0 .362.16.362.359a.36.36 0 01-.362.359.36.36 0 01-.363-.36.36.36 0 01.363-.358zm9.126.368l-.003.005a.485.485 0 01-.062.082.53.53 0 01.337.244.473.473 0 01.2-.222.493.493 0 01-.472-.109zm-4.871-.285c.154 0 .279.123.279.276a.278.278 0 01-.28.276.278.278 0 01-.278-.276c0-.153.124-.276.279-.276zm9.737-.331c.231 0 .419.185.419.414a.416.416 0 01-.419.414.416.416 0 01-.418-.414c0-.23.187-.414.418-.414zm-.92-.056c.23 0 .418.186.418.414a.416.416 0 01-.419.414.416.416 0 01-.418-.414c0-.228.187-.414.418-.414zm-11.329.166c.155 0 .28.124.28.276a.278.278 0 01-.28.276.278.278 0 01-.279-.276c0-.152.125-.276.28-.276zm1.675 0c.154 0 .279.124.279.276a.278.278 0 01-.28.276.278.278 0 01-.278-.276c0-.152.124-.276.279-.276zm-.837 0c.154 0 .279.124.279.276a.278.278 0 01-.28.276.278.278 0 01-.279-.276c0-.152.125-.276.28-.276zm-1.59-.304c.153 0 .278.124.278.276a.278.278 0 01-.279.276.278.278 0 01-.279-.276c0-.152.125-.276.28-.276zm7.833.01v.003a.476.476 0 01-.022.08c.09.018.17.06.235.119a.488.488 0 01.192-.183.591.591 0 01-.405-.02zm-7.778-.81c.154 0 .279.123.279.276a.278.278 0 01-.28.276.278.278 0 01-.278-.276c0-.153.125-.276.279-.276zm.335-.773c.154 0 .279.123.279.276a.278.278 0 01-.28.276.278.278 0 01-.278-.276c0-.153.125-.276.279-.276zm-3.903-.083a.684.684 0 01-.05.05c.137.036.255.12.336.23a.517.517 0 01.126-.114.601.601 0 01-.412-.166zm4.238-.69c.154 0 .279.124.279.276a.278.278 0 01-.28.276.278.278 0 01-.278-.276c0-.152.124-.276.279-.276zm.348-.773c.162 0 .293.13.293.29 0 .16-.13.29-.293.29a.291.291 0 01-.293-.29c0-.16.132-.29.293-.29zm-.558-.58c.2 0 .363.161.363.36a.36.36 0 01-.363.358.36.36 0 01-.362-.359.36.36 0 01.362-.359zm.935-.193c.17 0 .307.136.307.304a.305.305 0 01-.307.303.305.305 0 01-.307-.303c0-.168.137-.304.307-.304zm-.572-.635c.2 0 .363.161.363.36a.36.36 0 01-.363.358.36.36 0 01-.363-.359.36.36 0 01.363-.359zm.893-.138a.32.32 0 01.32.318.32.32 0 01-.32.317.32.32 0 01-.321-.317.32.32 0 01.32-.318zm-.544-.69c.208 0 .376.167.376.373a.375.375 0 01-.376.373.375.375 0 01-.377-.373c0-.206.169-.373.377-.373zm.879-.083a.32.32 0 01.32.318.32.32 0 01-.32.317.32.32 0 01-.321-.317.32.32 0 01.32-.318zM5.84 8.343c.217 0 .408.108.52.274a.605.605 0 01.72.313.561.561 0 01.72.326.506.506 0 01.676.444.46.46 0 01.488.258.419.419 0 01.796.179.419.419 0 01-.79.191.46.46 0 01-.424.278.459.459 0 01-.457-.4.51.51 0 01-.566-.264.56.56 0 01-.73-.22.603.603 0 01-.732-.177.624.624 0 01-.849-.581c0-.343.281-.621.628-.621zm4.352 1.352c.208 0 .377.167.377.373a.375.375 0 01-.377.372.375.375 0 01-.376-.372c0-.206.168-.373.376-.373zm5.82.237l-.008.002a.581.581 0 01-.157.007.607.607 0 01-.255.391.605.605 0 01.182.011.55.55 0 01.237-.41zm-4.983-.264c.185 0 .335.148.335.33 0 .184-.15.332-.335.332a.333.333 0 01-.334-.331c0-.183.15-.331.334-.331zM6.4 7.1c.242 0 .452.136.557.334a.6.6 0 01.624.397.529.529 0 01.636.406.505.505 0 01.68.464c0 .021-.001.041-.004.061a.46.46 0 01.504.288.42.42 0 01.783.203.419.419 0 01-.803.164.46.46 0 01-.87-.231.501.501 0 01-.6-.362.533.533 0 01-.682-.243.604.604 0 01-.723-.247.624.624 0 01-.73-.613c0-.343.281-.62.628-.62zm4.185 1.767c.208 0 .377.167.377.373a.375.375 0 01-.377.372.375.375 0 01-.377-.372c0-.206.169-.373.377-.373zm.851.028c.193 0 .349.154.349.345 0 .19-.156.345-.349.345a.347.347 0 01-.349-.345c0-.19.156-.345.349-.345zm.781-.056c.193 0 .349.155.349.345 0 .191-.156.345-.349.345a.347.347 0 01-.349-.345c0-.19.157-.345.35-.345zm3.435.029l-.005.001a.548.548 0 01-.153.025.557.557 0 01-.017.103.573.573 0 01.175-.13zm-4.676-.83c.208 0 .376.168.376.374a.375.375 0 01-.376.372.375.375 0 01-.377-.372c0-.206.169-.373.377-.373zM6.873 5.914a.6.6 0 01.556.37.599.599 0 01.701.46.528.528 0 01.566.453.5.5 0 01.61.573h.008a.46.46 0 01.503.293.42.42 0 01.725.28.419.419 0 01-.802.165.461.461 0 01-.813-.343.5.5 0 01-.609-.394.535.535 0 01-.646-.325.6.6 0 01-.685-.356.597.597 0 01-.714-.583c0-.327.269-.593.6-.593zm4.883 1.74c.208 0 .377.166.377.372a.375.375 0 01-.377.373.375.375 0 01-.377-.373c0-.206.169-.373.377-.373zM7.403 4.725a.6.6 0 01.573.416.572.572 0 01.613.557.528.528 0 01.611.464l.03-.001a.5.5 0 01.472.668.458.458 0 01.528.513.419.419 0 01.786.199.416.416 0 01-.418.414.416.416 0 01-.415-.464.46.46 0 01-.848-.347.507.507 0 01-.6-.407.528.528 0 01-.59-.48.578.578 0 01-.662-.35.597.597 0 01-.68-.588c0-.328.269-.594.6-.594zm7.13 2.647l-.007.006a.805.805 0 01-.078.06l.061.034h.04a.371.371 0 01-.017-.1zm-3.112-.797a.43.43 0 01.433.428.43.43 0 01-.433.428.43.43 0 01-.432-.428.43.43 0 01.432-.428zM7.933 3.54c.29 0 .53.202.588.471a.569.569 0 01.622.638.513.513 0 01.585.582.5.5 0 01.592.489.491.491 0 01-.095.29.462.462 0 01.652.414.458.458 0 01-.46.456.458.458 0 01-.46-.456.45.45 0 01.08-.257.504.504 0 01-.718-.512.513.513 0 01-.617-.528.577.577 0 01-.68-.407.597.597 0 01-.689-.587c0-.328.27-.593.6-.593zm3.39 1.932c.262 0 .475.21.475.469 0 .26-.213.47-.475.47a.472.472 0 01-.474-.47c0-.26.212-.47.474-.47zm1.033-.083a.5.5 0 01.502.497.5.5 0 01-.502.497.5.5 0 01-.502-.497.5.5 0 01.502-.497zm-3.67-2.954a.597.597 0 01.599.64.569.569 0 01.607.762.527.527 0 01.679.504.518.518 0 01-.09.29.504.504 0 01.759.427.5.5 0 01-.503.497.5.5 0 01-.502-.497c0-.1.03-.192.08-.27a.532.532 0 01-.805-.448c0-.058.01-.114.027-.167a.569.569 0 01-.752-.559.597.597 0 01-.698-.586c0-.327.268-.593.6-.593zm6.07-.607c.307 0 .557.247.557.552a.555.555 0 01-.815.49c.057.085.09.187.09.297a.541.541 0 01-.711.512.533.533 0 01.125.344.541.541 0 01-.707.513c.109.099.177.24.177.398a.541.541 0 01-.544.538.541.541 0 01-.544-.538.541.541 0 01.707-.514.534.534 0 01-.177-.397.541.541 0 01.71-.513.533.533 0 01-.124-.343.541.541 0 01.792-.48.545.545 0 01-.095-.307c0-.305.25-.552.558-.552zm-2.944 2.457c.285 0 .516.228.516.51 0 .283-.231.511-.516.511a.513.513 0 01-.517-.51c0-.283.232-.511.517-.511zm-2.065-2.65a.569.569 0 01.51.823.569.569 0 01.732.543.56.56 0 01-.122.348.546.546 0 01.791.48.541.541 0 01-.544.539.541.541 0 01-.544-.539c0-.122.042-.236.112-.326A.574.574 0 019.845 3c0-.092.022-.18.062-.257a.569.569 0 01-.732-.543c0-.313.256-.566.572-.566zm2.567 1.546c.3 0 .544.24.544.538a.541.541 0 01-.544.538.541.541 0 01-.544-.538c0-.297.243-.538.544-.538zm.572-1.022c.308 0 .558.248.558.552 0 .305-.25.552-.558.552a.555.555 0 01-.558-.552c0-.304.25-.552.558-.552zm-1.256-.055c.308 0 .558.247.558.552 0 .305-.25.552-.558.552a.555.555 0 01-.558-.552c0-.305.25-.552.558-.552zm1.925-.883c.309 0 .559.247.559.552 0 .305-.25.552-.559.552a.555.555 0 01-.558-.552c0-.305.25-.552.558-.552zm-2.608-.083c.316 0 .572.253.572.566a.569.569 0 01-.572.566.569.569 0 01-.572-.566c0-.313.256-.566.572-.566zM12.272 1c.308 0 .558.247.558.552 0 .305-.25.552-.558.552a.555.555 0 01-.558-.552c0-.305.25-.552.558-.552z" fill="#EB1000" fill-rule="evenodd"></path></svg></div></div><div class="st pt">Ferramentas do dia a dia</div><div class="st en">Daily tools</div><h3 class="pt">IA no estúdio</h3><h3 class="en">AI in the studio</h3>
+      <p class="pt">Claude, Grok, Gemini, modelos locais (Gemma, ComfyUI) e Firefly trabalhando junto: de agentes que editam no DaVinci a assistentes de voz em voo. IA como ferramenta de produção, não como enfeite.</p>
+      <p class="en">Claude, Grok, Gemini, local models (Gemma, ComfyUI) and Firefly working together: from agents editing in DaVinci to in-flight voice assistants. AI as a production tool, not decoration.</p></div>
+    <div class="tool" style="padding:0;overflow:hidden"><img src="media/img/omicron.jpg" alt="" loading="lazy" style="aspect-ratio:16/10;object-fit:cover">
+      <div style="padding:0 22px 22px"><div class="st">KSP</div><h3 class="pt">No espaço desde 2013</h3><h3 class="en">In space since 2013</h3>
+      <p class="pt">SSTOs, ônibus espaciais e missões a Laythe muito antes do Omicron existir.</p><p class="en">SSTOs, shuttles and missions to Laythe long before Omicron existed.</p></div></div>
+  </div>
+</div></section>
+
+<section id="about"><div class="wrap win">
+  <div class="kick pt">Sobre</div><div class="kick en">About</div>
+  <div class="about">
+    <div>
+      <h2 class="aname">Rafael G Rebonato do Valle</h2>
+      <p class="pt">Motion designer e artista 3D, autodidata em tudo o que faço, trabalhando no mercado há mais de 30 anos. Formado em Processamento de Dados — o que explica por que tanto do meu trabalho acaba virando código.</p>
+      <p class="en">Motion designer and 3D artist, self-taught in everything I do, working professionally for over 30 years. Trained in Data Processing — which explains why so much of my work ends up becoming code.</p>
+      <p class="pt">A Dreamtools é a minha empresa: produção de motion e 3D para agências no Brasil e no exterior, e o lugar onde as ferramentas que eu crio viram produto. Trabalho remoto, de Curitiba, com estrutura própria.</p>
+      <p class="en">Dreamtools is my company: motion and 3D production for agencies in Brazil and abroad, and the place where the tools I build become products. Remote, from Curitiba, Brazil, fully self-equipped.</p>
+      <p class="pt">No mercado de Curitiba, pouca gente me chama de Rafael: sempre fui o <strong>ClimberFX</strong>. É o nome do meu Vimeo, do meu YouTube e do Instagram, e o boneco de cabelo cacheado aí em cima da página é ele.</p>
+      <p class="en">In the Curitiba scene, few people call me Rafael: I've always been <strong>ClimberFX</strong>. It's the name on my Vimeo, YouTube and Instagram, and the curly-haired guy at the top of the page is him.</p>
+      <div class="skills"><span>After Effects</span><span>Illustrator</span><span>Premiere</span><span>Photoshop</span><span>DaVinci Resolve</span><span>Maya</span><span>Unreal 5</span><span>Twinmotion</span><span>Unity</span><span>C#</span><span>Python</span><span>ExtendScript</span><span>Visual Studio</span><span>Claude</span><span>Grok</span><span>Firefly</span><span>Gemini</span></div>
+      <div class="skills"><span>Português</span><span>English</span><span>Español</span></div>
+    </div>
+    <div class="aboutR" id="aboutR">
+    <div class="jscroll" id="jscroll"><ul class="tl" id="jobs"></ul></div>
+    <template id="tlstatic">
+      <li><b>2009 — 2019</b><span class="pt">Freelancer e Dreamtools, Curitiba — clientes no Brasil e agências nos EUA, Europa e Oriente Médio</span><span class="en">Freelance & Dreamtools, Curitiba — clients in Brazil and agencies in the US, Europe and the Middle East</span></li>
+      <li><b>2008 — 2009</b><span class="pt">Motion design e 3D em produtora</span><span class="en">Motion design & 3D at a production house</span></li>
+      <li><b>2005 — 2008</b><span class="pt">Motion design e 3D na Digital 21, em São Paulo</span><span class="en">Motion design & 3D at Digital 21, São Paulo</span></li>
+      <li><b><span class="pt">Arquitetura</span><span class="en">Architecture</span></b><span class="pt">Perspectivas 3D e vídeos animados para escritórios de arquitetura</span><span class="en">3D perspectives and animated films for architecture firms</span></li>
+      <li><b><span class="pt">Campanhas</span><span class="en">Campaigns</span></b><span class="pt">Motion, 3D e edição em campanhas no Brasil, Argentina, Venezuela e Portugal — incluindo presidenciais</span><span class="en">Motion, 3D and editing for campaigns in Brazil, Argentina, Venezuela and Portugal — including presidential races</span></li>
+    
+    </template>
+    </div>
+  </div>
+</div></section>
+
+<section class="contact" id="contact"><div class="wrap win">
+  <div class="kick pt">Vamos conversar</div><div class="kick en">Let's talk</div>
+  <a href="mailto:rvalle7@icloud.com" style="text-decoration:none"><h2 class="pt">Tem um projeto?</h2><h2 class="en">Got a project?</h2></a>
+  <a class="mail" id="mail" href="/v2/#"></a>
+  <div class="social">
+    <a class="btn" href="https://vimeo.com/climberfx" target="_blank" rel="noopener">Vimeo</a>
+    <a class="btn" href="https://www.youtube.com/@Climberfx" target="_blank" rel="noopener">YouTube · ClimberFX</a>
+    <a class="btn" href="https://www.youtube.com/@VRFlights73" target="_blank" rel="noopener">YouTube · VR Flights 73</a>
+    <a class="btn" href="https://www.youtube.com/@OmicronKSP" target="_blank" rel="noopener">YouTube · Omicron</a>
+    <a class="btn" href="https://www.instagram.com/climberfx/" target="_blank" rel="noopener">Instagram</a>
+    <a class="btn" href="https://github.com/rvalle7" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>© <span id="yr"></span> Dreamtools · Rafael Valle · Curitiba, PR</span>
+  <span><span id="cnpj"></span> <span id="visits" style="opacity:.55;font-variant-numeric:tabular-nums"></span></span>
+</div></footer>
+
+<div class="modal" id="modal"><button class="x" aria-label="Fechar">×</button><video playsinline controls preload="metadata"></video><div class="t"></div></div>
+
+<script>
+const CFG={email:"rvalle7@icloud.com",cnpj:"06.141.747/0001-46"};
+// grid do portfólio: works.json (gerado por portfolio-sync)
+const L=()=>document.documentElement.dataset.l;
+const g=document.getElementById('grid');
+const M=document.getElementById('modal'),MV=M.querySelector('video');
+function openM(w){const full=!!w.full;
+  MV.muted=!full;MV.loop=!full;MV.src=full?w.full:`media/work/${w.id}.mp4`;
+  M.querySelector('.t').textContent=L()=='pt'?w.pt:w.en;M.classList.add('on');MV.play().catch(()=>{MV.muted=true;MV.play()})}
+function closeM(){M.classList.remove('on');MV.pause();MV.removeAttribute('src');MV.load()}
+M.addEventListener('click',e=>{if(e.target!==MV)closeM()});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+fetch('works.json',{cache:'no-cache'}).then(r=>r.json()).then(W=>{
+ W.forEach(w=>{const id=w.id;
+  const d=document.createElement('div');d.className='card'+(w.big?' big':'');d.dataset.id=id;
+  d.innerHTML=`<img src="media/work/${id}.jpg" alt="${w.pt}" loading="lazy"><video muted loop playsinline preload="none" data-src="media/work/${id}.mp4"></video>
+  <div class="cap"><small class="pt">${w.cat_pt}</small><small class="en">${w.cat_en}</small><h3 class="pt">${w.pt}</h3><h3 class="en">${w.en}</h3></div>`;
+  const v=d.querySelector('video');
+  const on=()=>{if(!v.src)v.src=v.dataset.src;v.play().then(()=>d.classList.add('play')).catch(()=>{})};
+  const off=()=>{v.pause();d.classList.remove('play')};
+  d.addEventListener('mouseenter',on);d.addEventListener('mouseleave',off);
+  d.addEventListener('click',()=>openM(w));
+  g.appendChild(d);
+ });
+ // autoplay on touch devices when visible
+ if(matchMedia('(hover:none)').matches){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{const d=e.target,v=d.querySelector('video');
+    if(e.isIntersecting){if(!v.src)v.src=v.dataset.src;v.play().then(()=>d.classList.add('play')).catch(()=>{})}else{v.pause();d.classList.remove('play')}}),{threshold:.6});
+  document.querySelectorAll('.card').forEach(c=>io.observe(c));
+ }
+});
+// youtube lite
+document.querySelectorAll('.yt').forEach(y=>{const id=y.dataset.id;
+  y.innerHTML=`<img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="" loading="lazy">`;
+  y.addEventListener('click',()=>{y.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`},{once:true})});
+// language
+const lb=document.getElementById('lang');
+function setL(l){document.documentElement.dataset.l=l;document.documentElement.lang=l=='pt'?'pt-BR':'en';lb.textContent=l=='pt'?'EN':'PT';try{localStorage.setItem('dt-l',l)}catch(e){}}
+let saved=null;try{saved=localStorage.getItem('dt-l')}catch(e){}
+setL(saved||((navigator.language||'').toLowerCase().startsWith('pt')?'pt':'en'));
+lb.onclick=()=>setL(L()=='pt'?'en':'pt');
+// capa = logo SVG oficial. ?f=0 (pesada original) … ?f=6 mostra as fontes de texto
+{const q=new URLSearchParams(location.search),f=q.get('f'),t=document.getElementById('ttl');
+ if(q.get('logo')==='svg')t.classList.add('svg');
+ else if(f&&/^[0-6]$/.test(f)){t.classList.add('txt');t.querySelector('.htxt').innerHTML='Dream<b>Tools</b>';if(f!=='2')t.classList.add('f'+f)}}
+// loops automáticos: tocam só quando visíveis
+{const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting)v.play().catch(()=>{});else v.pause()}),{threshold:.25});
+document.querySelectorAll('video[autoplay]').forEach(v=>io.observe(v))}
+// fita de postais (mesmos do track73.com.br)
+{const C=[["../../v2/pc/01", "", "16 SEP 2026", "0.7deg"], ["../../v2/pc/02", "", "17 SEP 2026", "-0.9deg"], ["../../v2/pc/03", "", "18 SEP 2026", "1.1deg"], ["../../v2/pc/04", "", "18 SEP 2026", "-1.3deg"], ["../../v2/pc/05", "", "19 SEP 2026", "0.7deg"], ["../../v2/pc/06", "", "19 SEP 2026", "-0.9deg"], ["../../v2/pc/07", "", "19 SEP 2026", "1.1deg"], ["../../v2/pc/08", "", "21 SEP 2026", "-1.3deg"], ["../../v2/pc/09", "", "22 SEP 2026", "0.7deg"], ["../../v2/pc/10", "", "24 SEP 2026", "-0.9deg"], ["../../v2/pc/11", "", "25 SEP 2026", "1.1deg"], ["../../v2/pc/12", "", "25 SEP 2026", "-1.3deg"], ["../../v2/pc/13", "", "26 SEP 2026", "0.7deg"], ["../../v2/pc/15", "", "29 SEP 2026", "1.1deg"], ["../../v2/pc/16", "", "29 SEP 2026", "-1.3deg"], ["../../v2/pc/17", "", "2 OCT 2026", "0.7deg"], ["../../v2/pc/18", "", "3 OCT 2026", "-0.9deg"], ["../../v2/pc/19", "", "3 OCT 2026", "1.1deg"], ["../../v2/pc/20", "", "3 OCT 2026", "-1.3deg"], ["../../v2/pc/21", "", "4 OCT 2026", "0.7deg"], ["../../v2/pc/22", "", "4 OCT 2026", "-0.9deg"], ["../../v2/pc/23", "", "4 OCT 2026", "1.1deg"], ["../../v2/pc/24", "", "5 OCT 2026", "-1.3deg"], ["../../v2/pc/25", "", "6 OCT 2026", "0.7deg"], ["../../v2/pc/26", "", "6 OCT 2026", "-0.9deg"], ["../../v2/pc/27", "", "6 OCT 2026", "1.1deg"], ["../../v2/pc/28", "", "7 OCT 2026", "-1.3deg"], ["../../v2/pc/29", "", "7 OCT 2026", "0.7deg"], ["../../v2/pc/30", "", "9 OCT 2026", "-0.9deg"], ["../../v2/pc/31", "", "10 OCT 2026", "1.1deg"], ["../../v2/pc/32", "", "11 OCT 2026", "-1.3deg"], ["../../v2/pc/33", "", "11 OCT 2026", "0.7deg"], ["../../v2/pc/34", "", "14 OCT 2026", "-0.9deg"], ["../../v2/pc/35", "", "15 OCT 2026", "1.1deg"], ["../../v2/pc/36", "", "16 OCT 2026", "-1.3deg"], ["../../v2/pc/37", "", "17 OCT 2026", "0.7deg"], ["../../v2/pc/38", "", "17 OCT 2026", "-0.9deg"], ["../../v2/pc/39", "", "23 OCT 2026", "1.1deg"], ["../../v2/pc/40", "", "24 OCT 2026", "-1.3deg"], ["../../v2/pc/41", "", "24 OCT 2026", "0.7deg"], ["../../v2/pc/43", "", "25 OCT 2026", "1.1deg"], ["../../v2/pc/45", "", "27 OCT 2026", "0.7deg"], ["../../v2/pc/46", "", "27 OCT 2026", "-0.9deg"], ["../../v2/pc/47", "", "29 OCT 2026", "1.1deg"], ["../../v2/pc/48", "", "31 OCT 2026", "-1.3deg"], ["../../v2/pc/49", "", "31 OCT 2026", "0.7deg"], ["../../v2/pc/50", "", "3 NOV 2026", "-0.9deg"], ["../../v2/pc/51", "", "4 NOV 2026", "1.1deg"], ["../../v2/pc/52", "", "4 NOV 2026", "-1.3deg"], ["../../v2/pc/53", "", "4 NOV 2026", "0.7deg"], ["../../v2/pc/54", "", "6 NOV 2026", "-0.9deg"], ["../../v2/pc/55", "", "6 NOV 2026", "1.1deg"], ["../../v2/pc/56", "", "6 NOV 2026", "-1.3deg"], ["../../v2/pc/57", "", "7 NOV 2026", "0.7deg"], ["../../v2/pc/58", "", "7 NOV 2026", "-0.9deg"], ["../../v2/pc/59", "", "9 NOV 2026", "1.1deg"]];const card=([img,place,date,r],dup)=>`<li><figure class="pc" style="--r:${r}"${dup?' aria-hidden="true"':''}><img src="media/pc/${img}.webp" alt="${dup?'':place}" loading="lazy"><figcaption><b>${place}</b><span>${date}</span></figcaption></figure></li>`;
+ document.getElementById('reel').innerHTML=C.map(c=>card(c,0)).join('')+C.map(c=>card(c,1)).join('')}
+// Ken Burns da capa: sorteia 6 de um acervo de 34 postais (hero1..hero34.jpg) a cada carga
+{const logo=document.querySelector('.hlogo'),hues=[],GOLD=38;
+ // tom geral de cada postal: média circular do matiz, pesada pela saturação × brilho
+ const hueOf=src=>new Promise(res=>{const im=new Image();im.onload=()=>{try{const c=document.createElement('canvas');c.width=48;c.height=27;const x=c.getContext('2d');x.drawImage(im,0,0,48,27);
+   const d=x.getImageData(0,0,48,27).data;let sx=0,sy=0;for(let i=0;i<d.length;i+=4){const r=d[i]/255,g=d[i+1]/255,b=d[i+2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),dl=mx-mn;if(!dl)continue;
+   let h=mx===r?((g-b)/dl)%6:mx===g?(b-r)/dl+2:(r-g)/dl+4;h*=60;const w=(dl/mx)*mx;sx+=Math.cos(h*Math.PI/180)*w;sy+=Math.sin(h*Math.PI/180)*w}
+   res((Math.atan2(sy,sx)*180/Math.PI+360)%360)}catch(e){res(GOLD)}};im.onerror=()=>res(GOLD);im.src=src});
+ const tint=i=>{if(!logo||!logo.offsetParent&&!logo.classList.contains('hlogo'))return;const h=hues[i];if(h==null)return;let dh=((h-GOLD+540)%360)-180;logo.style.filter=`drop-shadow(0 4px 24px #0009) hue-rotate(${dh.toFixed(0)}deg) saturate(.17) brightness(1.18)`};
+ window.__kbTint=(i,src)=>hueOf(src).then(h=>{hues[i]=h;if(i===0)tint(0)});
+const kb=document.querySelector('.kb'),N=6,POOL=34,pick=[...Array(POOL).keys()].map(i=>i+1).sort(()=>Math.random()-.5).slice(0,N),moves=[['1.02','1.12','0','-2%','0','1%'],['1.12','1.02','2%','0','-1%','0'],['1.03','1.13','-2%','1%','1%','-1%'],['1.12','1.03','0','0','-2%','1%'],['1.02','1.12','2%','-1%','-1%','0'],['1.13','1.03','-1%','1%','1%','-1%']];
+ const els=[...Array(N)].map((_,i)=>{const e=document.createElement('i');e.style.backgroundImage=`url(media/img/hero${pick[i]}.jpg)`;const m=moves[i%moves.length];
+  e.style.cssText+=`;--s0:${m[0]};--s1:${m[1]};--x0:${m[2]};--x1:${m[3]};--y0:${m[4]};--y1:${m[5]}`;kb.appendChild(e);window.__kbTint(i,`media/img/hero${pick[i]}.jpg`);return e});
+ let k=0;const show=()=>{const e=els[k%N];tint(k%N);e.classList.remove('go');void e.offsetWidth;e.classList.add('go','on');const prev=els[(k+N-1)%N];if(prev!==e)prev.classList.remove('on');
+  new Image().src=`media/img/hero${pick[(k+1)%N]}.jpg`;k++};
+ show();setInterval(show,5500)}
+// parallax: o bloco de postais da capa sobe a 1/3 da velocidade da página (os degradês e o texto seguem normais)
+{const kb=document.querySelector('.kb'),hero=document.querySelector('.hero');let tick=false;
+ const upd=()=>{tick=false;const y=scrollY;if(y<=hero.offsetHeight)kb.style.transform=`translate3d(0,${(y*2/3).toFixed(1)}px,0)`};
+ addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});upd()}
+// trabalhos recentes: [ano, cliente, produtora/agência, mês início, mês fim]
+{const J=[
+[2026,"DoorDash","Lobo / Vetor",7],[2026,"DirecTV","Lobo / Vetor",5],[2026,"T-Mobile","Lobo / Vetor",4],[2026,"Resy · Tock · Amex","Lobo / Vetor",2],
+[2025,"Whext","Lobo / Vetor",11],[2025,"Prefeitura de São José dos Pinhais","",10],[2025,"Prefeitura de Campo Mourão","",10],[2025,"Ponta Grossa · Segurança","",9],[2025,"NMDP","Lobo / Vetor",5],[2025,"The New Yorker","Roof",3],[2025,"COX","Lobo / Vetor",2,3],[2025,"DoorDash","Lobo / Vetor",1],
+[2024,"NMDP","Lobo / Vetor",9,11],[2024,"MixBrasil","Lobo / Vetor",10],[2024,"Sanepar","",7],[2024,"Coca-Cola × Oreo","Lobo / Vetor",4,8],[2024,"Ponta Grossa","",5],[2024,"SNF24 Glyphs","FGreat",3],[2024,"Ponta Grossa · Asfalto Novo","",3],[2024,"Taco Bell","Lobo / Vetor",1],
+[2023,"Emaar · Burj Khalifa","FGreat",11,12],[2023,"Bayer Aleve · BBDO","Lobo / Vetor",10,11],[2023,"P32H","Lobo / Vetor",3,10],[2023,"Livmarli","Lobo / Vetor",6,10],[2023,"Aurora","Lobo / Vetor",5,7],[2023,"Linzess","Lobo / Vetor",1,5],[2023,"Pedigree · pitch","Lobo / Vetor",4],[2023,"Kove Axis · pitch","Lobo / Vetor",4],[2023,"WB Bacon · pitch","Lobo / Vetor",3],[2023,"SafeGold","",4],
+[2022,"Linzess","Lobo / Vetor",12],[2022,"ESPC","",10],[2022,"SafeGold","",3,10],[2022,"Disney","Lobo / Vetor",5,9],[2022,"Atópicos","Lobo / Vetor",7,9],[2022,"Ford EV · pitch","Lobo / Vetor",8],[2022,"PlayStation","Lobo / Vetor",6],[2022,"Christie's","FGreat",5],[2022,"Museu Rio","Lobo / Vetor",4],[2022,"Grounds for Sculpture","FGreat",4],[2022,"EF Cube","FGreat",4],[2022,"Frontier","Lobo / Vetor",3],[2022,"TV Pesa","",3],[2022,"Leqvio","Broki · Lobo / Vetor",1,4],[2022,"Emaar · Burj Khalifa","FGreat",1,2],
+[2021,"T-Mobile","FGreat",12],[2021,"Burj Khalifa · TikTok","FGreat",12],[2021,"SafeGold","",3,11],[2021,"Tres Generaciones","Lobo",9,10],[2021,"CWB Wash","",6,9],[2021,"Ztrax · Tracing","Ztrax",7],[2021,"Nomel's Hard Lemonade","Lobo",5,6],[2021,"Nurish","Lobo",4,9],[2021,"Havrix","",4],[2021,"Quuppa","Ztrax",3],[2021,"Häfele","",3],[2021,"CPL","Lobo",2],[2021,"Dailiport","",1,2],
+[2020,"Asics","Lobo",11,12],[2020,"RH Nossa","",8,12],[2020,"SGBD","",12],[2020,"Häfele","",11],[2020,"CAT","",10,11],[2020,"SafeGold","",10],[2020,"Nutribom","Schrappe",10],[2020,"Chaves na Mão","Schrappe",10],[2020,"1000 Dias","",10],[2020,"MSGR","Lobo",9]];
+ const M={pt:["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"],en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]};
+ const el=document.getElementById('jobs'),box=document.getElementById('jscroll'),R=document.getElementById('aboutR'),left=R.previousElementSibling;
+ const draw=()=>{const m=M[L()]||M.en,row=([y,c,p,a,b])=>`<li><b>${m[a-1]}${b?'–'+m[b-1]:''} ${y}</b>${c}${p?' <span class="jp">· '+p+'</span>':''}</li>`,
+  gap='<li class="jsp" aria-hidden="true"></li>',all=gap+J.map(row).join('')+document.getElementById('tlstatic').innerHTML+gap;el.innerHTML=all+all};
+ // altura: a coluna da direita não passa da da esquerda
+ const fit=()=>{if(innerWidth<=860){box.style.height='420px';return}box.style.height=Math.max(300,left.offsetHeight)+'px'};
+ let y=0,hover=false,last=0;const half=()=>el.scrollHeight/2;
+ const tick=t=>{const dt=last?(t-last)/1000:0;last=t;if(!hover){y+=dt*14;if(y>=half())y-=half();box.scrollTop=y}requestAnimationFrame(tick)};
+ box.addEventListener('mousemove',e=>{hover=true;const r=box.getBoundingClientRect(),f=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));y=f*(half()-box.clientHeight);box.scrollTop=y});
+ box.addEventListener('mouseleave',()=>{hover=false});
+ draw();fit();addEventListener('resize',fit);document.fonts&&document.fonts.ready.then(fit);requestAnimationFrame(tick);
+ document.getElementById('lang').addEventListener('click',()=>{draw();fit()})}
+// contact
+const m=document.getElementById('mail');
+if(CFG.email.includes('@')){m.textContent=CFG.email;m.href='mailto:'+CFG.email}else m.style.display='none';
+document.getElementById('cnpj').textContent=CFG.cnpj.startsWith('__')?'':'CNPJ '+CFG.cnpj;
+document.getElementById('yr').textContent=new Date().getFullYear();
+// contador discreto de visitas (abacus.jasoncameron.dev). Conta 1x por navegador por dia; não conta em teste local
+(async()=>{const el=document.getElementById('visits'),B='https://abacus.jasoncameron.dev/',K='dreamtools-com-br/visits';
+ // só o dono vê o número: abrir uma vez com ?eu liga neste navegador (e as visitas dele deixam de contar); ?eu=0 desliga
+ let me=false;try{const q=new URLSearchParams(location.search);if(q.has('eu'))localStorage.setItem('dt-me',q.get('eu')==='0'?'0':'1');me=localStorage.getItem('dt-me')==='1'}catch(e){}
+ if(!me)el.style.display='none';
+ const local=me||location.pathname.startsWith('/v2')||!/github\.io|dreamtools\.com\.br/.test(location.hostname)||location.search.includes('nocount');
+ let day='';try{day=localStorage.getItem('dt-v')||''}catch(e){}
+ const today=new Date().toISOString().slice(0,10),hit=!local&&day!==today;
+ try{const r=await fetch(B+(hit?'hit/':'get/')+K);if(!r.ok)return;const n=(await r.json()).value;
+  if(hit){try{localStorage.setItem('dt-v',today)}catch(e){}}
+  const f=()=>el.textContent=n.toLocaleString(L()=='pt'?'pt-BR':'en-US')+(L()=='pt'?' visitas':' visits');f();lb.addEventListener('click',f)}catch(e){}})();
+</script>
+<script>window.DT_PCS=["/v2/pc/01.webp", "/v2/pc/02.webp", "/v2/pc/03.webp", "/v2/pc/04.webp", "/v2/pc/05.webp", "/v2/pc/06.webp", "/v2/pc/07.webp", "/v2/pc/08.webp", "/v2/pc/09.webp", "/v2/pc/10.webp", "/v2/pc/11.webp", "/v2/pc/12.webp", "/v2/pc/13.webp", "/v2/pc/15.webp", "/v2/pc/16.webp", "/v2/pc/17.webp", "/v2/pc/18.webp", "/v2/pc/19.webp", "/v2/pc/20.webp", "/v2/pc/21.webp", "/v2/pc/22.webp", "/v2/pc/23.webp", "/v2/pc/24.webp", "/v2/pc/25.webp", "/v2/pc/26.webp", "/v2/pc/27.webp", "/v2/pc/28.webp", "/v2/pc/29.webp", "/v2/pc/30.webp", "/v2/pc/31.webp", "/v2/pc/32.webp", "/v2/pc/33.webp", "/v2/pc/34.webp", "/v2/pc/35.webp", "/v2/pc/36.webp", "/v2/pc/37.webp", "/v2/pc/38.webp", "/v2/pc/39.webp", "/v2/pc/40.webp", "/v2/pc/41.webp", "/v2/pc/43.webp", "/v2/pc/45.webp", "/v2/pc/46.webp", "/v2/pc/47.webp", "/v2/pc/48.webp", "/v2/pc/49.webp", "/v2/pc/50.webp", "/v2/pc/51.webp", "/v2/pc/52.webp", "/v2/pc/53.webp", "/v2/pc/54.webp", "/v2/pc/55.webp", "/v2/pc/56.webp", "/v2/pc/57.webp", "/v2/pc/58.webp", "/v2/pc/59.webp"];</script>
+<script type="module" src="/v2/space.js?v=202611090601"></script>
+</body>
+</html>
