@@ -146,6 +146,7 @@ function placeEarth() {
 const orbit = [];
 const pgeo = new THREE.PlaneGeometry(1, 1);
 let pNext = 0, pBusy = 0;
+function pickAng() { let a; do { a = Math.random() * Math.PI * 2; } while (Math.sin(a) > 0.45); return a; }
 function buildOrbit() {
   const n = PCS.length;
   PCS.forEach((url, i) => {
@@ -155,8 +156,8 @@ function buildOrbit() {
     m.scale.set(w, w / 1.75, 1);
     m.userData = {
       url, loaded: false,
-      dist: 60 + (i / n) * 680,                // distância ao longo do caminho
-      ang: Math.random() * Math.PI * 2,        // ângulo em volta do centro do redemoinho
+      dist: 40 + (i / n) * 1400,               // distância ao longo do caminho (só os mais perto aparecem)
+      ang: pickAng(),                          // ângulo em volta do centro do redemoinho (evita o topo)
       rr: 0.6 + Math.random() * 0.8,           // abertura
       rz: (Math.random() - 0.5) * 0.25,
     };
@@ -180,7 +181,7 @@ function swirlAxes() {
   _ax.copy(ndcDir(SWIRL)); _e1.set(0, 1, 0).sub(_e2.copy(_ax).multiplyScalar(_ax.y)).normalize(); _e2.crossVectors(_ax, _e1);
 }
 function orbitPos(u, out) {
-  const r = (18 + (760 - u.dist) * 0.16) * u.rr;   // abre conforme chega perto
+  const r = (18 + Math.max(0, 480 - u.dist) * 0.24) * u.rr;   // abre conforme chega perto
   return out.copy(_ax).multiplyScalar(u.dist).addScaledVector(_e1, Math.sin(u.ang) * r).addScaledVector(_e2, Math.cos(u.ang) * r * 1.5);
 }
 
@@ -415,11 +416,11 @@ function frame() {
   for (const m of orbit) {
     const u = m.userData;
     u.dist -= w * dt; u.ang += dt * (0.05 + w * 0.0006);
-    if (u.dist < 30) { u.dist += 700; u.ang = Math.random() * Math.PI * 2; m.material.opacity = 0; }
+    if (u.dist < 30) { u.dist += 1400; u.ang = pickAng(); m.material.opacity = 0; }
     orbitPos(u, m.position);
     m.lookAt(bgCam.position); m.rotateZ(u.rz);
     const dc = m.position.length();
-    const target = u.loaded ? Math.min(sm(30, 90, dc), 1 - sm(560, 740, u.dist)) : 0;
+    const target = u.loaded ? Math.min(sm(30, 90, dc), 1 - sm(380, 470, u.dist)) : 0;
     m.material.opacity += (target - m.material.opacity) * 0.06;
     m.visible = m.material.opacity > 0.01;
   }
