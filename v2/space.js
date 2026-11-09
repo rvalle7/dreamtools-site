@@ -154,7 +154,7 @@ function harvest(sec) {
   z -= 10;
 }
 function build() {
-  ['work', 'tools', '3d', 'lab', 'about'].forEach((id) => harvest($('#' + id)));
+  ['work', 'tools', '3d', 'lab', 'about'].forEach((id) => harvest(document.getElementById(id)));
   // contato: o bloco inteiro é uma janela no fim
   const ct = $('#contact .wrap');
   const head = document.createElement('div'); head.className = 'hudBlock';
