@@ -140,7 +140,7 @@ function harvest(sec) {
     if (c.matches('.kick,h2,.lead') || (c.tagName === 'A' && c.querySelector('h2'))) head.appendChild(c);
     else stuff.push(c);
   });
-  sections.push({ id: sec.id, z0: z + 6, head });
+  sections.push({ id: sec.id, z0: z + 16, head });
   const small = [], step = mobile ? 3.8 : 3.6;
   const flushSmall = () => {
     small.splice(0).forEach((el, i) => {
@@ -166,7 +166,7 @@ function build() {
   // contato: o bloco inteiro é uma janela no fim
   const ct = $('#contact .wrap');
   const head = document.createElement('div'); head.className = 'hudBlock';
-  sections.push({ id: 'contact', z0: z + 6, head });
+  sections.push({ id: 'contact', z0: z + 12, head });
   const box = document.createElement('div'); box.className = 'contactIt';
   [...ct.children].forEach((c) => box.appendChild(c));
   const ft = $('footer .wrap'); if (ft) { const f = document.createElement('div'); f.className = 'footIt'; [...ft.children].forEach((c) => f.appendChild(c)); box.appendChild(f); }
