@@ -163,7 +163,7 @@ function orbitAt(S, H, t, out) {
   return out.copy(E).add(_c);
 }
 function horizon(spread, out) {           // um ponto logo além da borda da Terra, perto do sol
-  const n = new THREE.Vector2(LIMB.x + spread * 0.55, LIMB.y - spread * 0.2);
+  const n = new THREE.Vector2(LIMB.x + spread * 0.62, LIMB.y - spread * 0.7);
   return ndcPoint(n.x, n.y, earth.position.length() * 1.02, out);
 }
 
@@ -178,7 +178,7 @@ function buildOrbit() {
     const w = mobile ? 22 : 30;
     m.scale.set(w, w / 1.75, 1);
     let nx, ny; do { nx = Math.random() * 2.2 - 1.1; ny = Math.random() * 1.6 - 1.1; } while (ny > 0.25 && Math.abs(nx) < 0.55);
-    m.userData = { url, loaded: false, t: i / n, sp: 0.75 + Math.random() * 0.5, nx, ny, d: 150 + Math.random() * 170, hs: Math.random() * 2 - 1, rz: (Math.random() - 0.5) * 0.2, S: new THREE.Vector3(), H: new THREE.Vector3() };
+    m.userData = { url, loaded: false, t: -2 + (i / n) * 3, sp: 0.75 + Math.random() * 0.5, nx, ny, d: 150 + Math.random() * 170, hs: Math.random() * 2.4 - 1.2, rz: (Math.random() - 0.5) * 0.2, S: new THREE.Vector3(), H: new THREE.Vector3() };
     bg.add(m); orbit.push(m);
   });
 }
@@ -311,13 +311,13 @@ function frame() {
   for (const s of sky.userData.big) { const u = s.userData, k = u.k * (0.78 + 0.22 * Math.sin(t * 0.85 + u.ph)); s.scale.set(k, k, 1); }
 
   // postais: vão para o horizonte o tempo todo; a rolagem acelera
-  const w = 0.016 + Math.min(0.5, vel * 0.25);
+  const w = 0.03 + Math.min(0.6, vel * 0.25);
   for (const m of orbit) {
     const u = m.userData;
-    u.t += w * u.sp * dt; if (u.t >= 1) u.t -= 1;
-    orbitAt(u.S, u.H, u.t, m.position);
+    u.t += w * u.sp * dt; if (u.t >= 1) u.t -= 3;
+    orbitAt(u.S, u.H, Math.max(0, u.t), m.position);
     m.lookAt(bgCam.position); m.rotateZ(u.rz);
-    const target = u.loaded ? Math.min(sm(0, 0.12, u.t), 1 - sm(0.82, 1, u.t)) : 0;
+    const target = u.loaded && u.t > 0 ? Math.min(sm(0, 0.12, u.t), 1 - sm(0.5, 0.78, u.t)) : 0;
     m.material.opacity += (target - m.material.opacity) * 0.08;
     m.visible = m.material.opacity > 0.01;
   }
@@ -342,7 +342,7 @@ function frame() {
     if (vis !== it.o.visible) { it.o.visible = vis; it.el.style.visibility = vis ? 'visible' : 'hidden'; }
     setPlaying(it, vis);
     if (!vis) continue;
-    orbitAt(it.S, it.H, Math.max(0, tt), it.o.position);
+    orbitAt(it.S, it.H, it.kind === 'end' ? Math.max(0, tt) * 0.12 : Math.max(0, tt), it.o.position);
     _x.copy(it.o.position).applyMatrix4(bgCam.matrixWorldInverse);
     const depth = -_x.z; if (depth < 1) { it.el.style.visibility = 'hidden'; it.o.visible = false; continue; }
     _y.copy(it.o.position).project(bgCam);
