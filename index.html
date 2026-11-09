@@ -123,6 +123,17 @@ h2{font-size:clamp(46px,7.2vw,88px);margin-bottom:18px}
 .tool a{font-size:14px;color:var(--acc);text-decoration:none;font-weight:600}
 .tool .tnote{font:600 14px Barlow,system-ui,sans-serif;color:var(--acc)}
 .tool .st{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7fd1a8;font-weight:600}
+.mapcard{position:relative;padding:0;overflow:hidden;gap:0;background:#08090c url(media/img/mapa-bg.jpg) center top/cover no-repeat}
+.mapcard::before{content:"";position:absolute;inset:0;background:linear-gradient(#08090c99 0%,#08090c00 30%,#08090c00 50%,#08090cb3 66%,#08090ce0 100%);pointer-events:none;transition:opacity .3s}
+.mapcard:hover::before{opacity:.75}
+.mapcard a{position:relative;z-index:1;text-decoration:none}
+.mapcard .mc-open{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:110px;padding:26px 26px 22px;color:inherit}
+.mapcard .mc-top,.mapcard .mc-bot{display:flex;flex-direction:column;gap:10px}
+.mapcard .mc-open p{color:#c9c9d2;text-shadow:0 1px 3px #000}
+.mapcard .mc-go{font-size:14px;color:var(--acc);font-weight:600}
+.mapcard .mc-open:hover .mc-go{text-decoration:underline}
+.mapcard .mc-dl{display:block;padding:16px 26px 20px;border-top:1px solid #ffffff14;background:#08090c99;backdrop-filter:blur(4px)}
+.mapcard .mc-dl:hover{background:#08090cdd}
 /* personal */
 /* postais: fita rolando (igual ao track73.com.br) */
 .pcfeat{display:block}
@@ -246,11 +257,12 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
       <p class="pt">Copiloto de voz com IA que vê o que você vê no cockpit e conta sobre o mundo real lá embaixo — mapa no EFB, destinos, turismo. Lista de espera aberta.</p>
       <p class="en">AI voice companion that sees what you see in the cockpit and talks about the real world below — EFB map, destinations, sightseeing. Waitlist open.</p>
       <a href="https://track73.com.br" target="_blank" rel="noopener">track73.com.br ↗</a></div>
-    <div class="tool"><div class="ic" style="background:#26262c;color:#e10435">PG</div><div class="st">MSFS · <span class="pt">grátis</span><span class="en">free</span></div><h3 class="pt">Mapa de Fotogrametria</h3><h3 class="en">Photogrammetry Map</h3>
-      <p class="pt">Globo 3D com todos os lugares em fotogrametria do Flight Simulator (até WU23 + CU16): dia e noite, relevo, divisão política. Marque onde já voou.</p>
+    <div class="tool mapcard">
+      <a class="mc-open" href="/mapa/"><span class="mc-top"><div class="ic" style="background:#26262c;color:#e10435">PG</div><div class="st">MSFS · <span class="pt">grátis</span><span class="en">free</span></div><h3 class="pt">Mapa de Fotogrametria</h3><h3 class="en">Photogrammetry Map</h3></span>
+      <span class="mc-bot"><p class="pt">Globo 3D com todos os lugares em fotogrametria do Flight Simulator (até WU23 + CU16): dia e noite, relevo, divisão política. Marque onde já voou.</p>
       <p class="en">3D globe of every photogrammetry place in Flight Simulator (through WU23 + CU16): day and night, terrain, borders. Tick where you've flown.</p>
-      <a href="/mapa/"><span class="pt">Abrir o mapa online</span><span class="en">Open the map online</span> →</a><br>
-      <a href="https://flightsim.to/addon/113739/msfs-photogrammetry-map-interactive-visited-tracker-wu22-cu15" target="_blank" rel="noopener"><span class="pt">Baixar (flightsim.to)</span><span class="en">Download (flightsim.to)</span> ↓</a></div>
+      <span class="mc-go"><span class="pt">Abrir o mapa online</span><span class="en">Open the map online</span> →</span></span></a>
+      <a class="mc-dl" href="https://flightsim.to/addon/113739/msfs-photogrammetry-map-interactive-visited-tracker-wu22-cu15" target="_blank" rel="noopener"><span class="pt">Baixar (flightsim.to)</span><span class="en">Download (flightsim.to)</span> ↓</a></div>
     <div class="tool"><div style="display:flex;gap:8px"><div class="ic" style="background:#3b3b3b;color:#c9f24a">DR</div><div class="ic" style="background:#2a0634;color:#ea77ff">Pr</div></div><div class="st">DaVinci Resolve · Premiere</div><h3 class="pt">Automação de edição</h3><h3 class="en">Editing automation</h3>
       <p class="pt">Scripts que montam shorts 9:16 com template, aplicam a cor e detectam tosses e ruídos no áudio do microfone para limpeza rápida. No Premiere, painéis e scripts próprios.</p>
       <p class="en">Scripts that build 9:16 shorts from a template, apply the grade and detect coughs and noises in the mic track for quick cleanup. Plus my own panels and scripts for Premiere.</p>
@@ -516,7 +528,10 @@ document.getElementById('cnpj').textContent=CFG.cnpj.startsWith('__')?'':'CNPJ '
 document.getElementById('yr').textContent=new Date().getFullYear();
 // contador discreto de visitas (abacus.jasoncameron.dev). Conta 1x por navegador por dia; não conta em teste local
 (async()=>{const el=document.getElementById('visits'),B='https://abacus.jasoncameron.dev/',K='dreamtools-com-br/visits';
- const local=!/github\.io|dreamtools\.com\.br/.test(location.hostname)||location.search.includes('nocount');
+ // só o dono vê o número: abrir uma vez com ?eu liga neste navegador (e as visitas dele deixam de contar); ?eu=0 desliga
+ let me=false;try{const q=new URLSearchParams(location.search);if(q.has('eu'))localStorage.setItem('dt-me',q.get('eu')==='0'?'0':'1');me=localStorage.getItem('dt-me')==='1'}catch(e){}
+ if(!me)el.style.display='none';
+ const local=me||!/github\.io|dreamtools\.com\.br/.test(location.hostname)||location.search.includes('nocount');
  let day='';try{day=localStorage.getItem('dt-v')||''}catch(e){}
  const today=new Date().toISOString().slice(0,10),hit=!local&&day!==today;
  try{const r=await fetch(B+(hit?'hit/':'get/')+K);if(!r.ok)return;const n=(await r.json()).value;
