@@ -11,23 +11,23 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 const scene = new THREE.Scene();
 const BG = 0x0b0b0e;
 scene.background = new THREE.Color(BG);
-scene.fog = new THREE.FogExp2(BG, mobile ? 0.03 : 0.024);
+scene.fog = new THREE.FogExp2(BG, mobile ? 0.026 : 0.017);
 const camera = new THREE.PerspectiveCamera(mobile ? 70 : 55, 1, 0.1, 500);
 
 // corredor de postais
-const GAP = mobile ? 5.2 : 6.2;
+const GAP = mobile ? 4.6 : 5.2;
 const cards = [];
 const geo = new THREE.PlaneGeometry(1, 1);
 const loader = new THREE.TextureLoader();
 PCS.forEach((url, i) => {
   const a = i * 2.39996 + 0.6;               // ângulo áureo: espalha sem repetir
-  const r = (mobile ? 3.0 : 4.6) + (i % 3) * 0.9;
+  const r = (mobile ? 3.2 : 5.4) + (i % 3) * 1.1;
   const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, fog: true });
   const m = new THREE.Mesh(geo, mat);
-  const w = mobile ? 3.0 : 3.6;
+  const w = mobile ? 3.4 : 5.0;
   m.scale.set(w, w / 1.75, 1);
-  m.position.set(Math.cos(a) * r * 1.25, Math.sin(a) * r * 0.62, -i * GAP - 6);
-  m.rotation.set(Math.sin(a) * 0.12, -Math.cos(a) * 0.32, (Math.random() - 0.5) * 0.08);
+  m.position.set(Math.cos(a) * r * 1.3, Math.sin(a) * r * 0.66, -i * GAP - 3);
+  m.rotation.set(Math.sin(a) * 0.1, -Math.cos(a) * 0.22, (Math.random() - 0.5) * 0.08);
   m.userData = { url, base: m.position.clone(), ph: Math.random() * 6.28, rz: m.rotation.z, loaded: false };
   scene.add(m);
   cards.push(m);
