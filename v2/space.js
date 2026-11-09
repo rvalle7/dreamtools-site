@@ -155,11 +155,9 @@ function buildOrbit() {
     m.scale.set(w, w / 1.75, 1);
     m.userData = {
       url, loaded: false,
-      phi: -Math.PI + (i / n) * Math.PI * 2,   // espalhados pelo anel
-      tilt: (Math.random() - 0.5) * 0.9,       // inclinação do anel
-      rk: 0.86 + Math.random() * 0.12,         // raio do anel / distância da câmera
-      lat: (Math.random() * 1.4 - 0.9),        // desvio lateral (mais para baixo)
-      lx: (Math.random() - 0.35) * 1.2,
+      dist: 60 + (i / n) * 680,                // distância ao longo do caminho
+      ang: Math.random() * Math.PI * 2,        // ângulo em volta do centro do redemoinho
+      rr: 0.6 + Math.random() * 0.8,           // abertura
       rz: (Math.random() - 0.5) * 0.25,
     };
     bg.add(m); orbit.push(m);
@@ -175,19 +173,15 @@ function pump() {
     }, undefined, () => { pBusy--; pump(); });
   }
 }
-const _u = new THREE.Vector3(), _v = new THREE.Vector3(), _w = new THREE.Vector3(), _p = new THREE.Vector3();
+const _ax = new THREE.Vector3(), _e1 = new THREE.Vector3(), _e2 = new THREE.Vector3();
+const SWIRL = new THREE.Vector2(0.05, -0.12);   // centro do redemoinho na tela: perto do sol
+function swirlAxes() {
+  bgCam.rotation.set(0, 0, 0); bgCam.updateMatrixWorld();
+  _ax.copy(ndcDir(SWIRL)); _e1.set(0, 1, 0).sub(_e2.copy(_ax).multiplyScalar(_ax.y)).normalize(); _e2.crossVectors(_ax, _e1);
+}
 function orbitPos(u, out) {
-  const E = earth.position, D = E.length();
-  _u.copy(E).multiplyScalar(-1 / D);                        // da Terra para a câmera
-  _v.set(0, 1, 0).sub(_w.copy(_u).multiplyScalar(_u.y)).normalize(); // "para cima" no plano
-  _w.crossVectors(_u, _v);                                  // lateral
-  const a = u.tilt, vx = _v.x * Math.cos(a) + _w.x * Math.sin(a), vy = _v.y * Math.cos(a) + _w.y * Math.sin(a), vz = _v.z * Math.cos(a) + _w.z * Math.sin(a);
-  const r = D * u.rk;
-  out.set(E.x + r * (Math.cos(u.phi) * _u.x + Math.sin(u.phi) * vx), E.y + r * (Math.cos(u.phi) * _u.y + Math.sin(u.phi) * vy), E.z + r * (Math.cos(u.phi) * _u.z + Math.sin(u.phi) * vz));
-  // afasta do eixo da câmera, mais para baixo e para os lados
-  const f = sm(-1.2, 0, u.phi) * (1 - sm(0, 0.3, u.phi));
-  out.addScaledVector(_v, u.lat * 70 * f).addScaledVector(_w, u.lx * 90 * f);
-  return out;
+  const r = (18 + (760 - u.dist) * 0.16) * u.rr;   // abre conforme chega perto
+  return out.copy(_ax).multiplyScalar(u.dist).addScaledVector(_e1, Math.sin(u.ang) * r).addScaledVector(_e2, Math.cos(u.ang) * r * 1.5);
 }
 
 // naves e satélites (os mesmos ícones do mapa) em órbita baixa
@@ -393,7 +387,7 @@ function size() {
   camera.aspect = bgCam.aspect = w / h;
   camera.fov = (w / h < 1) ? 72 : 55;
   camera.updateProjectionMatrix(); bgCam.updateProjectionMatrix();
-  placeEarth();
+  placeEarth(); swirlAxes();
 }
 addEventListener('resize', size);
 
@@ -417,14 +411,15 @@ function frame() {
   for (const s of sky.userData.big) { const u = s.userData, k = u.k * (0.78 + 0.22 * Math.sin(t * 0.85 + u.ph)); s.scale.set(k, k, 1); }
 
   // postais: giram sempre; a rolagem acelera
-  const w = 0.022 + Math.min(0.25, vel * 0.012);
+  const w = 16 + Math.min(220, vel * 9);   // unidades/s: sempre andando; a rolagem acelera
   for (const m of orbit) {
     const u = m.userData;
-    u.phi += w * dt; if (u.phi > 0.35) u.phi -= Math.PI * 2;
+    u.dist -= w * dt; u.ang += dt * (0.05 + w * 0.0006);
+    if (u.dist < 30) { u.dist += 700; u.ang = Math.random() * Math.PI * 2; m.material.opacity = 0; }
     orbitPos(u, m.position);
     m.lookAt(bgCam.position); m.rotateZ(u.rz);
     const dc = m.position.length();
-    const target = u.loaded ? Math.min(sm(30, 110, dc), sm(-Math.PI, -2.3, u.phi)) : 0;
+    const target = u.loaded ? Math.min(sm(30, 90, dc), 1 - sm(560, 740, u.dist)) : 0;
     m.material.opacity += (target - m.material.opacity) * 0.06;
     m.visible = m.material.opacity > 0.01;
   }
@@ -446,8 +441,8 @@ function frame() {
     const near = it.wide ? sm(1.2, 6.5, d) : sm(0.6, 2.8, d);
     const far = it.wide ? 1 - sm(28, 44, d) : 1 - sm(17, 27, d);
     const a = Math.min(near, far);
-    if (a < 0.01) { if (it.el.style.display !== 'none') it.el.style.display = 'none'; continue; }
-    if (it.el.style.display === 'none') it.el.style.display = '';
+    it.o.visible = a >= 0.01;
+    if (!it.o.visible) continue;
     it.el.style.opacity = a.toFixed(3);
   }
   // som do card acompanha a posição dele na tela e a distância
