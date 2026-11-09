@@ -55,11 +55,11 @@ const earthMat = new THREE.ShaderMaterial({
       float l=dot(normalize(vN),sun);
       float day=smoothstep(-0.12,0.25,l);
       vec3 d=texture2D(dayT,vUv).rgb*1.15;
-      vec3 n=texture2D(nightT,vUv).rgb; n=pow(n,vec3(1.4))*vec3(1.6,1.25,0.85);
-      vec3 col=mix(n*0.95+d*0.025, d*(0.25+0.9*max(l,0.)), day);
+      vec3 n=texture2D(nightT,vUv).rgb; n=pow(n,vec3(1.25))*vec3(2.4,1.9,1.3);
+      vec3 col=mix(n+d*0.012, d*(0.25+0.9*max(l,0.)), day);
       float rim=pow(1.-max(dot(normalize(vN),vV),0.),3.0);
       float lit=smoothstep(-0.35,0.5,l);
-      vec3 atm=mix(vec3(0.10,0.22,0.55),vec3(1.0,0.55,0.22),pow(max(dot(normalize(vV*-1.),sun),0.),3.))*rim*(0.25+1.6*lit);
+      float rim5=pow(1.-max(dot(normalize(vN),vV),0.),5.0); float s=pow(max(dot(-vV,sun),0.),60.); vec3 atm=mix(vec3(0.08,0.2,0.55),vec3(1.0,0.55,0.2),s)*rim5*(0.35+2.5*lit);
       // faixa do crepúsculo
       float tw=exp(-pow(l*7.,2.))*0.6; col+=vec3(1.0,0.45,0.15)*tw*0.25;
       gl_FragColor=vec4(col+atm,1.);
@@ -68,13 +68,13 @@ const earthMat = new THREE.ShaderMaterial({
 });
 const R = 60;
 const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 128, 96), earthMat);
-earth.position.set(-38, -66, -150);
+earth.position.set(-74, -50, -150);
 earth.rotation.set(0.35, -1.2, 0.41);   // Brasil virado para nós
 bg.add(earth);
 { // sol: um pouco além da borda da Terra, em cima à direita (o flare encosta no horizonte)
   const c = earth.position.clone().normalize();
   const ang = Math.asin(R / earth.position.length()) * 1.06;
-  const want = new THREE.Vector3(0.55, 1, 0).normalize();
+  const want = new THREE.Vector3(1, 0.42, 0).normalize();
   const axis = new THREE.Vector3().crossVectors(c, want).normalize();
   SUN.copy(c).applyAxisAngle(axis, ang);
   earthMat.uniforms.sun.value.copy(SUN);
@@ -85,7 +85,7 @@ const halo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.035, 96, 64), new THR
   vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 w=modelMatrix*vec4(position,1.); vN=normalize(mat3(modelMatrix)*normal); vV=normalize(cameraPosition-w.xyz); gl_Position=projectionMatrix*viewMatrix*w; }`,
   fragmentShader: `uniform vec3 sun; varying vec3 vN; varying vec3 vV;
     void main(){ float f=pow(clamp(1.0+dot(vN,vV)*1.0,0.,1.),0.0); float e=pow(1.-abs(dot(vN,vV)),6.);
-      float s=pow(max(dot(-vV,sun),0.),6.); vec3 c=mix(vec3(0.2,0.45,1.0),vec3(1.0,0.6,0.25),s);
+      float s=pow(max(dot(-vV,sun),0.),40.); vec3 c=mix(vec3(0.2,0.45,1.0),vec3(1.0,0.6,0.25),s);
       gl_FragColor=vec4(c*e*(0.35+2.2*s),1.); }`,
 }));
 halo.position.copy(earth.position);
@@ -145,7 +145,7 @@ function harvest(sec) {
   const flushSmall = () => {
     small.splice(0).forEach((el, i) => {
       const s = lane(), w = (el.classList.contains('big') ? 6.4 : el.classList.contains('card') ? 4.6 : 3.8);
-      const off = mobile ? 0.6 : 1.05 + (i % 2) * 0.35;
+      const off = mobile ? 0.9 : 1.8 + (i % 2) * 0.4;
       place(el, s * (w / 2 + off), ((i * 37) % 5 - 2) * 0.32, z, -s * 0.2);
       z -= step;
     });
