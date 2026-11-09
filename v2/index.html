@@ -184,26 +184,41 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .modal .t{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#ddd}
 @media(max-width:760px){nav ul{display:none}.lang{margin-left:auto}section{padding:80px 0 30px}}
 @media(prefers-reduced-motion:reduce){.hero > video{display:none}}
-/* ===== v2: espaço 3D + janelas dimensionais ===== */
-body{background:transparent}
+/* ===== v2: túnel em órbita (three.js + HTML em 3D) ===== */
+html{scroll-behavior:auto}
+body{background:#04050a}
 #space{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block}
-body>header,body>section,body>footer{position:relative;z-index:1}
-.hero{background:none!important}.hero .kb{display:none!important}
-.hero:before{background:linear-gradient(90deg,#0b0b0e99 0%,#0b0b0e22 60%,#0b0b0e00 100%)}
-.hero:after{background:linear-gradient(180deg,#0b0b0e33 0%,#0b0b0e00 55%,#0b0b0e00 100%)}
-section{perspective:1600px;padding:80px 0 30px}
-.wrap.win{max-width:min(1240px,calc(100% - 32px));padding:52px 44px;border-radius:28px;
-  background:linear-gradient(160deg,#16161ccc,#0b0b10c2);border:1px solid #ffffff17;
-  backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);
-  box-shadow:0 50px 140px -50px #000,inset 0 1px 0 #ffffff14;
-  transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(var(--tz,0px));
-  opacity:0;translate:0 90px;scale:.93;
-  transition:opacity 1s ease,translate 1.2s cubic-bezier(.2,.8,.2,1),scale 1.2s cubic-bezier(.2,.8,.2,1)}
-.wrap.win.in{opacity:1;translate:0 0;scale:1}
-.contact .wrap.win{text-align:inherit}
-footer{background:#0b0b0ee6}
+#css3d{position:fixed!important;inset:0;z-index:1;pointer-events:none}
+#css3d .it{pointer-events:auto}
+html.v2ready body>header.hero,html.v2ready body>section,html.v2ready body>footer{display:none!important}
+#spacer{position:relative;z-index:-1}
+nav{z-index:50}
+/* HUD: título da seção parado no topo */
+#hud{position:fixed;left:0;right:0;top:86px;z-index:5;pointer-events:none;text-align:center;opacity:0;transform:translateY(-8px);transition:opacity .35s,transform .35s}
+#hud.on{opacity:1;transform:none}
+#hud .hudBlock{max-width:820px;margin:0 auto;padding:0 20px;text-shadow:0 2px 18px #000c}
+#hud .kick{margin-bottom:6px}
+#hud h2{font-size:clamp(38px,5vw,64px);margin-bottom:6px}
+#hud .lead{margin:0 auto;font-size:15px;max-width:640px;color:#b9b6c0}
+#hud a{pointer-events:auto;text-decoration:none}
+/* objetos no espaço */
+.it{will-change:transform,opacity}
+.heroIt{width:1180px;text-shadow:0 3px 24px #000d}
+.heroIt h1{margin-bottom:22px}
+.heroIt p{max-width:760px;font-size:20px}
+.card.it{width:460px;aspect-ratio:16/10;box-shadow:0 30px 80px -30px #000}
+.card.big.it{width:640px;aspect-ratio:16/9}
+.tool.it{width:380px;min-height:300px;box-shadow:0 30px 80px -30px #000;background:#13131ae8}
+.feat.it,.about.it,.more.it,.contactIt.it{width:1120px;padding:38px 42px;border:1px solid #ffffff17;border-radius:26px;
+  background:linear-gradient(160deg,#16161cd9,#0b0b10cc);box-shadow:0 50px 140px -50px #000,inset 0 1px 0 #ffffff14}
+.more.it{width:auto;padding:20px 26px}
+.pcfeat.it{width:1500px}
+.pcfeat.it .reel{width:100%;margin:26px 0 0}
+.about.it{width:1240px}
+.contactIt.it{text-align:center;width:1000px;padding:60px 40px 30px}
+.contactIt h2{font-size:110px}
+.contactIt .footIt{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--mut);font-size:13px;text-align:left}
 .v2tag{position:fixed;left:16px;bottom:14px;z-index:60;font:600 11px Barlow,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#ffb23f;background:#0b0b0ecc;border:1px solid #ffb23f55;border-radius:99px;padding:5px 11px;text-decoration:none}
-@media(max-width:760px){.wrap.win{padding:30px 18px;border-radius:20px;backdrop-filter:none;-webkit-backdrop-filter:none;background:#0e0e13eb}}
 
 </style>
 </head>
@@ -235,7 +250,7 @@ footer{background:#0b0b0ee6}
   </div>
 </header>
 
-<section id="work"><div class="wrap win">
+<section id="work"><div class="wrap">
   <div class="kick">Motion Design</div>
   <h2 class="pt">Trabalho selecionado</h2><h2 class="en">Selected work</h2>
   <p class="lead pt">Filmes de marca, explainers, 3D, ilustração animada e tipografia cinética. Passe o mouse para ver em movimento, clique para ampliar.</p>
@@ -247,7 +262,7 @@ footer{background:#0b0b0ee6}
   </div>
 </div></section>
 
-<section id="tools"><div class="wrap win">
+<section id="tools"><div class="wrap">
   <div class="kick">Dreamtools</div>
   <h2 class="pt">Ferramentas</h2><h2 class="en">Tools</h2>
   <p class="lead pt">Nasceram da rotina de produção: quando algo se repete, vira ferramenta. Algumas são produtos, outras são o laboratório.</p>
@@ -303,7 +318,7 @@ footer{background:#0b0b0ee6}
   </div>
 </div></section>
 
-<section id="3d"><div class="wrap win">
+<section id="3d"><div class="wrap">
   <div class="kick">3D · <span class="pt">Arquitetura</span><span class="en">Architecture</span> · VR</div>
   <h2>3D & VR</h2>
   <p class="lead pt">Maya desde a primeira versão, Unreal, Twinmotion e Unity. Arquitetura, visualização e mundos para explorar em VR.</p>
@@ -347,7 +362,7 @@ footer{background:#0b0b0ee6}
   </div>
 </div></section>
 
-<section id="lab"><div class="wrap win">
+<section id="lab"><div class="wrap">
   <div class="kick pt">Pessoal · Hobbies</div><div class="kick en">Personal · Hobbies</div>
   <h2 class="pt">Fora do expediente</h2><h2 class="en">After hours</h2>
   <p class="lead pt">O que eu faço por paixão — e que acaba virando ferramenta, produto ou filme.</p>
@@ -406,7 +421,7 @@ footer{background:#0b0b0ee6}
   </div>
 </div></section>
 
-<section id="about"><div class="wrap win">
+<section id="about"><div class="wrap">
   <div class="kick pt">Sobre</div><div class="kick en">About</div>
   <div class="about">
     <div>
@@ -434,7 +449,7 @@ footer{background:#0b0b0ee6}
   </div>
 </div></section>
 
-<section class="contact" id="contact"><div class="wrap win">
+<section class="contact" id="contact"><div class="wrap">
   <div class="kick pt">Vamos conversar</div><div class="kick en">Let's talk</div>
   <a href="mailto:rvalle7@icloud.com" style="text-decoration:none"><h2 class="pt">Tem um projeto?</h2><h2 class="en">Got a project?</h2></a>
   <a class="mail" id="mail" href="/v2/#"></a>
@@ -564,6 +579,6 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   const f=()=>el.textContent=n.toLocaleString(L()=='pt'?'pt-BR':'en-US')+(L()=='pt'?' visitas':' visits');f();lb.addEventListener('click',f)}catch(e){}})();
 </script>
 <script>window.DT_PCS=["/v2/pc/01.webp", "/v2/pc/02.webp", "/v2/pc/03.webp", "/v2/pc/04.webp", "/v2/pc/05.webp", "/v2/pc/06.webp", "/v2/pc/07.webp", "/v2/pc/08.webp", "/v2/pc/09.webp", "/v2/pc/10.webp", "/v2/pc/11.webp", "/v2/pc/12.webp", "/v2/pc/13.webp", "/v2/pc/15.webp", "/v2/pc/16.webp", "/v2/pc/17.webp", "/v2/pc/18.webp", "/v2/pc/19.webp", "/v2/pc/20.webp", "/v2/pc/21.webp", "/v2/pc/22.webp", "/v2/pc/23.webp", "/v2/pc/24.webp", "/v2/pc/25.webp", "/v2/pc/26.webp", "/v2/pc/27.webp", "/v2/pc/28.webp", "/v2/pc/29.webp", "/v2/pc/30.webp", "/v2/pc/31.webp", "/v2/pc/32.webp", "/v2/pc/33.webp", "/v2/pc/34.webp", "/v2/pc/35.webp", "/v2/pc/36.webp", "/v2/pc/37.webp", "/v2/pc/38.webp", "/v2/pc/39.webp", "/v2/pc/40.webp", "/v2/pc/41.webp", "/v2/pc/43.webp", "/v2/pc/45.webp", "/v2/pc/46.webp", "/v2/pc/47.webp", "/v2/pc/48.webp", "/v2/pc/49.webp", "/v2/pc/50.webp", "/v2/pc/51.webp", "/v2/pc/52.webp", "/v2/pc/53.webp", "/v2/pc/54.webp", "/v2/pc/55.webp", "/v2/pc/56.webp", "/v2/pc/57.webp", "/v2/pc/58.webp", "/v2/pc/59.webp"];</script>
-<script type="module" src="/v2/space.js?v=202611090603"></script>
+<script type="module" src="/v2/space.js?v=202611090615"></script>
 </body>
 </html>

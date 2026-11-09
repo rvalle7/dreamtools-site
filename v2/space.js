@@ -1,129 +1,289 @@
-// Dreamtools v2: espaço 3D atrás do site (three.js). Os postais dos voos flutuam num corredor;
-// a câmera viaja com a rolagem e o mouse dá a paralaxe.
+// Dreamtools v2 — túnel em órbita. A rolagem leva a câmera para a frente; capa, trabalhos e
+// ferramentas flutuam no caminho e passam por você. Postais ao longe; a Terra e o sol ao fundo.
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+import { CSS3DRenderer, CSS3DObject } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/renderers/CSS3DRenderer.js';
 
 const PCS = window.DT_PCS || [];
-const cv = document.getElementById('space');
 const mobile = matchMedia('(max-width: 760px)').matches;
-const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: !mobile, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobile ? 1.5 : 1.75));
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-const scene = new THREE.Scene();
-const BG = 0x0b0b0e;
-scene.background = new THREE.Color(BG);
-scene.fog = new THREE.FogExp2(BG, mobile ? 0.026 : 0.017);
-const camera = new THREE.PerspectiveCamera(mobile ? 70 : 55, 1, 0.1, 500);
+const PX = 0.01;              // 1 px do HTML = 0,01 unidade
+const PXU = mobile ? 70 : 85; // px de rolagem por unidade de profundidade
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-// corredor de postais
-const GAP = mobile ? 4.6 : 5.2;
-const cards = [];
-const geo = new THREE.PlaneGeometry(1, 1);
-const loader = new THREE.TextureLoader();
-PCS.forEach((url, i) => {
-  const a = i * 2.39996 + 0.6;               // ângulo áureo: espalha sem repetir
-  const r = (mobile ? 3.2 : 5.4) + (i % 3) * 1.1;
-  const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, fog: true });
-  const m = new THREE.Mesh(geo, mat);
-  const w = mobile ? 3.4 : 5.0;
-  m.scale.set(w, w / 1.75, 1);
-  m.position.set(Math.cos(a) * r * 1.3, Math.sin(a) * r * 0.66, -i * GAP - 3);
-  m.rotation.set(Math.sin(a) * 0.1, -Math.cos(a) * 0.22, (Math.random() - 0.5) * 0.08);
-  m.userData = { url, base: m.position.clone(), ph: Math.random() * 6.28, rz: m.rotation.z, loaded: false };
-  scene.add(m);
-  cards.push(m);
+// ---------- renderizadores ----------
+const cv = $('#space');
+const gl = new THREE.WebGLRenderer({ canvas: cv, antialias: !mobile, powerPreference: 'high-performance' });
+gl.setPixelRatio(Math.min(devicePixelRatio || 1, mobile ? 1.5 : 1.75));
+gl.outputColorSpace = THREE.SRGBColorSpace;
+gl.autoClear = false;
+const css = new CSS3DRenderer();
+css.domElement.id = 'css3d';
+document.body.appendChild(css.domElement);
+
+const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 600);
+const scene = new THREE.Scene();       // túnel (WebGL)
+const cssScene = new THREE.Scene();    // HTML em 3D
+
+// ---------- fundo: Terra em órbita + sol ----------
+const bg = new THREE.Scene();
+const bgCam = new THREE.PerspectiveCamera(40, 1, 0.1, 2000);
+const SUN = new THREE.Vector3(0.62, 0.16, -1).normalize();   // sol atrás da Terra, à direita
+{
+  // estrelas
+  const n = 2600, p = new Float32Array(n * 3), c = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const v = new THREE.Vector3().randomDirection().multiplyScalar(900);
+    p.set([v.x, v.y, v.z], i * 3);
+    const k = 0.55 + Math.random() * 0.45; c.set([k, k, Math.min(1, k * 1.1)], i * 3);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(c, 3));
+  bg.add(new THREE.Points(g, new THREE.PointsMaterial({ size: 1.6, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.9 })));
+}
+const tl = new THREE.TextureLoader();
+const earthMat = new THREE.ShaderMaterial({
+  uniforms: {
+    dayT: { value: null }, nightT: { value: null }, sun: { value: SUN.clone() },
+  },
+  vertexShader: `varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+    void main(){ vUv=uv; vec4 w=modelMatrix*vec4(position,1.); vN=normalize(mat3(modelMatrix)*normal);
+      vV=normalize(cameraPosition-w.xyz); gl_Position=projectionMatrix*viewMatrix*w; }`,
+  fragmentShader: `uniform sampler2D dayT; uniform sampler2D nightT; uniform vec3 sun;
+    varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+    void main(){
+      float l=dot(normalize(vN),sun);
+      float day=smoothstep(-0.12,0.25,l);
+      vec3 d=texture2D(dayT,vUv).rgb*1.15;
+      vec3 n=texture2D(nightT,vUv).rgb; n=pow(n,vec3(1.4))*vec3(1.6,1.25,0.85);
+      vec3 col=mix(n*0.95+d*0.025, d*(0.25+0.9*max(l,0.)), day);
+      float rim=pow(1.-max(dot(normalize(vN),vV),0.),3.0);
+      float lit=smoothstep(-0.35,0.5,l);
+      vec3 atm=mix(vec3(0.10,0.22,0.55),vec3(1.0,0.55,0.22),pow(max(dot(normalize(vV*-1.),sun),0.),3.))*rim*(0.25+1.6*lit);
+      // faixa do crepúsculo
+      float tw=exp(-pow(l*7.,2.))*0.6; col+=vec3(1.0,0.45,0.15)*tw*0.25;
+      gl_FragColor=vec4(col+atm,1.);
+      #include <colorspace_fragment>
+    }`,
 });
-const DEPTH = PCS.length * GAP + 12;
+const R = 60;
+const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 128, 96), earthMat);
+earth.position.set(-38, -66, -150);
+earth.rotation.set(0.35, -1.2, 0.41);   // Brasil virado para nós
+bg.add(earth);
+// halo da atmosfera
+const halo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.035, 96, 64), new THREE.ShaderMaterial({
+  uniforms: { sun: { value: SUN.clone() } }, side: THREE.BackSide, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 w=modelMatrix*vec4(position,1.); vN=normalize(mat3(modelMatrix)*normal); vV=normalize(cameraPosition-w.xyz); gl_Position=projectionMatrix*viewMatrix*w; }`,
+  fragmentShader: `uniform vec3 sun; varying vec3 vN; varying vec3 vV;
+    void main(){ float f=pow(clamp(1.0+dot(vN,vV)*1.0,0.,1.),0.0); float e=pow(1.-abs(dot(vN,vV)),6.);
+      float s=pow(max(dot(-vV,sun),0.),6.); vec3 c=mix(vec3(0.2,0.45,1.0),vec3(1.0,0.6,0.25),s);
+      gl_FragColor=vec4(c*e*(0.35+2.2*s),1.); }`,
+}));
+halo.position.copy(earth.position);
+bg.add(halo);
+tl.load('/v2/tex/earth-day.jpg', (t) => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; earthMat.uniforms.dayT.value = t; });
+tl.load('/v2/tex/earth-night.jpg', (t) => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; earthMat.uniforms.nightT.value = t; });
+// sol: disco + brilho dourado + risco anamórfico
+function glowTex(stops) {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d'), gr = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+  stops.forEach(([o, s]) => gr.addColorStop(o, s)); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const sunGroup = new THREE.Group();
+const add = (map, s, sx = 1) => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending })); m.scale.set(s * sx, s, 1); sunGroup.add(m); return m; };
+add(glowTex([[0, 'rgba(255,190,110,.55)'], [0.25, 'rgba(255,120,40,.22)'], [1, 'rgba(255,80,20,0)']]), 260);
+add(glowTex([[0, 'rgba(255,240,215,1)'], [0.18, 'rgba(255,200,120,.9)'], [0.45, 'rgba(255,130,40,.35)'], [1, 'rgba(255,100,30,0)']]), 70);
+add(glowTex([[0, 'rgba(255,255,245,1)'], [0.4, 'rgba(255,235,190,.9)'], [1, 'rgba(255,200,120,0)']]), 16);
+add(glowTex([[0, 'rgba(255,190,120,.5)'], [1, 'rgba(255,150,60,0)']]), 9, 34);   // risco horizontal
+sunGroup.position.copy(SUN).multiplyScalar(700);
+sunGroup.renderOrder = -1;
+bg.add(sunGroup);
 
-// carrega na ordem do corredor, poucos de cada vez
+// ---------- conteúdo: capa e seções viram objetos 3D ----------
+const items = [];   // {obj, el, z, wide}
+const sections = []; // {id, z0, head}
+function place(el, x, y, z, ry = 0, wide = false) {
+  el.classList.add('it');
+  const o = new CSS3DObject(el);
+  o.position.set(x, y, z); o.rotation.y = ry; o.scale.setScalar(PX);
+  cssScene.add(o);
+  items.push({ o, el, z, wide });
+  return o;
+}
+let z = 0;
+// capa no centro, um pouco acima
+{
+  const hero = $('header.hero .wrap');
+  const box = document.createElement('div'); box.className = 'heroIt';
+  [...hero.children].forEach((c) => box.appendChild(c));
+  place(box, 0, 0.9, -10, 0, true);
+}
+z = -26;
+let side = 1;
+function lane() { side = -side; return side; }
+const halfW = () => Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
+function harvest(sec) {
+  const wrap = $('.wrap', sec);
+  const head = document.createElement('div'); head.className = 'hudBlock';
+  const stuff = [];
+  [...wrap.children].forEach((c) => {
+    if (c.matches('.kick,h2,.lead') || (c.tagName === 'A' && c.querySelector('h2'))) head.appendChild(c);
+    else stuff.push(c);
+  });
+  sections.push({ id: sec.id, z0: z + 6, head });
+  const small = [], step = mobile ? 3.4 : 3.0;
+  const flushSmall = () => {
+    small.splice(0).forEach((el, i) => {
+      const s = lane(), w = (el.classList.contains('big') ? 6.4 : el.classList.contains('card') ? 4.6 : 3.8);
+      const off = mobile ? 0.6 : 1.05 + (i % 2) * 0.35;
+      place(el, s * (w / 2 + off), ((i * 37) % 5 - 2) * 0.32, z, -s * 0.2);
+      z -= step;
+    });
+  };
+  const wideIt = (el) => { flushSmall(); z -= 4; place(el, (lane() * 0.35), 0.1, z, 0, true); z -= 12; };
+  stuff.forEach((c) => {
+    if (c.matches('#grid')) { [...c.children].forEach((k) => small.push(k)); }
+    else if (c.matches('.tools')) { [...c.children].forEach((k) => small.push(k)); }
+    else if (c.matches('.feat,.about,.more')) wideIt(c);
+    else small.push(c);
+  });
+  if (sec.id === 'contact') { const box = document.createElement('div'); box.className = 'contactIt'; stuff.forEach((c) => box.appendChild(c)); }
+  flushSmall();
+  z -= 10;
+}
+function build() {
+  ['work', 'tools', '3d', 'lab', 'about'].forEach((id) => harvest($('#' + id)));
+  // contato: o bloco inteiro é uma janela no fim
+  const ct = $('#contact .wrap');
+  const head = document.createElement('div'); head.className = 'hudBlock';
+  sections.push({ id: 'contact', z0: z + 6, head });
+  const box = document.createElement('div'); box.className = 'contactIt';
+  [...ct.children].forEach((c) => box.appendChild(c));
+  const ft = $('footer .wrap'); if (ft) { const f = document.createElement('div'); f.className = 'footIt'; [...ft.children].forEach((c) => f.appendChild(c)); box.appendChild(f); }
+  z -= 4; place(box, 0, 0.3, z, 0, true);
+  z -= 6;
+  document.documentElement.classList.add('v2ready');
+}
+
+// ---------- postais ao longe ----------
+const cards = [];
+function buildPostcards(depth) {
+  const geo = new THREE.PlaneGeometry(1, 1), gap = depth / Math.max(1, PCS.length);
+  PCS.forEach((url, i) => {
+    const a = i * 2.39996 + 0.6, r = (mobile ? 7 : 11) + (i % 3) * 2.2;
+    const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
+    const w = mobile ? 3.4 : 5.2;
+    m.scale.set(w, w / 1.75, 1);
+    m.position.set(Math.cos(a) * r * 1.2, Math.sin(a) * r * 0.62, -i * gap - 4);
+    m.rotation.set(Math.sin(a) * 0.1, -Math.cos(a) * 0.25, (Math.random() - 0.5) * 0.08);
+    m.userData = { url, by: m.position.y, ph: Math.random() * 6.28, rz: m.rotation.z, loaded: false };
+    scene.add(m); cards.push(m);
+  });
+}
 let next = 0, busy = 0;
 function pump() {
   while (busy < 3 && next < cards.length) {
     const m = cards[next++]; busy++;
-    loader.load(m.userData.url, (t) => {
-      t.colorSpace = THREE.SRGBColorSpace;
-      t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-      const k = t.image.width / t.image.height;
-      m.scale.y = m.scale.x / k;
-      m.material.map = t; m.material.needsUpdate = true; m.userData.loaded = true;
-      busy--; pump();
+    tl.load(m.userData.url, (t) => {
+      t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+      m.scale.y = m.scale.x / (t.image.width / t.image.height);
+      m.material.map = t; m.material.needsUpdate = true; m.userData.loaded = true; busy--; pump();
     }, undefined, () => { busy--; pump(); });
   }
 }
-pump();
 
-// poeira de estrelas
-{
-  const n = mobile ? 900 : 2200, p = new Float32Array(n * 3);
-  for (let i = 0; i < n; i++) {
-    const a = Math.random() * 6.283, r = 9 + Math.random() * 40;
-    p[i * 3] = Math.cos(a) * r; p[i * 3 + 1] = Math.sin(a) * r * 0.7; p[i * 3 + 2] = 10 - Math.random() * (DEPTH + 40);
-  }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3));
-  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xcfd6ff, size: 0.07, sizeAttenuation: true, transparent: true, opacity: 0.75, fog: true })));
-}
-// brilho quente bem no fundo, como um sol distante no fim do corredor
-{
-  const c = document.createElement('canvas'); c.width = c.height = 256;
-  const g = c.getContext('2d'), gr = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-  gr.addColorStop(0, 'rgba(255,214,150,1)'); gr.addColorStop(0.15, 'rgba(255,150,60,.55)'); gr.addColorStop(1, 'rgba(255,90,40,0)');
-  g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending }));
-  s.scale.set(60, 60, 1); s.position.set(0, 0, -DEPTH - 30); scene.add(s);
+// ---------- HUD (títulos parados no topo) ----------
+const hud = document.createElement('div'); hud.id = 'hud'; document.body.appendChild(hud);
+let curSec = null;
+function setHud(s) {
+  if (s === curSec) return; curSec = s;
+  hud.classList.remove('on');
+  setTimeout(() => { hud.innerHTML = ''; if (s) { hud.appendChild(s.head); hud.classList.add('on'); } }, 260);
 }
 
-// entrada: mouse/toque e rolagem
+// ---------- rolagem ----------
+let DEPTH = 1;
+const spacer = document.createElement('div'); spacer.id = 'spacer'; document.body.appendChild(spacer);
+const camZ = () => -scrollY / PXU;
+let cz = 0;
+addEventListener('click', (e) => {
+  const a = e.target.closest('a[href^="/v2/#"]'); if (!a) return;
+  const id = a.getAttribute('href').slice(5);
+  e.preventDefault();
+  if (!id || id === 'top') return scrollTo({ top: 0, behavior: 'smooth' });
+  const s = sections.find((x) => x.id === id);
+  if (s) scrollTo({ top: Math.max(0, -(s.z0 + 4) * PXU), behavior: 'smooth' });
+});
+
+// ---------- mouse ----------
 let mx = 0, my = 0, tx = 0, ty = 0;
 addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth) * 2 - 1; ty = (e.clientY / innerHeight) * 2 - 1; }, { passive: true });
-function scrollP() { const h = document.documentElement.scrollHeight - innerHeight; return h > 0 ? scrollY / h : 0; }
-let cz = 8 - scrollP() * DEPTH;
 
 function size() {
   const w = innerWidth, h = innerHeight;
-  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  gl.setSize(w, h, false); css.setSize(w, h);
+  camera.aspect = bgCam.aspect = w / h;
+  camera.fov = (w / h < 1) ? 72 : 55;
+  camera.updateProjectionMatrix(); bgCam.updateProjectionMatrix();
 }
-addEventListener('resize', size); size();
+addEventListener('resize', size);
 
+const sm = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const clock = new THREE.Clock();
-let visible = true;
-document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
 function frame() {
   requestAnimationFrame(frame);
-  if (!visible) return;
+  if (document.hidden) return;
   const t = clock.getElapsedTime();
   mx += (tx - mx) * 0.05; my += (ty - my) * 0.05;
-  const z = 8 - scrollP() * DEPTH;
-  cz += (z - cz) * 0.07;
-  camera.position.set(mx * 1.4 + Math.sin(t * 0.13) * 0.4, -my * 0.9 + Math.cos(t * 0.11) * 0.3, cz);
-  camera.lookAt(mx * 0.5, -my * 0.3, cz - 22);
-  camera.rotation.z += mx * 0.03;
+  cz += (camZ() - cz) * 0.09;
+  camera.position.set(mx * 0.9, -my * 0.55, cz);
+  camera.lookAt(mx * 0.25, -my * 0.15, cz - 30);
+  // fundo: quase parado, só gira de leve com o mouse e com a viagem
+  bgCam.rotation.set(-my * 0.04, -mx * 0.06 + cz * 0.0004, 0);
+  earth.rotation.y += 0.00025; halo.rotation.y = earth.rotation.y;
+
+  // conteúdo: aparece ao longe, passa por você e some atrás
+  for (const it of items) {
+    const d = cz - it.o.position.z;            // distância à frente
+    const near = it.wide ? sm(1.2, 6.5, d) : sm(0.4, 2.6, d);
+    const far = 1 - sm(38, 62, d);
+    const a = Math.min(near, far);
+    if (a < 0.01) { if (it.el.style.display !== 'none') it.el.style.display = 'none'; continue; }
+    if (it.el.style.display === 'none') it.el.style.display = '';
+    it.el.style.opacity = a.toFixed(3);
+  }
   for (const m of cards) {
-    const u = m.userData, d = m.position.z - cz;
-    m.position.y = u.base.y + Math.sin(t * 0.6 + u.ph) * 0.12;
+    const u = m.userData, d = cz - m.position.z;
+    m.position.y = u.by + Math.sin(t * 0.6 + u.ph) * 0.15;
     m.rotation.z = u.rz + Math.sin(t * 0.4 + u.ph) * 0.02;
-    // aparece suave quando carrega; some ao passar pela câmera
-    const target = u.loaded ? (d > 1.5 ? 0 : d > -2 ? (1.5 - d) / 3.5 : 1) : 0;
+    const target = u.loaded ? Math.min(sm(0.5, 4, d), 1 - sm(55, 95, d)) : 0;
     m.material.opacity += (target - m.material.opacity) * 0.08;
     m.visible = m.material.opacity > 0.01;
   }
-  renderer.render(scene, camera);
-}
-frame();
+  // título da seção atual
+  let s = null; for (const x of sections) if (cz <= x.z0) s = x;
+  setHud(s);
 
-// janelas dimensionais: cada seção é uma janela que gira de leve conforme passa pela tela
-const wins = [...document.querySelectorAll('.win')];
-const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.08 });
-wins.forEach((w) => io.observe(w));
-function tilt() {
-  const vh = innerHeight;
-  for (const w of wins) {
-    if (!w.classList.contains('in')) continue;
-    const r = w.getBoundingClientRect();
-    if (r.bottom < -100 || r.top > vh + 100) continue;
-    const c = (r.top + Math.min(r.height, vh) / 2 - vh / 2) / vh; // -1..1
-    w.style.setProperty('--rx', (c * 5).toFixed(2) + 'deg');
-    w.style.setProperty('--ry', (mx * -2.5).toFixed(2) + 'deg');
-    w.style.setProperty('--tz', (-Math.abs(c) * 60).toFixed(1) + 'px');
-  }
-  requestAnimationFrame(tilt);
+  gl.clear();
+  gl.render(bg, bgCam);
+  gl.clearDepth();
+  gl.render(scene, camera);
+  css.render(cssScene, camera);
 }
-tilt();
+
+function start() {
+  build();
+  DEPTH = -z;
+  spacer.style.height = Math.round(DEPTH * PXU + innerHeight) + 'px';
+  buildPostcards(DEPTH);
+  pump();
+  size();
+  cz = camZ();
+  frame();
+}
+// o grid de trabalhos vem do works.json: espera ele montar
+(function wait(n) {
+  if ($$('#grid .card').length || n > 60) start(); else setTimeout(() => wait(n + 1), 100);
+})(0);
