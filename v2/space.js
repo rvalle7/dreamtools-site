@@ -1,7 +1,6 @@
 // Dreamtools v2 — em órbita. Uma perspectiva só: a da Terra. Postais e conteúdo correm numa órbita
 // que vai de perto da câmera até o horizonte, junto do sol. A Terra gira sozinha, como fundo.
 import * as THREE from 'three';
-import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 import { craftIcon } from './crafts.js';
 
 const PCS = window.DT_PCS || [];
@@ -13,10 +12,9 @@ const sm = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
 const gl = new THREE.WebGLRenderer({ canvas: $('#space'), antialias: !mobile, powerPreference: 'high-performance' });
 gl.setPixelRatio(Math.min(devicePixelRatio || 1, mobile ? 1.5 : 1.75));
 gl.outputColorSpace = THREE.SRGBColorSpace;
-const css = new CSS3DRenderer();
-css.domElement.id = 'css3d';
-document.body.appendChild(css.domElement);
-const cssScene = new THREE.Scene();
+// conteúdo em HTML de verdade (camada 2D por cima): cada item é posicionado pela projeção da câmera,
+// assim o clique e o mouse funcionam normalmente
+const layer = document.createElement('div'); layer.id = 'css3d'; document.body.appendChild(layer);
 
 // ---------- fundo: céu, Terra, sol, postais e naves em órbita ----------
 const bg = new THREE.Scene();
@@ -202,8 +200,9 @@ const items = [], sections = [];
 let slot = 0;
 function add(el, kind, nx, ny, d) {
   el.classList.add('it');
-  const o = new CSS3DObject(el); o.scale.setScalar(PX); cssScene.add(o);
-  const it = { o, el, kind, k: slot, nx, ny, d, S: new THREE.Vector3(), H: new THREE.Vector3(), hs: nx * 0.7 };
+  layer.appendChild(el);
+  const o = { position: new THREE.Vector3(), visible: false };
+  const it = { o, el, kind, k: slot, nx, ny, d, S: new THREE.Vector3(), H: new THREE.Vector3(), hs: nx * 0.7, w: 0, h: 0 };
   items.push(it); return it;
 }
 const LANES = [[-0.5, -0.38], [0.5, -0.5], [0.05, -0.72], [-0.62, 0.02], [0.62, -0.02], [-0.25, -0.55], [0.3, -0.25]];
@@ -258,6 +257,7 @@ function setHud(s) {
 }
 
 // ---------- rolagem, mouse, tela cheia ----------
+let FOCAL = 1000;
 const SPAN = 1.15;               // quanto de rolagem leva para um item ir de perto ao horizonte
 const PXS = mobile ? 900 : 1100; // px de rolagem por unidade de "slot"
 const spacer = document.createElement('div'); spacer.id = 'spacer'; document.body.appendChild(spacer);
@@ -279,9 +279,11 @@ addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth) * 2 - 1; 
 }
 function size() {
   const w = innerWidth, h = innerHeight;
-  gl.setSize(w, h, false); css.setSize(w, h);
+  gl.setSize(w, h, false);
   bgCam.aspect = w / h; bgCam.fov = (w / h < 1) ? 60 : 40; bgCam.updateProjectionMatrix();
   placeEarth(); laneOrbit(); laneItems();
+  FOCAL = 0.5 * h / Math.tan(THREE.MathUtils.degToRad(bgCam.fov / 2));
+  for (const it of items) { it.w = it.el.offsetWidth; it.h = it.el.offsetHeight; }
 }
 addEventListener('resize', size);
 
@@ -330,23 +332,30 @@ function frame() {
     const p1 = _x.clone().project(bgCam), p2 = _y.clone().project(bgCam);
     s.material.rotation = Math.atan2(p2.y - p1.y, (p2.x - p1.x) * bgCam.aspect);
   }
-  // conteúdo
+  // conteúdo (re-mede de vez em quando: imagens e vídeos mudam a altura)
+  if (t - (frame.m || 0) > 1.2) { frame.m = t; for (const it of items) { it.w = it.el.offsetWidth; it.h = it.el.offsetHeight; } }
   for (const it of items) {
     const tt = (P - it.k) / SPAN;
     const pre = it.kind === 'hero' ? 1 : sm(-0.06, 0.04, tt);           // entra com fade, já perto
     const a = Math.min(pre, 1 - sm(0.62, 0.95, tt));
-    it.o.visible = a > 0.01 && tt < 1;
-    setPlaying(it, it.o.visible);
-    if (!it.o.visible) continue;
+    const vis = a > 0.01 && tt < 1;
+    if (vis !== it.o.visible) { it.o.visible = vis; it.el.style.visibility = vis ? 'visible' : 'hidden'; }
+    setPlaying(it, vis);
+    if (!vis) continue;
     orbitAt(it.S, it.H, Math.max(0, tt), it.o.position);
-    it.o.lookAt(bgCam.position);
+    _x.copy(it.o.position).applyMatrix4(bgCam.matrixWorldInverse);
+    const depth = -_x.z; if (depth < 1) { it.el.style.visibility = 'hidden'; it.o.visible = false; continue; }
+    _y.copy(it.o.position).project(bgCam);
+    const sx = (_y.x + 1) / 2 * innerWidth, sy = (1 - _y.y) / 2 * innerHeight;
+    const sc = PX * FOCAL / depth;
+    it.el.style.transform = `translate3d(${(sx - it.w / 2).toFixed(1)}px,${(sy - it.h / 2).toFixed(1)}px,0) scale(${sc.toFixed(4)})`;
+    it.el.style.zIndex = String(100000 - Math.round(depth * 10));
     it.el.style.opacity = a.toFixed(3);
   }
   let s = null; for (const x of sections) if (P >= x.k) s = x;
   setHud(s);
 
   gl.render(bg, bgCam);
-  css.render(cssScene, bgCam);
 }
 
 function start() {

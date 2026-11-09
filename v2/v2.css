@@ -2,8 +2,8 @@
 html{scroll-behavior:auto}
 body{background:#04050a}
 #space{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block}
-#css3d{position:fixed!important;inset:0;z-index:1;pointer-events:none}
-#css3d .it{pointer-events:auto}
+#css3d{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+#css3d .it{position:absolute;left:0;top:0;transform-origin:50% 50%;pointer-events:auto;visibility:hidden;margin:0}
 html.v2ready body>header.hero,html.v2ready body>section,html.v2ready body>footer{display:none!important}
 #spacer{position:relative;z-index:-1}
 nav{z-index:50}
